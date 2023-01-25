@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "661851822199-dbghv2ra93ujsefq5oegkqknjkn98pgk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.Firtina.GeziVR",
+            "certificate_hash": "7ec9c469e8a07499d0077b836570d101f2094f82"
+          }
+        },
+        {
           "client_id": "661851822199-ga8qs5bl5jho1jk4cb8va4hnofq9dl1j.apps.googleusercontent.com",
           "client_type": 3
         }
