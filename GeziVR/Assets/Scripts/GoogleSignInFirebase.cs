@@ -6,8 +6,11 @@ using Firebase;
 using Firebase.Auth;
 using Google;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
+
+
 public class GoogleSignInFirebase : MonoBehaviour
 {
     public TMPro.TextMeshProUGUI  infoText;
@@ -110,6 +113,7 @@ public class GoogleSignInFirebase : MonoBehaviour
             }
             else
             {
+                SceneManager.LoadScene("MenuScreen");
                 AddToInformation("Sign In Successful.");
             }
         });
