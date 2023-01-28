@@ -1,11 +1,11 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:keep="@string/gcm_defaultSenderId,@string/google_storage_bucket,@string/project_id,@string/google_api_key,@string/google_crash_reporting_api_key,@string/google_app_id,@string/default_android_client_id,@string/default_web_client_id">
-  <string name="gcm_defaultSenderId" translatable="false">661851822199</string>
-  <string name="google_storage_bucket" translatable="false">gezivr-e04e2.appspot.com</string>
-  <string name="project_id" translatable="false">gezivr-e04e2</string>
-  <string name="google_api_key" translatable="false">AIzaSyAeZ0GHCRvAujCiO-IA6pQmuPhOWQ1q1F4</string>
-  <string name="google_crash_reporting_api_key" translatable="false">AIzaSyAeZ0GHCRvAujCiO-IA6pQmuPhOWQ1q1F4</string>
-  <string name="google_app_id" translatable="false">1:661851822199:android:d6de0b805269e749114e72</string>
-  <string name="default_android_client_id" translatable="false">661851822199-dbghv2ra93ujsefq5oegkqknjkn98pgk.apps.googleusercontent.com</string>
-  <string name="default_web_client_id" translatable="false">661851822199-ga8qs5bl5jho1jk4cb8va4hnofq9dl1j.apps.googleusercontent.com</string>
+  <string name="gcm_defaultSenderId" translatable="false">858479882859</string>
+  <string name="google_storage_bucket" translatable="false">gezivr-7dc1c.appspot.com</string>
+  <string name="project_id" translatable="false">gezivr-7dc1c</string>
+  <string name="google_api_key" translatable="false">AIzaSyBcxRdpghm5amt5XCVMGdbg_59u4Znw-gs</string>
+  <string name="google_crash_reporting_api_key" translatable="false">AIzaSyBcxRdpghm5amt5XCVMGdbg_59u4Znw-gs</string>
+  <string name="google_app_id" translatable="false">1:858479882859:android:88e99813f0b813d738372e</string>
+  <string name="default_android_client_id" translatable="false">858479882859-bvr4p2tivci5lk38gcrqibunp6qu1ggh.apps.googleusercontent.com</string>
+  <string name="default_web_client_id" translatable="false">858479882859-d8vpciu5tehf84bvprcr3ac4vu6jinif.apps.googleusercontent.com</string>
 </resources>

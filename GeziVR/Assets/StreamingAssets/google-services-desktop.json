@@ -1,41 +1,41 @@
 {
   "project_info": {
-    "project_number": "661851822199",
-    "project_id": "gezivr-e04e2",
-    "storage_bucket": "gezivr-e04e2.appspot.com"
+    "project_number": "858479882859",
+    "project_id": "gezivr-7dc1c",
+    "storage_bucket": "gezivr-7dc1c.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:661851822199:android:d6de0b805269e749114e72",
+        "mobilesdk_app_id": "1:858479882859:android:88e99813f0b813d738372e",
         "android_client_info": {
           "package_name": "com.Firtina.GeziVR"
         }
       },
       "oauth_client": [
         {
-          "client_id": "661851822199-dbghv2ra93ujsefq5oegkqknjkn98pgk.apps.googleusercontent.com",
+          "client_id": "858479882859-bvr4p2tivci5lk38gcrqibunp6qu1ggh.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.Firtina.GeziVR",
-            "certificate_hash": "7ec9c469e8a07499d0077b836570d101f2094f82"
+            "certificate_hash": "d6cb556b1574dc8d96d4d6f6e063abfcb60650a0"
           }
         },
         {
-          "client_id": "661851822199-ga8qs5bl5jho1jk4cb8va4hnofq9dl1j.apps.googleusercontent.com",
+          "client_id": "858479882859-d8vpciu5tehf84bvprcr3ac4vu6jinif.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAeZ0GHCRvAujCiO-IA6pQmuPhOWQ1q1F4"
+          "current_key": "AIzaSyBcxRdpghm5amt5XCVMGdbg_59u4Znw-gs"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "661851822199-6qh2hmmcvetnpmeomrk5b8h3p0mp8jms.apps.googleusercontent.com",
+              "client_id": "858479882859-d8vpciu5tehf84bvprcr3ac4vu6jinif.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
