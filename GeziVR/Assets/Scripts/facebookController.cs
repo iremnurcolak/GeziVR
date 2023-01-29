@@ -6,8 +6,6 @@ using UnityEngine.UI;
 
 public class facebookController : MonoBehaviour
 {
-    
-
     private void Awake()
     {    
         FB.Init(SetInit, OnHideUnity);
@@ -58,6 +56,20 @@ public class facebookController : MonoBehaviour
                 Debug.Log("Login Failed!");
             }
         }
+    }
+    public void CallLogout()
+    {
+        StartCoroutine("FBLogout");
+    }
+    IEnumerator FBLogout()
+    {
+        FB.LogOut();
+        while (FB.IsLoggedIn)
+        {
+            print("Logging Out");
+            yield return null;
+        }
+        print("Logout Successful");
     }
    
 }
