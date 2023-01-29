@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "858479882859",
+    "project_id": "gezivr-7dc1c",
+    "storage_bucket": "gezivr-7dc1c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:858479882859:android:88e99813f0b813d738372e",
+        "android_client_info": {
+          "package_name": "com.Firtina.GeziVR"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "858479882859-6jce5t1afod2r7g0vlpsri647no9eelr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.Firtina.GeziVR",
+            "certificate_hash": "07630c13e1fa70c61920f2372c8b45b67a25d27c"
+          }
+        },
+        {
+          "client_id": "858479882859-d8vpciu5tehf84bvprcr3ac4vu6jinif.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBcxRdpghm5amt5XCVMGdbg_59u4Znw-gs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "858479882859-d8vpciu5tehf84bvprcr3ac4vu6jinif.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
