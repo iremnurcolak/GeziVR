@@ -19,9 +19,13 @@ public class GoogleSignInFirebase : MonoBehaviour
     private FirebaseAuth auth;
     private GoogleSignInConfiguration configuration;
 
+    public static string userToken;
+    public static string userEmail;
+    public static Uri userPhotoUrl;
+
     private void Awake()
     {
-        configuration = new GoogleSignInConfiguration { WebClientId = webClientId, RequestEmail = true, RequestIdToken = true };
+        configuration = new GoogleSignInConfiguration { WebClientId = webClientId, RequestEmail = true, RequestIdToken = true};
         CheckFirebaseDependencies(); 
     }
 
@@ -44,7 +48,7 @@ public class GoogleSignInFirebase : MonoBehaviour
     }
 
     public void SignInWithGoogle() { OnSignIn(); }
-    public void SignOutFromGoogle() { OnSignOut(); }
+    public static void SignOutFromGoogle() { OnSignOut(); }
 
     private void OnSignIn()
     {
@@ -56,9 +60,8 @@ public class GoogleSignInFirebase : MonoBehaviour
         GoogleSignIn.DefaultInstance.SignIn().ContinueWith(OnAuthenticationFinished);
     }
 
-    private void OnSignOut()
+    private static void OnSignOut()
     {
-        AddToInformation("Calling SignOut");
         GoogleSignIn.DefaultInstance.SignOut();
     }
 
@@ -95,6 +98,9 @@ public class GoogleSignInFirebase : MonoBehaviour
             AddToInformation("Email = " + task.Result.Email);
             AddToInformation("Google ID Token = " + task.Result.IdToken);
             AddToInformation("Email = " + task.Result.Email);
+            userToken = task.Result.IdToken;
+            userEmail = task.Result.Email;
+            userPhotoUrl = task.Result.ImageUrl;
             SignInWithGoogleOnFirebase(task.Result.IdToken);
         }
     }
