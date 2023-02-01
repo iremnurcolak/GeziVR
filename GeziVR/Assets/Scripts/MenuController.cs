@@ -36,4 +36,9 @@ public class MenuController : MonoBehaviour
 
         profilePicture.sprite = Sprite.Create(www.texture, new Rect(0, 0, www.texture.width, www.texture.height), new Vector2(0.5f, 0.5f));
     }
+
+    public void EnterMuseum()
+    {
+        SceneManager.LoadScene("SampleScene");
+    }
 }
