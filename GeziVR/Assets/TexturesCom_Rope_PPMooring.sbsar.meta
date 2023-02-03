@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 3678002fe37b444d99581e24e8b1c075
+ScriptedImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 2
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+  script: {fileID: 11500000, guid: dda12f74ff9116a42b23482252b2c482, type: 3}
+  _instancesCopy:
+  - {fileID: 11400000, guid: abf9e812bbb504ba5a7929c2c6762779, type: 2}
+  _fileAsset: {instanceID: 0}
+  _assetPath: Assets/TexturesCom_Rope_PPMooring.sbsar
