@@ -27,7 +27,7 @@ public class MenuController : MonoBehaviour
     {
         
         GoogleSignInFirebase.SignOutFromGoogle();
-        SceneManager.LoadScene("LoginScreen");
+        SceneManager.LoadScene("GeziVR");
     }
 
     IEnumerator setImage(string url) {
