@@ -13,21 +13,16 @@ public class MenuController : MonoBehaviour
     
     void Start()
     {
-        infoText.text = "Hos geldin! " + GoogleSignInFirebase.userEmail;
-        StartCoroutine(setImage(GoogleSignInFirebase.userPhotoUrl.ToString()));
+        infoText.text = "Hos geldin! " + PlayerPrefs.GetString("name");
+        StartCoroutine(setImage(PlayerPrefs.GetString("photoUrl")));
+        GameObject DBManager = GameObject.Find("DatabaseManager");
+        DBManager.GetComponent<DatabaseManager>().SaveNewPlayer(PlayerPrefs.GetString("name"), PlayerPrefs.GetString("email"), PlayerPrefs.GetString("token"));
     }
 
     // Update is called once per frame
     void Update()
     {
         
-    }
-
-    public void SignOut()
-    {
-        
-        GoogleSignInFirebase.SignOutFromGoogle();
-        SceneManager.LoadScene("GeziVR");
     }
 
     IEnumerator setImage(string url) {
@@ -39,6 +34,6 @@ public class MenuController : MonoBehaviour
 
     public void EnterMuseum()
     {
-        SceneManager.LoadScene("SampleScene");
+        SceneManager.LoadScene("GeziVr");
     }
 }
