@@ -221,6 +221,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   infoText: {fileID: 1843058786}
+  playerScriptable: {fileID: 11400000, guid: 1970d8f72f810df4da63b783bebd420f, type: 2}
 --- !u!1 &434301742
 GameObject:
   m_ObjectHideFlags: 0
