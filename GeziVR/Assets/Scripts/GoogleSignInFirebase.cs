@@ -9,11 +9,11 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
-
+using Firebase.Extensions;
+using Firebase.Database;
 
 public class GoogleSignInFirebase : MonoBehaviour
 {
-    public TMPro.TextMeshProUGUI infoText;
     private string webClientId = "858479882859-d8vpciu5tehf84bvprcr3ac4vu6jinif.apps.googleusercontent.com";
 
     private FirebaseAuth auth;
@@ -22,6 +22,9 @@ public class GoogleSignInFirebase : MonoBehaviour
     public static string userToken;
     public static string userEmail;
     public static Uri userPhotoUrl;
+    public static string userName;
+
+    public PlayerScriptable playerScriptable;
 
     private void Awake()
     {
@@ -38,36 +41,38 @@ public class GoogleSignInFirebase : MonoBehaviour
                 if (task.Result == DependencyStatus.Available)
                     auth = FirebaseAuth.DefaultInstance;
                 else
-                    AddToInformation("Could not resolve all Firebase dependencies: " + task.Result.ToString());
+                    Debug.Log("Could not resolve all Firebase dependencies: " + task.Result.ToString());
             }
             else
             {
-                AddToInformation("Dependency check was not completed. Error : " + task.Exception.Message);
+                Debug.Log("Dependency check was not completed. Error : " + task.Exception.Message);
             }
         });
     }
 
     public void SignInWithGoogle() { OnSignIn(); }
-    public static void SignOutFromGoogle() { OnSignOut(); }
+    public void SignOutFromGoogle() { OnSignOut(); }
 
     private void OnSignIn()
     {
         GoogleSignIn.Configuration = configuration;
         GoogleSignIn.Configuration.UseGameSignIn = false;
         GoogleSignIn.Configuration.RequestIdToken = true;
-        AddToInformation("Calling SignIn");
+        Debug.Log("Calling SignIn");
 
         GoogleSignIn.DefaultInstance.SignIn().ContinueWith(OnAuthenticationFinished);
     }
 
-    private static void OnSignOut()
+    private void OnSignOut()
     {
         GoogleSignIn.DefaultInstance.SignOut();
+        playerScriptable.Reset();
+        SceneManager.LoadScene("LoginScreen");
     }
 
     public void OnDisconnect()
     {
-        AddToInformation("Calling Disconnect");
+        Debug.Log("Calling Disconnect");
         GoogleSignIn.DefaultInstance.Disconnect();
     }
 
@@ -80,27 +85,37 @@ public class GoogleSignInFirebase : MonoBehaviour
                 if (enumerator.MoveNext())
                 {
                     GoogleSignIn.SignInException error = (GoogleSignIn.SignInException)enumerator.Current;
-                    AddToInformation("Got Error: " + error.Status + " " + error.Message);
+                    Debug.Log("Got Error: " + error.Status + " " + error.Message);
                 }
                 else
                 {
-                    AddToInformation("Got Unexpected Exception?!?" + task.Exception);
+                    Debug.Log("Got Unexpected Exception?!?" + task.Exception);
                 }
             }
         }
         else if (task.IsCanceled)
         {
-            AddToInformation("Canceled");
+           Debug.Log("Canceled");
         }
         else
         {
-            AddToInformation("Welcome: " + task.Result.DisplayName + "!");
-            AddToInformation("Email = " + task.Result.Email);
-            AddToInformation("Google ID Token = " + task.Result.IdToken);
-            AddToInformation("Email = " + task.Result.Email);
-            userToken = task.Result.IdToken;
-            userEmail = task.Result.Email;
-            userPhotoUrl = task.Result.ImageUrl;
+            playerScriptable.name = task.Result.DisplayName;
+            playerScriptable.email = task.Result.Email;
+            playerScriptable.profileImageUrl = task.Result.ImageUrl.ToString();
+            playerScriptable.token = task.Result.IdToken;
+
+            User user = new User(playerScriptable.name, playerScriptable.email, playerScriptable.profileImageUrl, playerScriptable.token);
+            string json = JsonUtility.ToJson(user);
+            FirebaseDatabase.DefaultInstance.RootReference.Child("users").Child(playerScriptable.token.GetHashCode().ToString()).SetRawJsonValueAsync(json).ContinueWith(task => {
+                if (task.IsFaulted)
+                {
+                    Debug.Log("Error");
+                }
+                else if (task.IsCompleted)
+                {
+                    Debug.Log("Success");
+                }
+        });
             SignInWithGoogleOnFirebase(task.Result.IdToken);
         }
     }
@@ -115,12 +130,12 @@ public class GoogleSignInFirebase : MonoBehaviour
             if (ex != null)
             {
                 if (ex.InnerExceptions[0] is FirebaseException inner && (inner.ErrorCode != 0))
-                    AddToInformation("\nError code = " + inner.ErrorCode + " Message = " + inner.Message);
+                    Debug.Log("\nError code = " + inner.ErrorCode + " Message = " + inner.Message);
             }
             else
             {
                 SceneManager.LoadScene("MenuScreen");
-                AddToInformation("Sign In Successful.");
+                Debug.Log("Sign In Successful.");
             }
         });
     }
@@ -130,7 +145,7 @@ public class GoogleSignInFirebase : MonoBehaviour
         GoogleSignIn.Configuration = configuration;
         GoogleSignIn.Configuration.UseGameSignIn = false;
         GoogleSignIn.Configuration.RequestIdToken = true;
-        AddToInformation("Calling SignIn Silently");
+        Debug.Log("Calling SignIn Silently");
 
         GoogleSignIn.DefaultInstance.SignInSilently().ContinueWith(OnAuthenticationFinished);
     }
@@ -141,10 +156,8 @@ public class GoogleSignInFirebase : MonoBehaviour
         GoogleSignIn.Configuration.UseGameSignIn = true;
         GoogleSignIn.Configuration.RequestIdToken = false;
 
-        AddToInformation("Calling Games SignIn");
+        Debug.Log("Calling Games SignIn");
 
         GoogleSignIn.DefaultInstance.SignIn().ContinueWith(OnAuthenticationFinished);
     }
-
-    private void AddToInformation(string str) { infoText.text += "\n" + str; }
 }

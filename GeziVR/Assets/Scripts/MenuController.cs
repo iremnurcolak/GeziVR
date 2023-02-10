@@ -10,25 +10,16 @@ public class MenuController : MonoBehaviour
 {
     public TMPro.TextMeshProUGUI infoText;
     public Image profilePicture;
+
+    public PlayerScriptable playerScriptable;
     
     void Start()
     {
-        infoText.text = "Hos geldin! " + GoogleSignInFirebase.userEmail;
-        StartCoroutine(setImage(GoogleSignInFirebase.userPhotoUrl.ToString()));
+        infoText.text = "Hos geldin " + playerScriptable.name + "!";
+        StartCoroutine(setImage(playerScriptable.profileImageUrl));
     }
+    
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-    public void SignOut()
-    {
-        
-        GoogleSignInFirebase.SignOutFromGoogle();
-        SceneManager.LoadScene("GeziVR");
-    }
 
     IEnumerator setImage(string url) {
         WWW www = new WWW(url);
@@ -40,5 +31,6 @@ public class MenuController : MonoBehaviour
     public void EnterMuseum()
     {
         SceneManager.LoadScene("SampleScene");
+        
     }
 }
