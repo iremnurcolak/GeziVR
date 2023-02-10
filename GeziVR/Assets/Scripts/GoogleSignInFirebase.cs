@@ -158,7 +158,7 @@ public class GoogleSignInFirebase : MonoBehaviour
                         {
                             
                             Debug.Log("User does not exist");
-                            User user = new User(playerScriptable.name, playerScriptable.email, playerScriptable.profileImageUrl, task.Result.UserId);
+                            User user = new User(playerScriptable.name, playerScriptable.email, playerScriptable.profileImageUrl);
                             string json = JsonUtility.ToJson(user);
                             FirebaseDatabase.DefaultInstance.RootReference.Child("users").Child(task.Result.UserId).SetRawJsonValueAsync(json).ContinueWith(task => {
                                 if (task.IsFaulted)
