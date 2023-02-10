@@ -11,7 +11,7 @@ using UnityEngine.UI;
 using TMPro;
 using Firebase.Extensions;
 using Firebase.Database;
-
+ 
 public class GoogleSignInFirebase : MonoBehaviour
 {
     private string webClientId = "858479882859-d8vpciu5tehf84bvprcr3ac4vu6jinif.apps.googleusercontent.com";
@@ -19,10 +19,6 @@ public class GoogleSignInFirebase : MonoBehaviour
     private FirebaseAuth auth;
     private GoogleSignInConfiguration configuration;
 
-    public static string userToken;
-    public static string userEmail;
-    public static Uri userPhotoUrl;
-    public static string userName;
 
     public PlayerScriptable playerScriptable;
 
@@ -30,6 +26,19 @@ public class GoogleSignInFirebase : MonoBehaviour
     {
         configuration = new GoogleSignInConfiguration { WebClientId = webClientId, RequestEmail = true, RequestIdToken = true};
         CheckFirebaseDependencies(); 
+        
+    }
+
+    void Start()
+    {
+        if(PlayerPrefs.HasKey("token"))
+        {
+            playerScriptable.name = PlayerPrefs.GetString("name");
+            playerScriptable.email = PlayerPrefs.GetString("email");
+            playerScriptable.profileImageUrl = PlayerPrefs.GetString("profileImageUrl");
+            playerScriptable.token = PlayerPrefs.GetString("token");
+            SceneManager.LoadScene("Menu");
+        }
     }
 
     private void CheckFirebaseDependencies()
@@ -67,6 +76,7 @@ public class GoogleSignInFirebase : MonoBehaviour
     {
         GoogleSignIn.DefaultInstance.SignOut();
         playerScriptable.Reset();
+        PlayerPrefs.DeleteAll();
         SceneManager.LoadScene("LoginScreen");
     }
 
@@ -99,23 +109,18 @@ public class GoogleSignInFirebase : MonoBehaviour
         }
         else
         {
-            playerScriptable.name = task.Result.DisplayName;
-            playerScriptable.email = task.Result.Email;
-            playerScriptable.profileImageUrl = task.Result.ImageUrl.ToString();
-            playerScriptable.token = task.Result.IdToken;
-
-            User user = new User(playerScriptable.name, playerScriptable.email, playerScriptable.profileImageUrl, playerScriptable.token);
-            string json = JsonUtility.ToJson(user);
-            FirebaseDatabase.DefaultInstance.RootReference.Child("users").Child(playerScriptable.token.GetHashCode().ToString()).SetRawJsonValueAsync(json).ContinueWith(task => {
-                if (task.IsFaulted)
-                {
-                    Debug.Log("Error");
-                }
-                else if (task.IsCompleted)
-                {
-                    Debug.Log("Success");
-                }
-        });
+            if(!PlayerPrefs.HasKey("token"))
+            {
+                playerScriptable.name = task.Result.DisplayName;
+                playerScriptable.email = task.Result.Email;
+                playerScriptable.profileImageUrl = task.Result.ImageUrl.ToString();
+                
+                PlayerPrefs.SetString("name", playerScriptable.name);
+                PlayerPrefs.SetString("email", playerScriptable.email);
+                PlayerPrefs.SetString("profileImageUrl", playerScriptable.profileImageUrl);
+                
+                PlayerPrefs.Save();
+            }
             SignInWithGoogleOnFirebase(task.Result.IdToken);
         }
     }
@@ -126,6 +131,9 @@ public class GoogleSignInFirebase : MonoBehaviour
 
         auth.SignInWithCredentialAsync(credential).ContinueWith(task =>
         {
+            playerScriptable.token = task.Result.UserId;
+            PlayerPrefs.SetString("token", task.Result.UserId);
+            PlayerPrefs.Save();
             AggregateException ex = task.Exception;
             if (ex != null)
             {
@@ -133,31 +141,42 @@ public class GoogleSignInFirebase : MonoBehaviour
                     Debug.Log("\nError code = " + inner.ErrorCode + " Message = " + inner.Message);
             }
             else
-            {
+            {   
+                FirebaseDatabase.DefaultInstance.RootReference.Child("users").Child(task.Result.UserId).GetValueAsync().ContinueWith(t => {
+                    if (t.IsFaulted)
+                    {
+                        Debug.Log("Error");
+                    }
+                    else if (t.IsCompleted)
+                    {
+                        DataSnapshot snapshot = t.Result;
+                        if (snapshot.Exists)
+                        {
+                            Debug.Log("User already exists");
+                        }
+                        else
+                        {
+                            
+                            Debug.Log("User does not exist");
+                            User user = new User(playerScriptable.name, playerScriptable.email, playerScriptable.profileImageUrl, task.Result.UserId);
+                            string json = JsonUtility.ToJson(user);
+                            FirebaseDatabase.DefaultInstance.RootReference.Child("users").Child(task.Result.UserId).SetRawJsonValueAsync(json).ContinueWith(task => {
+                                if (task.IsFaulted)
+                                {
+                                    Debug.Log("Error");
+                                }
+                                else if (task.IsCompleted)
+                                {
+                                    Debug.Log("Success");
+                                }
+                            });
+                        }
+                    }
+                });
+                
                 SceneManager.LoadScene("MenuScreen");
                 Debug.Log("Sign In Successful.");
             }
         });
-    }
-
-    public void OnSignInSilently()
-    {
-        GoogleSignIn.Configuration = configuration;
-        GoogleSignIn.Configuration.UseGameSignIn = false;
-        GoogleSignIn.Configuration.RequestIdToken = true;
-        Debug.Log("Calling SignIn Silently");
-
-        GoogleSignIn.DefaultInstance.SignInSilently().ContinueWith(OnAuthenticationFinished);
-    }
-
-    public void OnGamesSignIn()
-    {
-        GoogleSignIn.Configuration = configuration;
-        GoogleSignIn.Configuration.UseGameSignIn = true;
-        GoogleSignIn.Configuration.RequestIdToken = false;
-
-        Debug.Log("Calling Games SignIn");
-
-        GoogleSignIn.DefaultInstance.SignIn().ContinueWith(OnAuthenticationFinished);
     }
 }
