@@ -31,19 +31,34 @@ public class GoogleSignInFirebase : MonoBehaviour
 
     void Start()
     {
+        /*
         if(PlayerPrefs.HasKey("token"))
         {
-            playerScriptable.name = PlayerPrefs.GetString("name");
             playerScriptable.email = PlayerPrefs.GetString("email");
-            playerScriptable.profileImageUrl = PlayerPrefs.GetString("profileImageUrl");
             playerScriptable.token = PlayerPrefs.GetString("token");
-            SceneManager.LoadScene("Menu");
-        }
+            FirebaseDatabase.DefaultInstance.RootReference.Child("users").Child(PlayerPrefs.GetString("token")).GetValueAsync().ContinueWithOnMainThread(t => {
+                if (t.IsFaulted)
+                {
+                    Debug.Log("Error");
+                }
+                else if (t.IsCompleted)
+                {
+                    DataSnapshot snapshot = t.Result;
+                    playerScriptable.balance = int.Parse(snapshot.Child("balance").Value.ToString());
+                    PlayerPrefs.SetInt("balance", playerScriptable.balance);
+                    playerScriptable.profileImageUrl = snapshot.Child("profileImageUrl").Value.ToString();
+                    PlayerPrefs.SetString("profileImageUrl", playerScriptable.profileImageUrl);
+                    playerScriptable.name = snapshot.Child("name").Value.ToString() + "dlkjsgk";
+                    PlayerPrefs.SetString("name", playerScriptable.name);   
+                }
+            });
+            
+        }*/
     }
 
     private void CheckFirebaseDependencies()
     {
-        FirebaseApp.CheckAndFixDependenciesAsync().ContinueWith(task =>
+        FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(task =>
         {
             if (task.IsCompleted)
             {
@@ -69,7 +84,7 @@ public class GoogleSignInFirebase : MonoBehaviour
         GoogleSignIn.Configuration.RequestIdToken = true;
         Debug.Log("Calling SignIn");
 
-        GoogleSignIn.DefaultInstance.SignIn().ContinueWith(OnAuthenticationFinished);
+        GoogleSignIn.DefaultInstance.SignIn().ContinueWithOnMainThread(OnAuthenticationFinished);
     }
 
     private void OnSignOut()
@@ -109,8 +124,6 @@ public class GoogleSignInFirebase : MonoBehaviour
         }
         else
         {
-            if(!PlayerPrefs.HasKey("token"))
-            {
                 playerScriptable.name = task.Result.DisplayName;
                 playerScriptable.email = task.Result.Email;
                 playerScriptable.profileImageUrl = task.Result.ImageUrl.ToString();
@@ -120,7 +133,7 @@ public class GoogleSignInFirebase : MonoBehaviour
                 PlayerPrefs.SetString("profileImageUrl", playerScriptable.profileImageUrl);
                 
                 PlayerPrefs.Save();
-            }
+          
             SignInWithGoogleOnFirebase(task.Result.IdToken);
         }
     }
@@ -129,7 +142,7 @@ public class GoogleSignInFirebase : MonoBehaviour
     {
         Credential credential = GoogleAuthProvider.GetCredential(idToken, null);
 
-        auth.SignInWithCredentialAsync(credential).ContinueWith(task =>
+        auth.SignInWithCredentialAsync(credential).ContinueWithOnMainThread(task =>
         {
             playerScriptable.token = task.Result.UserId;
             PlayerPrefs.SetString("token", task.Result.UserId);
@@ -142,7 +155,7 @@ public class GoogleSignInFirebase : MonoBehaviour
             }
             else
             {   
-                FirebaseDatabase.DefaultInstance.RootReference.Child("users").Child(task.Result.UserId).GetValueAsync().ContinueWith(t => {
+                FirebaseDatabase.DefaultInstance.RootReference.Child("users").Child(task.Result.UserId).GetValueAsync().ContinueWithOnMainThread(t => {
                     if (t.IsFaulted)
                     {
                         Debug.Log("Error");
@@ -152,15 +165,20 @@ public class GoogleSignInFirebase : MonoBehaviour
                         DataSnapshot snapshot = t.Result;
                         if (snapshot.Exists)
                         {
+                            int balance = Convert.ToInt32(snapshot.Child("balance").Value.ToString());
+                            playerScriptable.balance = balance;
+                            PlayerPrefs.SetInt("balance", balance);
+                            PlayerPrefs.Save();
+                            FirebaseDatabase.DefaultInstance.RootReference.Child("users").Child(task.Result.UserId).Child("profileImageUrl").SetValueAsync(playerScriptable.profileImageUrl);
+                            FirebaseDatabase.DefaultInstance.RootReference.Child("users").Child(task.Result.UserId).Child("name").SetValueAsync(playerScriptable.name);
                             Debug.Log("User already exists");
                         }
                         else
                         {
-                            
                             Debug.Log("User does not exist");
                             User user = new User(playerScriptable.name, playerScriptable.email, playerScriptable.profileImageUrl);
                             string json = JsonUtility.ToJson(user);
-                            FirebaseDatabase.DefaultInstance.RootReference.Child("users").Child(task.Result.UserId).SetRawJsonValueAsync(json).ContinueWith(task => {
+                            FirebaseDatabase.DefaultInstance.RootReference.Child("users").Child(task.Result.UserId).SetRawJsonValueAsync(json).ContinueWithOnMainThread(task => {
                                 if (task.IsFaulted)
                                 {
                                     Debug.Log("Error");
