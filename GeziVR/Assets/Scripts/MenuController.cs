@@ -38,7 +38,7 @@ public class MenuController : MonoBehaviour
 
     public void EnterMuseum()
     {
-        SceneManager.LoadScene("SampleScene");
+        SceneManager.LoadScene("GeziVr");
         
     }
 }
