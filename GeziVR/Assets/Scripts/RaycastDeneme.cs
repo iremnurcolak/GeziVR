@@ -17,6 +17,7 @@ public class RaycastDeneme : MonoBehaviour
     public GameObject popup;
     private DataSnapshot snapshot;
     private string id;
+    private int piecePricePurchase;
 
     public TMPro.TextMeshProUGUI pieceName;
     public TMPro.TextMeshProUGUI pieceDescription;
@@ -175,6 +176,7 @@ public class RaycastDeneme : MonoBehaviour
                         panel.GetComponent<CanvasGroup>().interactable = false;
                         if(canBuy)
                         {
+                            piecePricePurchase = Convert.ToInt32(snapshot.Child("price").Value.ToString());
                             message.text = "Your balance is " + playerScriptable.balance + ". Do you want to buy this piece for " + snapshot.Child("price").Value.ToString() + "?";
                             popup.transform.GetChild(0).transform.GetChild(0).GetComponent<Button>().gameObject.SetActive(true);
                             popup.transform.GetChild(0).transform.GetChild(1).GetComponent<Button>().gameObject.SetActive(true);
@@ -217,8 +219,9 @@ public class RaycastDeneme : MonoBehaviour
 
     public void ApprovePurchase()
     {
-        FirebaseDatabase.DefaultInstance.RootReference.Child("pieces").Child(id).Child("owner").SetValueAsync(playerScriptable.token);  
-        FirebaseDatabase.DefaultInstance.RootReference.Child("users").Child(playerScriptable.token).Child("gallery").Push().SetValueAsync(id);
+        FirebaseDatabase.DefaultInstance.RootReference.Child("pieces").Child(id).Child("owner").SetValueAsync(playerScriptable.token); 
+        string json = "{\"piecePricePurchase\":" + piecePricePurchase + "}";
+        FirebaseDatabase.DefaultInstance.RootReference.Child("users").Child(playerScriptable.token).Child("gallery").Child(id).SetRawJsonValueAsync(json);
         FirebaseDatabase.DefaultInstance.RootReference.Child("users").Child(playerScriptable.token).Child("balance").SetValueAsync(playerScriptable.balance - int.Parse(piecePrice.text));
         pieceOwner.text = playerScriptable.name;
         playerScriptable.balance -= int.Parse(piecePrice.text);
