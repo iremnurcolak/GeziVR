@@ -26,3 +26,5 @@ ExportedObj/
 *.unityproj
 *.sln
 *.suo
+
+GeziVR/ProjectSettings/GvhProjectSettings.xml
