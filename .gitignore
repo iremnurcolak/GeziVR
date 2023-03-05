@@ -26,5 +26,9 @@ ExportedObj/
 *.unityproj
 *.sln
 *.suo
-
+*.pidb.meta
 GeziVR/ProjectSettings/GvhProjectSettings.xml
+*.tmp
+*.user
+*.userprefs
+*.pidb
