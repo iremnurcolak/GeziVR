@@ -9,6 +9,7 @@ public class PlayerScriptable : ScriptableObject
     public string email;
     public string profileImageUrl;
     public string token;
+    public int balance;
 
     public void Reset()
     {
@@ -16,5 +17,6 @@ public class PlayerScriptable : ScriptableObject
         this.email = "";
         this.profileImageUrl = "";
         this.token = "";
+        this.balance = 0;
     }
 }
