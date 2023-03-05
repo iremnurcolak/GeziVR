@@ -9,6 +9,7 @@ using UnityEngine.SceneManagement;
 public class MenuController : MonoBehaviour
 {
     public TMPro.TextMeshProUGUI infoText;
+    public TMPro.TextMeshProUGUI balanceText;
     public Image profilePicture;
 
     public PlayerScriptable playerScriptable;
@@ -16,9 +17,16 @@ public class MenuController : MonoBehaviour
     void Start()
     {
         infoText.text = "Hos geldin " + playerScriptable.name + "!";
+        balanceText.text = playerScriptable.balance.ToString();
         StartCoroutine(setImage(playerScriptable.profileImageUrl));
     }
     
+    void Update()
+    {
+        infoText.text = "Hos geldin " + playerScriptable.name + "!";
+        balanceText.text = playerScriptable.balance.ToString();
+        StartCoroutine(setImage(playerScriptable.profileImageUrl));
+    }
 
 
     IEnumerator setImage(string url) {
@@ -30,7 +38,7 @@ public class MenuController : MonoBehaviour
 
     public void EnterMuseum()
     {
-        SceneManager.LoadScene("SampleScene");
+        SceneManager.LoadScene("GeziVr");
         
     }
 }
