@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+
+    private GameObject canvas;
+
     [Header("Movement")]
     public float moveSpeed;
 
@@ -36,6 +39,7 @@ public class PlayerMovement : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
+        canvas = GameObject.Find("CameraHolder").transform.GetChild(0).transform.GetChild(0).gameObject;
     }
 
     // Update is called once per frame
@@ -55,7 +59,10 @@ public class PlayerMovement : MonoBehaviour
     }
 
     private void FixedUpdate() {
-        MovePlayer();
+        if(canvas.GetComponent<Canvas>().enabled == false)
+        {    
+            MovePlayer();
+        }
     }
 
     private void MyInput() {
