@@ -41,4 +41,9 @@ public class MenuController : MonoBehaviour
         SceneManager.LoadScene("GeziVr");
         
     }
+
+    public void GoToGallery()
+    {
+        SceneManager.LoadScene("GalleryScreen");
+    }
 }
