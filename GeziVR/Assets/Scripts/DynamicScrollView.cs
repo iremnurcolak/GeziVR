@@ -29,14 +29,9 @@ public class DynamicScrollView : MonoBehaviour
                 foreach (var child in snapshot.Children)
                 {
                     piece = child.Key;
-                    Debug.Log(piece);
                     pieceList.Add(piece);
                     GameObject pieceName = Instantiate(prefabPieceName, scrollViewContent);
-                    if(pieceName.TryGetComponent(out TextMeshProUGUI textMeshProUGUI))
-                    {
-                        textMeshProUGUI.text = piece;
-                        Debug.Log("aa");
-                    }
+                    pieceName.GetComponentInChildren<TextMeshProUGUI>().text = piece;
                 }
             }
         });
