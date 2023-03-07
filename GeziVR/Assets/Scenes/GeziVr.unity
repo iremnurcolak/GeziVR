@@ -1313,7 +1313,7 @@ Transform:
   - {fileID: 1361888174}
   - {fileID: 295642296}
   m_Father: {fileID: 1937286514}
-  m_RootOrder: 23
+  m_RootOrder: 20
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &67960029 stripped
 Transform:
@@ -5414,7 +5414,7 @@ Transform:
   - {fileID: 701276253}
   - {fileID: 2120133724}
   m_Father: {fileID: 1937286514}
-  m_RootOrder: 21
+  m_RootOrder: 24
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &376850234
 GameObject:
@@ -19450,7 +19450,7 @@ Transform:
   - {fileID: 1932261300}
   - {fileID: 1019350440}
   m_Father: {fileID: 1937286514}
-  m_RootOrder: 24
+  m_RootOrder: 21
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1324292303
 GameObject:
@@ -25017,7 +25017,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1744335211}
   m_Layer: 0
-  m_Name: (2F) Pictures
+  m_Name: (2F) Frames
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -25048,7 +25048,7 @@ Transform:
   - {fileID: 812464096}
   - {fileID: 2087651184}
   m_Father: {fileID: 1937286514}
-  m_RootOrder: 20
+  m_RootOrder: 23
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &1745080067 stripped
 Transform:
