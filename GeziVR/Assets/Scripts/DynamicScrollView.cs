@@ -108,6 +108,7 @@ public class DynamicScrollView : MonoBehaviour
     public void OpenPanel()
     {
         canvas.transform.GetChild(0).transform.GetChild(0).GetComponent<ScrollRect>().enabled = false;
+        canvas.transform.GetChild(0).transform.GetChild(1).GetComponent<Button>().interactable = false;
         canvas2.transform.GetChild(0).gameObject.SetActive(true);
         prefabName = pieceList[position];
         piece3d  = GameObject.Instantiate(Resources.Load(prefabName)) as GameObject;
