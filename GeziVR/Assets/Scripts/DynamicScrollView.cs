@@ -58,6 +58,7 @@ public class DynamicScrollView : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Escape))
         {
            canvas.transform.GetChild(0).transform.GetChild(0).GetComponent<ScrollRect>().enabled = true;
+           canvas.transform.GetChild(0).transform.GetChild(1).GetComponent<Button>().interactable = true;
            canvas2.transform.GetChild(0).gameObject.SetActive(false);
            Destroy(piece3d);
            
