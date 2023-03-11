@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using TMPro;
 using Firebase.Extensions;
 using Firebase.Database;
+using UnityEngine.SceneManagement;
 
 public class DynamicScrollView : MonoBehaviour
 {
@@ -116,6 +117,15 @@ public class DynamicScrollView : MonoBehaviour
         piece3d.layer = LayerMask.NameToLayer("UI");
         piece3d.transform.position = new Vector3(-4, -1, 7);
         piece3d.AddComponent<RotationController>();
+    }
+
+    public void BackToMenu()
+    {
+        canvas.transform.GetChild(0).transform.GetChild(0).GetComponent<ScrollRect>().enabled = true;
+        canvas.transform.GetChild(0).transform.GetChild(1).GetComponent<Button>().interactable = true;
+        canvas2.transform.GetChild(0).gameObject.SetActive(false);
+        Destroy(piece3d);
+        SceneManager.LoadScene("MenuScreen");
     }
 
 }
