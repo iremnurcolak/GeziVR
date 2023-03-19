@@ -17,4 +17,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/GalleryScreen.unity
     guid: 1a68af1f9129d814a89cc6a05652f76b
+  - enabled: 1
+    path: Assets/Web3Unity/Scenes/WalletLogin.unity
+    guid: cc28e1075e9584f1698219d041278648
+  - enabled: 1
+    path: Assets/Scenes/Blockchain.unity
+    guid: a6b3719d73c204236aefd242dd0a60a9
   m_configObjects: {}
