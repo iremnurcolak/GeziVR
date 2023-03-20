@@ -12,6 +12,8 @@ public class WikiArtArtist
    public string deathDayAsString;
    public string key;
    public string extract;
+   public string wikipediaUrl;
+   public string url;
 }
 
 [Serializable]

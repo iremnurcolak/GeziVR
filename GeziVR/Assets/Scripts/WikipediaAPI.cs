@@ -18,13 +18,39 @@ public class WikipediaAPI : MonoBehaviour
     private WikiArtArtist artist;
     private string search;
 
+    private WikiArtArtist[] allArtists;
+
+    private void Start()
+    {
+        StartCoroutine(GetAllArtists("http://www.wikiart.org/en/App/Artist/AlphabetJson?v=new&inPublicDomain={true/false}"));
+    }
     public void Search()
     {
         artist = new WikiArtArtist();
         search = inputField.text;
         //FindNearest();
-        StartCoroutine(GetArtistInfo("https://api.wikimedia.org/core/v1/wikipedia/en/search/page?q=" + search +"&limit=1"));
-
+        //StartCoroutine(GetArtistInfo("https://api.wikimedia.org/core/v1/wikipedia/en/search/page?q=" + search +"&limit=1"));
+        foreach (WikiArtArtist artist1 in allArtists)
+        {
+            if(artist1.url == search)
+            {
+                Debug.Log(artist1.wikipediaUrl);
+                if(artist1.wikipediaUrl != "")
+                {
+                    Debug.Log("BURDA");
+                    StartCoroutine(GetArtistSummary("https://en.wikipedia.org/api/rest_v1/page/summary/" + artist1.wikipediaUrl.Substring(artist1.wikipediaUrl.LastIndexOf('/') + 1)));
+                }
+                else
+                {
+                    infoText.text = "No Wikipedia page found";
+                }
+                
+                Debug.Log(artist1.url);
+                StartCoroutine(GetArtistImage("http://www.wikiart.org/en/" + artist1.url + "?json=2"));
+                StartCoroutine(GetRequest("https://www.wikiart.org/en/App/Painting/PaintingsByArtist?artistUrl=" + artist1.url + "&json=2"));
+                break;
+            }
+        }
     }
 
     IEnumerator GetArtistInfo(string uri)
@@ -134,10 +160,12 @@ public class WikipediaAPI : MonoBehaviour
                     break;
                 case UnityWebRequest.Result.Success:
                     var data = JsonUtility.FromJson<RootObject>("{\"paintings\":" + webRequest.downloadHandler.text+ "}");
-    
+
                     GetImage(data.paintings[0].image, image);
-                    GetImage(data.paintings[1].image, image2);
-                    GetImage(data.paintings[2].image, image3);
+                    if(data.paintings.Length > 1)
+                        GetImage(data.paintings[1].image, image2);
+                    if(data.paintings.Length > 2)
+                        GetImage(data.paintings[2].image, image3);
                     break;
             }
         }
@@ -161,7 +189,7 @@ public class WikipediaAPI : MonoBehaviour
         StartCoroutine(GetAllArtists("http://www.wikiart.org/en/App/Artist/AlphabetJson?v=new&inPublicDomain={true/false}"));
     }*/ 
 
-    /*
+    
     IEnumerator GetAllArtists(string uri)
     {
         using (UnityWebRequest webRequest = UnityWebRequest.Get(uri))
@@ -182,14 +210,12 @@ public class WikipediaAPI : MonoBehaviour
                     Debug.LogError(pages[page] + ": HTTP Error: " + webRequest.error);
                     break;
                 case UnityWebRequest.Result.Success:
-                    search=FindArtist(JsonUtility.FromJson<Artists>("{\"artists\":" + webRequest.downloadHandler.text + "}").artists, search);
-                    Debug.Log(search);
-                    StartCoroutine(GetArtistInfo("https://api.wikimedia.org/core/v1/wikipedia/en/search/page?q=" + search +"&limit=1"));
+                    allArtists = JsonUtility.FromJson<Artists>("{\"artists\":" + webRequest.downloadHandler.text + "}").artists;
                     break;
             }
         }
     }
-    */
+    
 
     /*
     private string FindArtist(WikiArtArtist[] artists, string search)
