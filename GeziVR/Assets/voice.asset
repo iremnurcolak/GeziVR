@@ -1,0 +1,66 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae5a46bda3295124c99b0e6537ac7252, type: 3}
+  m_Name: voice
+  m_EditorClassIdentifier: 
+  application:
+    witConfiguration: {fileID: 11400000}
+    name: gezivr
+    id: 211472581533871
+    lang: en
+    isPrivate: 1
+    createdAt: 2023-03-22T13:20:45-0700
+  configId: 124889f847113ca4d8b8748f1d5da663
+  clientAccessToken: PSVUXHPJDRF3DDPCMKXJUJ7VGSRYWMJA
+  timeoutMS: 10000
+  endpointConfiguration:
+    uriScheme: 
+    authority: 
+    port: 0
+    witApiVersion: 
+    speech: 
+    message: 
+    dictation: 
+  entities:
+  - witConfiguration: {fileID: 11400000}
+    id: 777485277273412
+    name: direction
+    lookups:
+    - free-text
+    - keywords
+    roles:
+    - id: 879744546462657
+      name: direction
+    keywords:
+    - keyword: back
+      synonyms:
+      - back
+      - backward
+    - keyword: forward
+      synonyms:
+      - forward
+  intents:
+  - witConfiguration: {fileID: 11400000}
+    id: 612159147014286
+    name: move_player
+    entities:
+    - witConfiguration: {fileID: 11400000}
+      id: 879744546462657
+      name: direction:direction
+      lookups: []
+      roles: []
+      keywords: []
+  traits: []
+  isDemoOnly: 0
+  useConduit: 0
+  manifestLocalPath: ConduitManifest-9d5bb937-bb0a-413e-ac81-ad2e47c64d41.json
+  openManifestOnGeneration: 0
