@@ -45,7 +45,7 @@ public class WikipediaAPI : MonoBehaviour
                 {
                     infoText.text = "No Wikipedia page found";
                 }
-                StartCoroutine(PutVisitedMuseum("https://gezivr.onrender.com/" + playerScriptable.token + "/" + artist1.contentId));
+                StartCoroutine(PutVisitedMuseum("https://gezivr.onrender.com/addVisitedMuseum/" + playerScriptable.token + "/" + artist1.contentId));
                 Debug.Log(artist1.url);
                 StartCoroutine(GetArtistImage("http://www.wikiart.org/en/" + artist1.url + "?json=2"));
                 StartCoroutine(GetRequest("https://www.wikiart.org/en/App/Painting/PaintingsByArtist?artistUrl=" + artist1.url + "&json=2"));
