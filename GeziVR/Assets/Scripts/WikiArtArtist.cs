@@ -14,6 +14,7 @@ public class WikiArtArtist
    public string extract;
    public string wikipediaUrl;
    public string url;
+   public string contentId;
 }
 
 [Serializable]

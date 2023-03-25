@@ -17,4 +17,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/GalleryScreen.unity
     guid: 1a68af1f9129d814a89cc6a05652f76b
+  - enabled: 1
+    path: Assets/Scenes/Wikipedia.unity
+    guid: 8e5990df2b033d6498be9297e62ffdcb
   m_configObjects: {}

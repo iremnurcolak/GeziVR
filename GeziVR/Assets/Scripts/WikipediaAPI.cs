@@ -15,6 +15,8 @@ public class WikipediaAPI : MonoBehaviour
     [SerializeField] private Image image2;
     [SerializeField] private Image image3;
     [SerializeField] private Image imageArtist;
+    [SerializeField] private PlayerScriptable playerScriptable;
+    
     private WikiArtArtist artist;
     private string search;
 
@@ -24,12 +26,12 @@ public class WikipediaAPI : MonoBehaviour
     {
         StartCoroutine(GetAllArtists("http://www.wikiart.org/en/App/Artist/AlphabetJson?v=new&inPublicDomain={true/false}"));
     }
+
+
     public void Search()
     {
         artist = new WikiArtArtist();
         search = inputField.text;
-        //FindNearest();
-        //StartCoroutine(GetArtistInfo("https://api.wikimedia.org/core/v1/wikipedia/en/search/page?q=" + search +"&limit=1"));
         foreach (WikiArtArtist artist1 in allArtists)
         {
             if(artist1.url == search)
@@ -37,18 +39,43 @@ public class WikipediaAPI : MonoBehaviour
                 Debug.Log(artist1.wikipediaUrl);
                 if(artist1.wikipediaUrl != "")
                 {
-                    Debug.Log("BURDA");
                     StartCoroutine(GetArtistSummary("https://en.wikipedia.org/api/rest_v1/page/summary/" + artist1.wikipediaUrl.Substring(artist1.wikipediaUrl.LastIndexOf('/') + 1)));
                 }
                 else
                 {
                     infoText.text = "No Wikipedia page found";
                 }
-                
+                StartCoroutine(PutVisitedMuseum("https://gezivr.onrender.com/" + playerScriptable.token + "/" + artist1.contentId));
                 Debug.Log(artist1.url);
                 StartCoroutine(GetArtistImage("http://www.wikiart.org/en/" + artist1.url + "?json=2"));
                 StartCoroutine(GetRequest("https://www.wikiart.org/en/App/Painting/PaintingsByArtist?artistUrl=" + artist1.url + "&json=2"));
                 break;
+            }
+        }
+    }
+
+    IEnumerator PutVisitedMuseum(string uri)
+    {
+        using (UnityWebRequest webRequest = UnityWebRequest.Get(uri))
+        {
+            // Request and wait for the desired page.
+            yield return webRequest.SendWebRequest();
+
+            string[] pages = uri.Split('/');
+            int page = pages.Length - 1;
+
+            switch (webRequest.result)
+            {
+                case UnityWebRequest.Result.ConnectionError:
+                case UnityWebRequest.Result.DataProcessingError:
+                    Debug.LogError(pages[page] + ": Error: " + webRequest.error);
+                    break;
+                case UnityWebRequest.Result.ProtocolError:
+                    Debug.LogError(pages[page] + ": HTTP Error: " + webRequest.error);
+                    break;
+                case UnityWebRequest.Result.Success:
+                    Debug.Log("Success");
+                    break;
             }
         }
     }
@@ -183,15 +210,9 @@ public class WikipediaAPI : MonoBehaviour
         image.sprite = Sprite.Create(www.texture, new Rect(0, 0, www.texture.width, www.texture.height), new Vector2(0.5f, 0.5f));
     }
 
-    /*
-    private void FindNearest()
-    {
-        StartCoroutine(GetAllArtists("http://www.wikiart.org/en/App/Artist/AlphabetJson?v=new&inPublicDomain={true/false}"));
-    }*/ 
-
-    
     IEnumerator GetAllArtists(string uri)
     {
+        Debug.Log("GetAllArtists");
         using (UnityWebRequest webRequest = UnityWebRequest.Get(uri))
         {
             // Request and wait for the desired page.

@@ -978,6 +978,7 @@ MonoBehaviour:
   image2: {fileID: 202489732}
   image3: {fileID: 1682693185}
   imageArtist: {fileID: 107312641}
+  playerScriptable: {fileID: 11400000, guid: 1970d8f72f810df4da63b783bebd420f, type: 2}
 --- !u!1 &970439836
 GameObject:
   m_ObjectHideFlags: 0
