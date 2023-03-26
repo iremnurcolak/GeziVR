@@ -31,29 +31,6 @@ public class GoogleSignInFirebase : MonoBehaviour
 
     void Start()
     {
-        /*
-        if(PlayerPrefs.HasKey("token"))
-        {
-            playerScriptable.email = PlayerPrefs.GetString("email");
-            playerScriptable.token = PlayerPrefs.GetString("token");
-            FirebaseDatabase.DefaultInstance.RootReference.Child("users").Child(PlayerPrefs.GetString("token")).GetValueAsync().ContinueWithOnMainThread(t => {
-                if (t.IsFaulted)
-                {
-                    Debug.Log("Error");
-                }
-                else if (t.IsCompleted)
-                {
-                    DataSnapshot snapshot = t.Result;
-                    playerScriptable.balance = int.Parse(snapshot.Child("balance").Value.ToString());
-                    PlayerPrefs.SetInt("balance", playerScriptable.balance);
-                    playerScriptable.profileImageUrl = snapshot.Child("profileImageUrl").Value.ToString();
-                    PlayerPrefs.SetString("profileImageUrl", playerScriptable.profileImageUrl);
-                    playerScriptable.name = snapshot.Child("name").Value.ToString() + "dlkjsgk";
-                    PlayerPrefs.SetString("name", playerScriptable.name);   
-                }
-            });
-            
-        }*/
     }
 
     private void CheckFirebaseDependencies()

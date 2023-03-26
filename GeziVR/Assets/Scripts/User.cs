@@ -5,6 +5,7 @@ public class User
     public string email;
     public string profileImageUrl;
     public int balance;
+    public string visitedMuseums;
 
     public User(string name, string email, string profileImageUrl)
     {
@@ -12,5 +13,6 @@ public class User
         this.email = email;
         this.profileImageUrl = profileImageUrl;
         this.balance = 0;
+        this.visitedMuseums = "";
     }
 }
