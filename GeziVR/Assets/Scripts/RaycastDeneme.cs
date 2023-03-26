@@ -18,6 +18,7 @@ public class RaycastDeneme : MonoBehaviour
     private DataSnapshot snapshot;
     private string id;
     private int piecePricePurchase;
+    private string tag = "";
 
     public TMPro.TextMeshProUGUI pieceName;
     public TMPro.TextMeshProUGUI pieceDescription;
@@ -50,39 +51,72 @@ public class RaycastDeneme : MonoBehaviour
                 var distance = Vector3.Distance(hitPoint, playerPosition);
                 
                 id = hit.transform.name;
-                Debug.Log(id);
-                
+                GameObject go = GameObject.Find(id) as GameObject;
+                tag = go.tag;
                 if(distance <= 40)
                 {
-                    Debug.Log(distance);
-                    FirebaseDatabase.DefaultInstance.RootReference.Child("pieces").Child(id).GetValueAsync().ContinueWithOnMainThread(t => {
-                        if (t.IsFaulted)
-                        {
-                            Debug.Log("Error");
-                        }
-                        else if (t.IsCompleted)
-                        {
-                            snapshot = t.Result;
-                            if (snapshot.Exists)
+                    if(tag == "Skeleton")
+                    {
+                        FirebaseDatabase.DefaultInstance.RootReference.Child("pieces").Child("skeletons").Child(id).GetValueAsync().ContinueWithOnMainThread(t => {
+                            if (t.IsFaulted)
                             {
-                                OpenPanel();
-                                if(snapshot.Child("owner").Value.ToString() != "")
+                                Debug.Log("Error");
+                            }
+                            else if (t.IsCompleted)
+                            {
+                                snapshot = t.Result;
+                                if (snapshot.Exists)
                                 {
+                                    OpenPanel();
+                                    if(snapshot.Child("owner").Value.ToString() != "")
+                                    {
+                                        
+                                        panel.transform.GetChild(0).transform.GetChild(5).GetComponent<Button>().interactable = false;
+                                    }
+                                    else
+                                    {
+                                        panel.transform.GetChild(0).transform.GetChild(5).GetComponent<Button>().interactable = true;
+                                    }
                                     
-                                    panel.transform.GetChild(0).transform.GetChild(5).GetComponent<Button>().interactable = false;
                                 }
                                 else
                                 {
-                                    panel.transform.GetChild(0).transform.GetChild(5).GetComponent<Button>().interactable = true;
+                                    Debug.Log("Piece does not exist");
                                 }
-                                
                             }
-                            else
+                        });
+                    }
+                    else if(tag == "Dino")
+                    {
+                        FirebaseDatabase.DefaultInstance.RootReference.Child("pieces").Child("dinosaurs").Child(id).GetValueAsync().ContinueWithOnMainThread(t => {
+                            if (t.IsFaulted)
                             {
-                                Debug.Log("Piece does not exist");
+                                Debug.Log("Error");
                             }
-                        }
-                    });
+                            else if (t.IsCompleted)
+                            {
+                                snapshot = t.Result;
+                                if (snapshot.Exists)
+                                {
+                                    OpenPanel();
+                                    if(snapshot.Child("owner").Value.ToString() != "")
+                                    {
+                                        
+                                        panel.transform.GetChild(0).transform.GetChild(5).GetComponent<Button>().interactable = false;
+                                    }
+                                    else
+                                    {
+                                        panel.transform.GetChild(0).transform.GetChild(5).GetComponent<Button>().interactable = true;
+                                    }
+                                    
+                                }
+                                else
+                                {
+                                    Debug.Log("Piece does not exist");
+                                }
+                            }
+                        }); 
+                    }
                 }
             }
         }
@@ -99,46 +133,92 @@ public class RaycastDeneme : MonoBehaviour
         Cursor.visible = true; 
 
         Debug.Log("Panel is opened");    
-        FirebaseDatabase.DefaultInstance.RootReference.Child("pieces").Child(id).GetValueAsync().ContinueWithOnMainThread(t => {
-            if (t.IsFaulted)
-            {
-                Debug.Log("Error");
-            }
-            else if (t.IsCompleted)
-            {
-                snapshot = t.Result;
-                if (snapshot.Exists)
+        if(tag == "Skeleton")
+        {
+            FirebaseDatabase.DefaultInstance.RootReference.Child("pieces").Child("skeletons").Child(id).GetValueAsync().ContinueWithOnMainThread(t => {
+                if (t.IsFaulted)
                 {
-                    pieceName.text = snapshot.Child("name").Value.ToString();
-                    pieceDescription.text = snapshot.Child("description").Value.ToString();
-                    piecePrice.text = snapshot.Child("price").Value.ToString();
-
-                    FirebaseDatabase.DefaultInstance.RootReference.Child("users").Child(snapshot.Child("owner").Value.ToString()).GetValueAsync().ContinueWithOnMainThread(t => {
-                        if (t.IsFaulted)
-                        {
-                            Debug.Log("Error");
-                        }
-                        else if (t.IsCompleted)
-                        {
-                            snapshot = t.Result;
-                            if (snapshot.Exists)
-                            {
-                                pieceOwner.text = snapshot.Child("name").Value.ToString();
-                            }
-                            else
-                            {
-                                Debug.Log("Piece does not exist");
-                            }
-                        }
-                    });
-
+                    Debug.Log("Error");
                 }
-                else
+                else if (t.IsCompleted)
                 {
-                    Debug.Log("Piece does not exist");
+                    snapshot = t.Result;
+                    if (snapshot.Exists)
+                    {
+                        pieceName.text = snapshot.Child("name").Value.ToString();
+                        pieceDescription.text = snapshot.Child("description").Value.ToString();
+                        piecePrice.text = snapshot.Child("price").Value.ToString();
+
+                        FirebaseDatabase.DefaultInstance.RootReference.Child("users").Child(snapshot.Child("owner").Value.ToString()).GetValueAsync().ContinueWithOnMainThread(t => {
+                            if (t.IsFaulted)
+                            {
+                                Debug.Log("Error");
+                            }
+                            else if (t.IsCompleted)
+                            {
+                                snapshot = t.Result;
+                                if (snapshot.Exists)
+                                {
+                                    pieceOwner.text = snapshot.Child("name").Value.ToString();
+                                }
+                                else
+                                {
+                                    Debug.Log("Piece does not exist");
+                                }
+                            }
+                        });
+
+                    }
+                    else
+                    {
+                        Debug.Log("Piece does not exist");
+                    }
                 }
-            }
-        });
+            });
+        }
+        else if(tag == "Dino")
+        {
+            FirebaseDatabase.DefaultInstance.RootReference.Child("pieces").Child("dinosaurs").Child(id).GetValueAsync().ContinueWithOnMainThread(t => {
+                if (t.IsFaulted)
+                {
+                    Debug.Log("Error");
+                }
+                else if (t.IsCompleted)
+                {
+                    snapshot = t.Result;
+                    if (snapshot.Exists)
+                    {
+                        pieceName.text = snapshot.Child("name").Value.ToString();
+                        pieceDescription.text = snapshot.Child("description").Value.ToString();
+                        piecePrice.text = snapshot.Child("price").Value.ToString();
+
+                        FirebaseDatabase.DefaultInstance.RootReference.Child("users").Child(snapshot.Child("owner").Value.ToString()).GetValueAsync().ContinueWithOnMainThread(t => {
+                            if (t.IsFaulted)
+                            {
+                                Debug.Log("Error");
+                            }
+                            else if (t.IsCompleted)
+                            {
+                                snapshot = t.Result;
+                                if (snapshot.Exists)
+                                {
+                                    pieceOwner.text = snapshot.Child("name").Value.ToString();
+                                }
+                                else
+                                {
+                                    Debug.Log("Piece does not exist");
+                                }
+                            }
+                        });
+
+                    }
+                    else
+                    {
+                        Debug.Log("Piece does not exist");
+                    }
+                }
+            });
+        }
            
     }
 
@@ -158,7 +238,9 @@ public class RaycastDeneme : MonoBehaviour
 
     public void BuyPiece()
     {
-        FirebaseDatabase.DefaultInstance.RootReference.Child("pieces").Child(id).GetValueAsync().ContinueWithOnMainThread(t => {
+        if(tag == "Skeleton")
+        {
+            FirebaseDatabase.DefaultInstance.RootReference.Child("pieces").Child("skeletons").Child(id).GetValueAsync().ContinueWithOnMainThread(t => {
 
             if (t.IsFaulted)
             {
@@ -201,6 +283,54 @@ public class RaycastDeneme : MonoBehaviour
                 }
             }
         });
+        }
+        else if(tag == "Dino")
+        {
+            FirebaseDatabase.DefaultInstance.RootReference.Child("pieces").Child("dinosaurs").Child(id).GetValueAsync().ContinueWithOnMainThread(t => {
+
+            if (t.IsFaulted)
+            {
+                Debug.Log("Error");
+            }
+            else if (t.IsCompleted)
+            {
+                snapshot = t.Result;
+                if (snapshot.Exists)
+                {
+                    if(snapshot.Child("owner").Value.ToString() == "")
+                    {
+                        bool canBuy = CheckBalance(Convert.ToInt32(snapshot.Child("price").Value.ToString()));
+                        popup.GetComponent<Canvas>().enabled = true;
+                        panel.GetComponent<CanvasGroup>().interactable = false;
+                        if(canBuy)
+                        {
+                            piecePricePurchase = Convert.ToInt32(snapshot.Child("price").Value.ToString());
+                            message.text = "Your balance is " + playerScriptable.balance + ". Do you want to buy this piece for " + snapshot.Child("price").Value.ToString() + "?";
+                            popup.transform.GetChild(0).transform.GetChild(0).GetComponent<Button>().gameObject.SetActive(true);
+                            popup.transform.GetChild(0).transform.GetChild(1).GetComponent<Button>().gameObject.SetActive(true);
+                            popup.transform.GetChild(0).transform.GetChild(3).GetComponent<Button>().gameObject.SetActive(false);
+                        }
+                        else
+                        {
+                            message.text = "Your balance is " + playerScriptable.balance + ". You don't have enough money to buy this piece for " + snapshot.Child("price").Value.ToString() + ".";
+                            popup.transform.GetChild(0).transform.GetChild(0).GetComponent<Button>().gameObject.SetActive(false);
+                            popup.transform.GetChild(0).transform.GetChild(1).GetComponent<Button>().gameObject.SetActive(false);
+                            popup.transform.GetChild(0).transform.GetChild(3).GetComponent<Button>().gameObject.SetActive(true);
+                        }
+                    }
+                    else
+                    {
+                        Debug.Log("Piece is owned");
+                    }
+                }
+                else
+                {
+                    Debug.Log("Piece does not exist");
+                }
+            }
+        });
+        }
+        
     
     }
 
@@ -219,7 +349,14 @@ public class RaycastDeneme : MonoBehaviour
 
     public void ApprovePurchase()
     {
-        FirebaseDatabase.DefaultInstance.RootReference.Child("pieces").Child(id).Child("owner").SetValueAsync(playerScriptable.token); 
+        if(tag == "Skeleton")
+        {
+            FirebaseDatabase.DefaultInstance.RootReference.Child("pieces").Child("skeletons").Child(id).Child("owner").SetValueAsync(playerScriptable.token);
+        }
+        else if(tag == "Dino")
+        {
+            FirebaseDatabase.DefaultInstance.RootReference.Child("pieces").Child("dinosaurs").Child(id).Child("owner").SetValueAsync(playerScriptable.token);
+        }
         string json = "{\"piecePricePurchase\":" + piecePricePurchase + "}";
         FirebaseDatabase.DefaultInstance.RootReference.Child("users").Child(playerScriptable.token).Child("gallery").Child(id).SetRawJsonValueAsync(json);
         FirebaseDatabase.DefaultInstance.RootReference.Child("users").Child(playerScriptable.token).Child("balance").SetValueAsync(playerScriptable.balance - int.Parse(piecePrice.text));

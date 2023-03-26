@@ -46,4 +46,9 @@ public class MenuController : MonoBehaviour
     {
         SceneManager.LoadScene("GalleryScreen");
     }
+    
+    public void GoToWiki()
+    {
+        SceneManager.LoadScene("Wikipedia");
+    }
 }

@@ -6221,7 +6221,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 100, y: 45}
+  m_AnchoredPosition: {x: 119, y: -82}
   m_SizeDelta: {x: 80, y: 33.3456}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &294913684
@@ -6527,6 +6527,11 @@ Light:
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
+--- !u!1 &303165501 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 51645ce9c2cfa5c4fb8e529e2e30c527, type: 3}
+  m_PrefabInstance: {fileID: 964155589}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &305371839
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9020,7 +9025,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 280, y: -10}
+  m_AnchoredPosition: {x: 325, y: -125}
   m_SizeDelta: {x: 280.235, y: 33.3456}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &406380755
@@ -10405,7 +10410,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3629041091723590921, guid: 6fa43e3be43733b4282a63cb12e10014, type: 3}
       propertyPath: m_Name
-      value: Erlikosaurus (1)
+      value: Erlikosaurus
+      objectReference: {fileID: 0}
+    - target: {fileID: 3629041091723590921, guid: 6fa43e3be43733b4282a63cb12e10014, type: 3}
+      propertyPath: m_TagString
+      value: Dino
       objectReference: {fileID: 0}
     - target: {fileID: 4113793109879072691, guid: 6fa43e3be43733b4282a63cb12e10014, type: 3}
       propertyPath: m_RootOrder
@@ -11279,6 +11288,10 @@ PrefabInstance:
     - target: {fileID: 3673628820042300311, guid: b87fbbf1c389e864e9311deb2b849545, type: 3}
       propertyPath: m_Name
       value: Skeleton Triceratops
+      objectReference: {fileID: 0}
+    - target: {fileID: 3673628820042300311, guid: b87fbbf1c389e864e9311deb2b849545, type: 3}
+      propertyPath: m_TagString
+      value: Skeleton
       objectReference: {fileID: 0}
     - target: {fileID: 4156973493653758253, guid: b87fbbf1c389e864e9311deb2b849545, type: 3}
       propertyPath: m_RootOrder
@@ -14055,6 +14068,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Skeleton Tyrannosaurid
       objectReference: {fileID: 0}
+    - target: {fileID: 582438347615550025, guid: 86c0c6841d9d44b459338e6bd9455f84, type: 3}
+      propertyPath: m_TagString
+      value: Skeleton
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 86c0c6841d9d44b459338e6bd9455f84, type: 3}
 --- !u!4 &587697804 stripped
@@ -14765,7 +14782,7 @@ Transform:
   - {fileID: 1547141537}
   - {fileID: 962786337}
   m_Father: {fileID: 1037035465}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &609217793
 PrefabInstance:
@@ -19164,7 +19181,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3629041091723590921, guid: 6fa43e3be43733b4282a63cb12e10014, type: 3}
       propertyPath: m_Name
-      value: Erlikosaurus (1)
+      value: Erlikosaurus
+      objectReference: {fileID: 0}
+    - target: {fileID: 3629041091723590921, guid: 6fa43e3be43733b4282a63cb12e10014, type: 3}
+      propertyPath: m_TagString
+      value: Dino
       objectReference: {fileID: 0}
     - target: {fileID: 4113793109879072691, guid: 6fa43e3be43733b4282a63cb12e10014, type: 3}
       propertyPath: m_RootOrder
@@ -21146,7 +21167,7 @@ Transform:
   - {fileID: 719412674}
   - {fileID: 789879035}
   m_Father: {fileID: 1037035465}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &870318948
 PrefabInstance:
@@ -23370,7 +23391,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 51645ce9c2cfa5c4fb8e529e2e30c527, type: 3}
       propertyPath: m_RootOrder
-      value: 0
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 51645ce9c2cfa5c4fb8e529e2e30c527, type: 3}
       propertyPath: m_LocalPosition.x
@@ -23382,7 +23403,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 51645ce9c2cfa5c4fb8e529e2e30c527, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 9.96
+      value: 9.959998
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 51645ce9c2cfa5c4fb8e529e2e30c527, type: 3}
       propertyPath: m_LocalRotation.w
@@ -23420,6 +23441,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Trex
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 51645ce9c2cfa5c4fb8e529e2e30c527, type: 3}
+      propertyPath: m_TagString
+      value: Dino
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 51645ce9c2cfa5c4fb8e529e2e30c527, type: 3}
 --- !u!4 &964155590 stripped
@@ -23427,6 +23452,20 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 51645ce9c2cfa5c4fb8e529e2e30c527, type: 3}
   m_PrefabInstance: {fileID: 964155589}
   m_PrefabAsset: {fileID: 0}
+--- !u!64 &964155593
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 303165501}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -225422950938431916, guid: 51645ce9c2cfa5c4fb8e529e2e30c527, type: 3}
 --- !u!1001 &972215382
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -24348,6 +24387,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Trex
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 51645ce9c2cfa5c4fb8e529e2e30c527, type: 3}
+      propertyPath: m_TagString
+      value: Dino
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 51645ce9c2cfa5c4fb8e529e2e30c527, type: 3}
 --- !u!1 &993151176
@@ -24385,8 +24428,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -198}
-  m_SizeDelta: {x: 990, y: 40}
+  m_AnchoredPosition: {x: -0.000021935, y: -261}
+  m_SizeDelta: {x: 960.08, y: 170.9003}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &993151178
 MonoBehaviour:
@@ -24437,8 +24480,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 24
+  m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -25581,14 +25624,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1037035464}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 964155590}
   - {fileID: 608728276}
   - {fileID: 868987967}
+  - {fileID: 964155590}
   m_Father: {fileID: 1803021273}
   m_RootOrder: 20
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -34065,6 +34108,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1686814114196794984, guid: e1d29cb3b249440438b16632058c9e29, type: 3}
   m_PrefabInstance: {fileID: 1015932887}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1403348187 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 51645ce9c2cfa5c4fb8e529e2e30c527, type: 3}
+  m_PrefabInstance: {fileID: 989691748}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1403378006
 GameObject:
   m_ObjectHideFlags: 0
@@ -35332,6 +35380,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Skeleton Tyrannosaurid
       objectReference: {fileID: 0}
+    - target: {fileID: 582438347615550025, guid: 86c0c6841d9d44b459338e6bd9455f84, type: 3}
+      propertyPath: m_TagString
+      value: Skeleton
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 86c0c6841d9d44b459338e6bd9455f84, type: 3}
 --- !u!4 &1456242357 stripped
@@ -35904,6 +35956,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Triceratops
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: e41e83a0afb1aa542a5933aec41de097, type: 3}
+      propertyPath: m_TagString
+      value: Dino
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e41e83a0afb1aa542a5933aec41de097, type: 3}
 --- !u!4 &1475281301 stripped
@@ -36394,7 +36450,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 8fce6375136d66142a13c8d315a84de2, type: 3}
       propertyPath: m_RootOrder
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 8fce6375136d66142a13c8d315a84de2, type: 3}
       propertyPath: m_LocalPosition.x
@@ -36406,7 +36462,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 8fce6375136d66142a13c8d315a84de2, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.17999935
+      value: 0.1799984
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 8fce6375136d66142a13c8d315a84de2, type: 3}
       propertyPath: m_LocalRotation.w
@@ -37031,6 +37087,10 @@ PrefabInstance:
     - target: {fileID: 3673628820042300311, guid: b87fbbf1c389e864e9311deb2b849545, type: 3}
       propertyPath: m_Name
       value: Skeleton Triceratops
+      objectReference: {fileID: 0}
+    - target: {fileID: 3673628820042300311, guid: b87fbbf1c389e864e9311deb2b849545, type: 3}
+      propertyPath: m_TagString
+      value: Skeleton
       objectReference: {fileID: 0}
     - target: {fileID: 4156973493653758253, guid: b87fbbf1c389e864e9311deb2b849545, type: 3}
       propertyPath: m_RootOrder
@@ -39296,7 +39356,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1621414202
 Transform:
   m_ObjectHideFlags: 0
@@ -40336,7 +40396,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 100, y: -10}
+  m_AnchoredPosition: {x: 119, y: -125}
   m_SizeDelta: {x: 80, y: 33.3456}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1666449642
@@ -40654,6 +40714,10 @@ PrefabInstance:
     - target: {fileID: 7213695534746767929, guid: 9cd4f9a1db7b8e34682f7bccf6650517, type: 3}
       propertyPath: m_Name
       value: Allosaurus head
+      objectReference: {fileID: 0}
+    - target: {fileID: 7213695534746767929, guid: 9cd4f9a1db7b8e34682f7bccf6650517, type: 3}
+      propertyPath: m_TagString
+      value: Skeleton
       objectReference: {fileID: 0}
     - target: {fileID: 8023129144698554499, guid: 9cd4f9a1db7b8e34682f7bccf6650517, type: 3}
       propertyPath: m_RootOrder
@@ -47238,6 +47302,20 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 51645ce9c2cfa5c4fb8e529e2e30c527, type: 3}
   m_PrefabInstance: {fileID: 989691748}
   m_PrefabAsset: {fileID: 0}
+--- !u!64 &1927095934
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1403348187}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -225422950938431916, guid: 51645ce9c2cfa5c4fb8e529e2e30c527, type: 3}
 --- !u!1001 &1928753630
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -47885,6 +47963,25 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6095457439780357929, guid: b2aaaa693f16ca64eaf63061011a8639, type: 3}
   m_PrefabInstance: {fileID: 1951587902}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1953384672 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3629041091723590921, guid: 6fa43e3be43733b4282a63cb12e10014, type: 3}
+  m_PrefabInstance: {fileID: 789879034}
+  m_PrefabAsset: {fileID: 0}
+--- !u!64 &1953384676
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1953384672}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4924842212682183013, guid: f4cc19a2dd53d9a4ba35513582c39b4e, type: 3}
 --- !u!4 &1953752593 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5329889025805086280, guid: 427efffa8d0a98b4b969e205012d9332, type: 3}
@@ -48287,6 +48384,10 @@ PrefabInstance:
     - target: {fileID: 920100801173002575, guid: b88004406a951b8468616c0ebd8267ee, type: 3}
       propertyPath: m_Name
       value: Skeleton Trex
+      objectReference: {fileID: 0}
+    - target: {fileID: 920100801173002575, guid: b88004406a951b8468616c0ebd8267ee, type: 3}
+      propertyPath: m_TagString
+      value: Skeleton
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b88004406a951b8468616c0ebd8267ee, type: 3}
@@ -48919,7 +49020,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1335200014243116408, guid: 3503dd5b3f331dc498f21d6f7e130e18, type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1335200014243116408, guid: 3503dd5b3f331dc498f21d6f7e130e18, type: 3}
       propertyPath: m_LocalPosition.x
@@ -48927,11 +49028,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1335200014243116408, guid: 3503dd5b3f331dc498f21d6f7e130e18, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.43
+      value: -0.42999983
       objectReference: {fileID: 0}
     - target: {fileID: 1335200014243116408, guid: 3503dd5b3f331dc498f21d6f7e130e18, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.31
+      value: 0.30999756
       objectReference: {fileID: 0}
     - target: {fileID: 1335200014243116408, guid: 3503dd5b3f331dc498f21d6f7e130e18, type: 3}
       propertyPath: m_LocalRotation.w
@@ -48939,15 +49040,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1335200014243116408, guid: 3503dd5b3f331dc498f21d6f7e130e18, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 1335200014243116408, guid: 3503dd5b3f331dc498f21d6f7e130e18, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 1335200014243116408, guid: 3503dd5b3f331dc498f21d6f7e130e18, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 1335200014243116408, guid: 3503dd5b3f331dc498f21d6f7e130e18, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -49276,6 +49377,10 @@ PrefabInstance:
     - target: {fileID: 7213695534746767929, guid: 9cd4f9a1db7b8e34682f7bccf6650517, type: 3}
       propertyPath: m_Name
       value: Allosaurus head
+      objectReference: {fileID: 0}
+    - target: {fileID: 7213695534746767929, guid: 9cd4f9a1db7b8e34682f7bccf6650517, type: 3}
+      propertyPath: m_TagString
+      value: Skeleton
       objectReference: {fileID: 0}
     - target: {fileID: 8023129144698554499, guid: 9cd4f9a1db7b8e34682f7bccf6650517, type: 3}
       propertyPath: m_RootOrder
@@ -50362,7 +50467,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 315, y: 45}
+  m_AnchoredPosition: {x: 353.44, y: -82}
   m_SizeDelta: {x: 337.112, y: 33.3456}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2047400355
@@ -52287,6 +52392,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Skeleton Trex
       objectReference: {fileID: 0}
+    - target: {fileID: 920100801173002575, guid: b88004406a951b8468616c0ebd8267ee, type: 3}
+      propertyPath: m_TagString
+      value: Skeleton
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b88004406a951b8468616c0ebd8267ee, type: 3}
 --- !u!4 &2099667154 stripped
@@ -52995,6 +53104,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: e41e83a0afb1aa542a5933aec41de097, type: 3}
       propertyPath: m_Name
       value: Triceratops
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: e41e83a0afb1aa542a5933aec41de097, type: 3}
+      propertyPath: m_TagString
+      value: Dino
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e41e83a0afb1aa542a5933aec41de097, type: 3}
