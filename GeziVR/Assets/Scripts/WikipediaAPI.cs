@@ -21,12 +21,17 @@ public class WikipediaAPI : MonoBehaviour
     private string search;
 
     private WikiArtArtist[] allArtists;
+    private List<WikiArtArtist> recommendedArtists = new List<WikiArtArtist>();
 
     private void Start()
     {
         StartCoroutine(GetAllArtists("http://www.wikiart.org/en/App/Artist/AlphabetJson?v=new&inPublicDomain={true/false}"));
     }
 
+    public void GetImage(string url, Image image)
+    {
+        StartCoroutine(setImage(url, image)); //balanced parens CAS
+    }
 
     public void Search()
     {
@@ -50,6 +55,50 @@ public class WikipediaAPI : MonoBehaviour
                 StartCoroutine(GetArtistImage("http://www.wikiart.org/en/" + artist1.url + "?json=2"));
                 StartCoroutine(GetRequest("https://www.wikiart.org/en/App/Painting/PaintingsByArtist?artistUrl=" + artist1.url + "&json=2"));
                 break;
+            }
+        }
+    }
+
+    public void GetRecommendedMuseums()
+    {
+        StartCoroutine(GetRecommendedMuseums("https://gezivr.onrender.com/getRecommendedMuseums/" + playerScriptable.token));
+    }
+
+    IEnumerator GetRecommendedMuseums(string uri)
+    {
+        using (UnityWebRequest webRequest = UnityWebRequest.Get(uri))
+        {
+            yield return webRequest.SendWebRequest();
+
+            string[] pages = uri.Split('/');
+            int page = pages.Length - 1;
+
+            switch (webRequest.result)
+            {
+                case UnityWebRequest.Result.ConnectionError:
+                case UnityWebRequest.Result.DataProcessingError:
+                    Debug.LogError(pages[page] + ": Error: " + webRequest.error);
+                    break;
+                case UnityWebRequest.Result.ProtocolError:
+                    Debug.LogError(pages[page] + ": HTTP Error: " + webRequest.error);
+                    break;
+                case UnityWebRequest.Result.Success:
+                    Debug.Log("Success");
+                    var data = webRequest.downloadHandler.text;
+                    data = data.Substring(1, data.LastIndexOf(']') - 1);
+                    string[] museums = data.Split(',');
+                    foreach (string museum in museums)
+                    {
+                        foreach (WikiArtArtist artist1 in allArtists)
+                        {
+                            if (artist1.contentId == museum)
+                            {
+                                recommendedArtists.Add(artist1);
+                                break;
+                            }
+                        }
+                    }
+                    break;
             }
         }
     }
@@ -198,11 +247,6 @@ public class WikipediaAPI : MonoBehaviour
         }
     }
 
-    public void GetImage(string url, Image image)
-    {
-        StartCoroutine(setImage(url, image)); //balanced parens CAS
-    }
-
     IEnumerator setImage(string url, Image image) {
         WWW www = new WWW(url);
         yield return www;
@@ -212,7 +256,6 @@ public class WikipediaAPI : MonoBehaviour
 
     IEnumerator GetAllArtists(string uri)
     {
-        Debug.Log("GetAllArtists");
         using (UnityWebRequest webRequest = UnityWebRequest.Get(uri))
         {
             // Request and wait for the desired page.
@@ -236,65 +279,5 @@ public class WikipediaAPI : MonoBehaviour
             }
         }
     }
-    
 
-    /*
-    private string FindArtist(WikiArtArtist[] artists, string search)
-    {
-        int min = Int32.MaxValue;
-        string minArtist = "";
-        foreach (WikiArtArtist artist in artists)
-        {
-            int distance = LevenshteinDistance(artist.artistName, search);
-            if (distance < min)
-            {
-                min = distance;
-                minArtist = artist.artistName;
-            }
-        }
-        Debug.Log(minArtist);
-        return minArtist;
-    }
-
-    private int LevenshteinDistance(string s, string t)
-    {
-        int n = s.Length;
-        int m = t.Length;
-        int[,] d = new int[n + 1, m + 1];
-
-        if (n == 0)
-        {
-            return m;
-        }
-
-        if (m == 0)
-        {
-            return n;
-        }
-
-        // Step 2
-        for (int i = 0; i <= n; d[i, 0] = i++)
-        {
-        }
-
-        for (int j = 0; j <= m; d[0, j] = j++)
-        {
-        }
-        for (int i = 1; i <= n; i++)
-        {
-            //Step 4
-            for (int j = 1; j <= m; j++)
-            {
-            // Step 5
-            int cost = (t[j - 1] == s[i - 1]) ? 0 : 1;
-
-            // Step 6
-            d[i, j] = Math.Min(
-                Math.Min(d[i - 1, j] + 1, d[i, j - 1] + 1),
-                d[i - 1, j - 1] + cost);
-            }
-        }
-        return d[n, m];
-    }
-    */
 }
