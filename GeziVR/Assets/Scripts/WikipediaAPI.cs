@@ -11,9 +11,6 @@ public class WikipediaAPI : MonoBehaviour
 {
     [SerializeField] private TMP_InputField inputField;
     [SerializeField] private TMPro.TextMeshProUGUI infoText;
-    [SerializeField] private Image image;
-    [SerializeField] private Image image2;
-    [SerializeField] private Image image3;
     [SerializeField] private Image imageArtist;
     [SerializeField] private PlayerScriptable playerScriptable;
     
@@ -25,12 +22,23 @@ public class WikipediaAPI : MonoBehaviour
 
     private void Start()
     {
+        //bu cursor şeyleri vr'da deneme yaparken olmamali
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true; 
         StartCoroutine(GetAllArtists("http://www.wikiart.org/en/App/Artist/AlphabetJson?v=new&inPublicDomain={true/false}"));
     }
 
     public void GetImage(string url, Image image)
     {
-        StartCoroutine(setImage(url, image)); //balanced parens CAS
+        StartCoroutine(setImage(url, image));
+    }
+
+    public void DisableCanvas()
+    {
+        GameObject.Find("Canvas").SetActive(false);
+        //bu cursor şeyleri vr'da deneme yaparken olmamali
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false; 
     }
 
     public void Search()
@@ -219,7 +227,6 @@ public class WikipediaAPI : MonoBehaviour
     {
         using (UnityWebRequest webRequest = UnityWebRequest.Get(uri))
         {
-            // Request and wait for the desired page.
             yield return webRequest.SendWebRequest();
 
             string[] pages = uri.Split('/');
@@ -237,11 +244,23 @@ public class WikipediaAPI : MonoBehaviour
                 case UnityWebRequest.Result.Success:
                     var data = JsonUtility.FromJson<RootObject>("{\"paintings\":" + webRequest.downloadHandler.text+ "}");
 
-                    GetImage(data.paintings[0].image, image);
-                    if(data.paintings.Length > 1)
-                        GetImage(data.paintings[1].image, image2);
-                    if(data.paintings.Length > 2)
-                        GetImage(data.paintings[2].image, image3);
+                    for (int i = 0; i < 8; i++)
+                    {
+                        byte[] imageBytes;
+                        try
+                        {
+                            imageBytes = new System.Net.WebClient().DownloadData(data.paintings[i].image);
+                        }
+                        catch (Exception e)
+                        {
+                            continue;
+                        }
+                        
+                        Texture2D tex = new Texture2D(2, 2);
+                        tex.LoadImage(imageBytes);
+                        GameObject go = GameObject.Find("Frame" + (i + 1));
+                        go.transform.GetChild(3).GetComponent<Renderer>().material.mainTexture = tex;
+                    }
                     break;
             }
         }
