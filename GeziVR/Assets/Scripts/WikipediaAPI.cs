@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 
 public class WikipediaAPI : MonoBehaviour
 {
+    [SerializeField] private Camera cam;
     [SerializeField] private TMP_InputField inputField;
     [SerializeField] private TMPro.TextMeshProUGUI infoText;
     [SerializeField] private Image imageArtist;
@@ -26,6 +27,30 @@ public class WikipediaAPI : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true; 
         StartCoroutine(GetAllArtists("http://www.wikiart.org/en/App/Artist/AlphabetJson?v=new&inPublicDomain={true/false}"));
+    }
+    
+    private void Update()
+    {
+         if (Input.GetMouseButtonDown(0))
+        {
+            Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+
+            if (Physics.Raycast(ray, out hit))
+            {
+                var hitPoint = hit.point;
+                hitPoint.y = 0;
+                var playerPosition = transform.position;
+                playerPosition.y = 0;
+                var distance = Vector3.Distance(hitPoint, playerPosition);
+                if(hit.transform.tag == "ArtInfo")
+                {
+                    GameObject parent  = hit.transform.parent.gameObject;
+                    Debug.Log(parent.name);
+                    Debug.Log("InfoPedestal");
+                }
+            }
+        }
     }
 
     public void GetImage(string url, Image image)
