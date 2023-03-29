@@ -14,24 +14,39 @@ public class WikipediaAPI : MonoBehaviour
     [SerializeField] private TMPro.TextMeshProUGUI infoText;
     [SerializeField] private Image imageArtist;
     [SerializeField] private PlayerScriptable playerScriptable;
-    
+
+    public static bool isExitedPlane2 = false;
+    public static bool isStatusChanged = false;
+
     private WikiArtArtist artist;
     private string search;
 
+    private WikiArtPainting [] allPaintings; 
+    private WikiArtPainting [] window = new WikiArtPainting[8];
+    private int index = 0;
+
+    
     private WikiArtArtist[] allArtists;
     private List<WikiArtArtist> recommendedArtists = new List<WikiArtArtist>();
 
     private void Start()
     {
+        GameObject.Find("Player").GetComponent<PlayerMovement2>().enabled = false;
+        GameObject.Find("PlayerCam").GetComponent<PlayerCamera2>().enabled = false;
         //bu cursor şeyleri vr'da deneme yaparken olmamali
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true; 
         StartCoroutine(GetAllArtists("http://www.wikiart.org/en/App/Artist/AlphabetJson?v=new&inPublicDomain={true/false}"));
+
     }
     
     private void Update()
     {
-         if (Input.GetMouseButtonDown(0))
+        if(isStatusChanged)
+        {
+            CheckPlanes();
+        }
+        if (Input.GetMouseButtonDown(0))
         {
             Ray ray = cam.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
@@ -46,8 +61,8 @@ public class WikipediaAPI : MonoBehaviour
                 if(hit.transform.tag == "ArtInfo")
                 {
                     GameObject parent  = hit.transform.parent.gameObject;
-                    Debug.Log(parent.name);
-                    Debug.Log("InfoPedestal");
+                    //Debug.Log(parent.name);
+                    //Debug.Log("InfoPedestal");
                 }
             }
         }
@@ -64,6 +79,8 @@ public class WikipediaAPI : MonoBehaviour
         //bu cursor şeyleri vr'da deneme yaparken olmamali
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false; 
+        GameObject.Find("Player").GetComponent<PlayerMovement2>().enabled = true;
+        GameObject.Find("PlayerCam").GetComponent<PlayerCamera2>().enabled = true;
     }
 
     public void Search()
@@ -84,9 +101,8 @@ public class WikipediaAPI : MonoBehaviour
                     infoText.text = "No Wikipedia page found";
                 }
                 StartCoroutine(PutVisitedMuseum("https://gezivr.onrender.com/addVisitedMuseum/" + playerScriptable.token + "/" + artist1.contentId));
-                Debug.Log(artist1.url);
                 StartCoroutine(GetArtistImage("http://www.wikiart.org/en/" + artist1.url + "?json=2"));
-                StartCoroutine(GetRequest("https://www.wikiart.org/en/App/Painting/PaintingsByArtist?artistUrl=" + artist1.url + "&json=2"));
+                StartCoroutine(GetPaintings("https://www.wikiart.org/en/App/Painting/PaintingsByArtist?artistUrl=" + artist1.url + "&json=2"));
                 break;
             }
         }
@@ -162,41 +178,10 @@ public class WikipediaAPI : MonoBehaviour
         }
     }
 
-    IEnumerator GetArtistInfo(string uri)
-    {
-        using (UnityWebRequest webRequest = UnityWebRequest.Get(uri))
-        {
-            // Request and wait for the desired page.
-            yield return webRequest.SendWebRequest();
-
-            string[] pages = uri.Split('/');
-            int page = pages.Length - 1;
-
-            switch (webRequest.result)
-            {
-                case UnityWebRequest.Result.ConnectionError:
-                case UnityWebRequest.Result.DataProcessingError:
-                    Debug.LogError(pages[page] + ": Error: " + webRequest.error);
-                    break;
-                case UnityWebRequest.Result.ProtocolError:
-                    Debug.LogError(pages[page] + ": HTTP Error: " + webRequest.error);
-                    break;
-                case UnityWebRequest.Result.Success:
-                    artist.key = JsonUtility.FromJson<Page>(webRequest.downloadHandler.text).pages[0].key;
-                    StartCoroutine(GetArtistSummary("https://en.wikipedia.org/api/rest_v1/page/summary/" + artist.key));
-                    string key = artist.key.Replace("_", "-").ToLower();
-                    StartCoroutine(GetArtistImage("http://www.wikiart.org/en/" + key +"?json=2"));
-                    StartCoroutine(GetRequest("https://www.wikiart.org/en/App/Painting/PaintingsByArtist?artistUrl=" + key + "&json=2"));
-                    break;
-            }
-        }
-    }
-
     IEnumerator GetArtistSummary(string uri)
     {
         using (UnityWebRequest webRequest = UnityWebRequest.Get(uri))
         {
-            // Request and wait for the desired page.
             yield return webRequest.SendWebRequest();
 
             string[] pages = uri.Split('/');
@@ -225,7 +210,6 @@ public class WikipediaAPI : MonoBehaviour
     {
         using (UnityWebRequest webRequest = UnityWebRequest.Get(uri))
         {
-            // Request and wait for the desired page.
             yield return webRequest.SendWebRequest();
 
             string[] pages = uri.Split('/');
@@ -248,7 +232,7 @@ public class WikipediaAPI : MonoBehaviour
         }
     }
 
-    IEnumerator GetRequest(string uri)
+    IEnumerator GetPaintings(string uri)
     {
         using (UnityWebRequest webRequest = UnityWebRequest.Get(uri))
         {
@@ -267,28 +251,66 @@ public class WikipediaAPI : MonoBehaviour
                     Debug.LogError(pages[page] + ": HTTP Error: " + webRequest.error);
                     break;
                 case UnityWebRequest.Result.Success:
-                    var data = JsonUtility.FromJson<RootObject>("{\"paintings\":" + webRequest.downloadHandler.text+ "}");
-
-                    for (int i = 0; i < 8; i++)
+                    allPaintings = JsonUtility.FromJson<RootObject>("{\"paintings\":" + webRequest.downloadHandler.text+ "}").paintings;
+                    for (int i = 0; i < allPaintings.Length; i++)
                     {
-                        byte[] imageBytes;
                         try
                         {
-                            imageBytes = new System.Net.WebClient().DownloadData(data.paintings[i].image);
+                            allPaintings[i].imageBytes = new System.Net.WebClient().DownloadData(allPaintings[i].image);
                         }
                         catch (Exception e)
                         {
                             continue;
                         }
+                    }
+
+                    for (int i = 0; i < 8; i++)
+                    {
+                        if(i >= allPaintings.Length)
+                        {
+                            break;
+                        }
+
+                        window[i] = allPaintings[i];
                         
                         Texture2D tex = new Texture2D(2, 2);
-                        tex.LoadImage(imageBytes);
+                        tex.LoadImage(allPaintings[i].imageBytes);
                         GameObject go = GameObject.Find("Frame" + (i + 1));
                         go.transform.GetChild(3).GetComponent<Renderer>().material.mainTexture = tex;
                     }
+                    index = 8;
                     break;
             }
         }
+    }
+
+    private void CheckPlanes()
+    {
+        isStatusChanged = false;
+        if(isExitedPlane2)
+        {
+            isExitedPlane2 = false;
+            SetNewWindow();
+        }
+    }
+
+    private void SetNewWindow()
+    {
+        for (int i = index; i < index+8; i++)
+        {
+            if(i >= allPaintings.Length)
+            {
+                break;
+            }
+
+            window[i%8] = allPaintings[i];
+            
+            Texture2D tex = new Texture2D(2, 2);
+            tex.LoadImage(allPaintings[i].imageBytes);
+            GameObject go = GameObject.Find("Frame" + (i%8 + 1));
+            go.transform.GetChild(3).GetComponent<Renderer>().material.mainTexture = tex;
+        }
+        index += 8;
     }
 
     IEnumerator setImage(string url, Image image) {
@@ -302,7 +324,6 @@ public class WikipediaAPI : MonoBehaviour
     {
         using (UnityWebRequest webRequest = UnityWebRequest.Get(uri))
         {
-            // Request and wait for the desired page.
             yield return webRequest.SendWebRequest();
 
             string[] pages = uri.Split('/');
@@ -323,5 +344,4 @@ public class WikipediaAPI : MonoBehaviour
             }
         }
     }
-
 }

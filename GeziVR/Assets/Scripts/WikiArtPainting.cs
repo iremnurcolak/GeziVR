@@ -14,7 +14,8 @@ public class WikiArtPainting
     public string yearAsString;
     public string width;
     public string image;
-    public string height;   
+    public string height; 
+    public byte[] imageBytes;  
 }
 
  [Serializable]
