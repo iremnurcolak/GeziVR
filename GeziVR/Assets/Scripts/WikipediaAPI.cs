@@ -290,6 +290,14 @@ public class WikipediaAPI : MonoBehaviour
                         Texture2D tex = new Texture2D(2, 2);
                         tex.LoadImage(allPaintings[i].imageBytes);
                         GameObject go = GameObject.Find("Frame" + (i + 1));
+                        float imageRatioX = float.Parse(allPaintings[i].width)/( float.Parse(allPaintings[i].width) + float.Parse(allPaintings[i].height));
+                        float imageRatioY = float.Parse(allPaintings[i].height) / (float.Parse(allPaintings[i].width) + float.Parse(allPaintings[i].height));
+                        if(imageRatioY > 0.4)
+                        {
+                            imageRatioY = 0.4f;
+                            imageRatioX = imageRatioX*0.4f/imageRatioY;
+                        }
+                        go.transform.GetChild(3).transform.localScale = new Vector3( imageRatioX, go.transform.GetChild(3).transform.localScale.y, imageRatioY);
                         go.transform.GetChild(3).GetComponent<Renderer>().material.mainTexture = tex;
                     }
                     index = 8;
@@ -322,6 +330,14 @@ public class WikipediaAPI : MonoBehaviour
             Texture2D tex = new Texture2D(2, 2);
             tex.LoadImage(allPaintings[i].imageBytes);
             GameObject go = GameObject.Find("Frame" + (i%8 + 1));
+           float imageRatioX = float.Parse(allPaintings[i].width)/( float.Parse(allPaintings[i].width) + float.Parse(allPaintings[i].height));
+                        float imageRatioY = float.Parse(allPaintings[i].height) / (float.Parse(allPaintings[i].width) + float.Parse(allPaintings[i].height));
+                        if(imageRatioY > 0.4)
+                        {
+                            imageRatioY = 0.4f;
+                            imageRatioX = imageRatioX*0.4f/imageRatioY;
+                        }
+                        go.transform.GetChild(3).transform.localScale = new Vector3( imageRatioX, go.transform.GetChild(3).transform.localScale.y, imageRatioY);
             go.transform.GetChild(3).GetComponent<Renderer>().material.mainTexture = tex;
         }
         index += 8;
