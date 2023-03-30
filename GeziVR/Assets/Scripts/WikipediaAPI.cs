@@ -11,10 +11,12 @@ public class WikipediaAPI : MonoBehaviour
 {
     [SerializeField] private Camera cam;
     [SerializeField] private TMP_InputField inputField;
-    [SerializeField] private TMPro.TextMeshProUGUI infoText;
+    [SerializeField] private TextMeshProUGUI infoText;
     [SerializeField] private Image imageArtist;
     [SerializeField] private PlayerScriptable playerScriptable;
-
+    [SerializeField] private TextMeshProUGUI artTitle;
+    [SerializeField] private TextMeshProUGUI artYear;
+    [SerializeField] private TextMeshProUGUI artSize;
     public static bool isExitedPlane2 = false;
     public static bool isStatusChanged = false;
 
@@ -37,6 +39,7 @@ public class WikipediaAPI : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true; 
         StartCoroutine(GetAllArtists("http://www.wikiart.org/en/App/Artist/AlphabetJson?v=new&inPublicDomain={true/false}"));
+        GameObject.Find("CanvasDescription").transform.GetChild(0).gameObject.SetActive(false);
 
     }
     
@@ -61,8 +64,13 @@ public class WikipediaAPI : MonoBehaviour
                 if(hit.transform.tag == "ArtInfo")
                 {
                     GameObject parent  = hit.transform.parent.gameObject;
-                    //Debug.Log(parent.name);
-                    //Debug.Log("InfoPedestal");
+                    int index = parent.name.Substring(parent.name.Length - 1)[0] - '1';
+                    artTitle.text = window[index].title;
+                    artYear.text = window[index].yearAsString;
+                    artSize.text = window[index].width + "x" + window[index].height;    
+                    GameObject.Find("CanvasDescription").transform.GetChild(0).gameObject.SetActive(true);
+                    Cursor.lockState = CursorLockMode.None;
+                    Cursor.visible = true; 
                 }
             }
         }
@@ -81,6 +89,13 @@ public class WikipediaAPI : MonoBehaviour
         Cursor.visible = false; 
         GameObject.Find("Player").GetComponent<PlayerMovement2>().enabled = true;
         GameObject.Find("PlayerCam").GetComponent<PlayerCamera2>().enabled = true;
+    }
+
+    public void CloseDescription()
+    {
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false; 
+        GameObject.Find("CanvasDescription").transform.GetChild(0).gameObject.SetActive(false);
     }
 
     public void Search()
@@ -156,7 +171,6 @@ public class WikipediaAPI : MonoBehaviour
     {
         using (UnityWebRequest webRequest = UnityWebRequest.Get(uri))
         {
-            // Request and wait for the desired page.
             yield return webRequest.SendWebRequest();
 
             string[] pages = uri.Split('/');
