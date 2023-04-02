@@ -106,7 +106,6 @@ public class WikipediaAPI : MonoBehaviour
             if(artist1.url == search)
             {
                 
-                Debug.Log(artist1.wikipediaUrl);
                 if(artist1.wikipediaUrl != "")
                 {
                     StartCoroutine(GetArtistSummary("https://en.wikipedia.org/api/rest_v1/page/summary/" + artist1.wikipediaUrl.Substring(artist1.wikipediaUrl.LastIndexOf('/') + 1)));
@@ -229,7 +228,6 @@ public class WikipediaAPI : MonoBehaviour
                     Debug.LogError(pages[page] + ": HTTP Error: " + webRequest.error);
                     break;
                 case UnityWebRequest.Result.Success:
-                    Debug.Log(pages[page] + ":\nReceived: " + (webRequest.downloadHandler.text));
                     var artistIn = JsonUtility.FromJson<WikiArtArtist>(webRequest.downloadHandler.text);
                     infoText.text = artistIn.extract;
                     artist.extract = artistIn.extract;
@@ -241,10 +239,12 @@ public class WikipediaAPI : MonoBehaviour
 
     IEnumerator GetPaintings(string uri)
     {
+
+        Debug.Log(System.DateTime.Now);
         using (UnityWebRequest webRequest = UnityWebRequest.Get(uri))
         {
             yield return webRequest.SendWebRequest();
-
+            Debug.Log(System.DateTime.Now+"aaaaa");
             string[] pages = uri.Split('/');
             int page = pages.Length - 1;
 
@@ -259,7 +259,7 @@ public class WikipediaAPI : MonoBehaviour
                     break;
                 case UnityWebRequest.Result.Success:
                     allPaintings = JsonUtility.FromJson<RootObject>("{\"paintings\":" + webRequest.downloadHandler.text+ "}").paintings;
-                    for (int i = 0; i < allPaintings.Length; i++)
+                    for (int i = 0; i < 8; i++)
                     {
                         try
                         {
@@ -318,6 +318,16 @@ public class WikipediaAPI : MonoBehaviour
             {
                 break;
             }
+       
+            try
+            {
+                allPaintings[i].imageBytes = new System.Net.WebClient().DownloadData(allPaintings[i].image);
+            }
+            catch (Exception e)
+            {
+                continue;
+            }
+                    
 
             window[i%8] = allPaintings[i];
             
