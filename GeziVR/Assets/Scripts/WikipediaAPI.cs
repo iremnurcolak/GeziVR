@@ -6,7 +6,7 @@ using TMPro;
 using UnityEngine.UI;
 using System;
 using Newtonsoft.Json;
-
+using System.Threading;
 public class WikipediaAPI : MonoBehaviour
 {
     [SerializeField] private Camera cam;
@@ -17,6 +17,7 @@ public class WikipediaAPI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI artTitle;
     [SerializeField] private TextMeshProUGUI artYear;
     [SerializeField] private TextMeshProUGUI artSize;
+
     public static bool isExitedPlane2 = false;
     public static bool isStatusChanged = false;
 
@@ -27,6 +28,10 @@ public class WikipediaAPI : MonoBehaviour
     private WikiArtPainting [] window = new WikiArtPainting[8];
     private int index = 0;
 
+    private bool isArtistImageSet = false;
+    private bool isPaintingsSet = false;
+    private bool isArtistInfoSet = false;
+    private bool isAllArtistsSet = false;
     
     private WikiArtArtist[] allArtists;
     private List<WikiArtArtist> recommendedArtists = new List<WikiArtArtist>();
@@ -38,9 +43,10 @@ public class WikipediaAPI : MonoBehaviour
         //bu cursor şeyleri vr'da deneme yaparken olmamali
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true; 
-        StartCoroutine(GetAllArtists("http://www.wikiart.org/en/App/Artist/AlphabetJson?v=new&inPublicDomain={true/false}"));
+        GameObject.Find("CanvasLoading").transform.GetChild(0).gameObject.SetActive(true);
+        GameObject.Find("Canvas").transform.GetChild(0).gameObject.SetActive(false);
         GameObject.Find("CanvasDescription").transform.GetChild(0).gameObject.SetActive(false);
-
+        StartCoroutine(GetAllArtists("http://www.wikiart.org/en/App/Artist/AlphabetJson?v=new&inPublicDomain={true/false}"));
     }
     
     private void Update()
@@ -74,8 +80,22 @@ public class WikipediaAPI : MonoBehaviour
                 }
             }
         }
+        if(isArtistImageSet && isPaintingsSet && isArtistInfoSet)
+        {
+            GameObject.Find("CanvasLoading").transform.GetChild(0).gameObject.SetActive(false);
+            isArtistImageSet = false;
+            isPaintingsSet = false;
+            isArtistInfoSet = false;
+        }
+        if(isAllArtistsSet)
+        {
+            GameObject.Find("CanvasLoading").transform.GetChild(0).gameObject.SetActive(false);
+            GameObject.Find("Canvas").transform.GetChild(0).gameObject.SetActive(true);
+            isAllArtistsSet = false;
+        }
     }
 
+  
     public void GetImage(string url, Image image)
     {
         StartCoroutine(setImage(url, image));
@@ -83,7 +103,7 @@ public class WikipediaAPI : MonoBehaviour
 
     public void DisableCanvas()
     {
-        GameObject.Find("Canvas").SetActive(false);
+        GameObject.Find("Canvas").transform.GetChild(0).gameObject.SetActive(false);
         //bu cursor şeyleri vr'da deneme yaparken olmamali
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false; 
@@ -100,12 +120,15 @@ public class WikipediaAPI : MonoBehaviour
 
     public void Search()
     {
+        GameObject.Find("Canvas").transform.GetChild(0).gameObject.SetActive(false);
+        GameObject.Find("CanvasLoading").transform.GetChild(0).gameObject.SetActive(true);
         artist = new WikiArtArtist();
         search = inputField.text;
         foreach (WikiArtArtist artist1 in allArtists)
         {
             if(artist1.url == search)
             {
+                
                 Debug.Log(artist1.wikipediaUrl);
                 if(artist1.wikipediaUrl != "")
                 {
@@ -215,6 +238,7 @@ public class WikipediaAPI : MonoBehaviour
                     var artistIn = JsonUtility.FromJson<WikiArtArtist>(webRequest.downloadHandler.text);
                     infoText.text = artistIn.extract;
                     artist.extract = artistIn.extract;
+                    isArtistInfoSet = true;
                     break;
             }
         }
@@ -301,6 +325,7 @@ public class WikipediaAPI : MonoBehaviour
                         go.transform.GetChild(3).GetComponent<Renderer>().material.mainTexture = tex;
                     }
                     index = 8;
+                    isPaintingsSet = true;
                     break;
             }
         }
@@ -348,6 +373,7 @@ public class WikipediaAPI : MonoBehaviour
         yield return www;
 
         image.sprite = Sprite.Create(www.texture, new Rect(0, 0, www.texture.width, www.texture.height), new Vector2(0.5f, 0.5f));
+        isArtistImageSet = true;
     }
 
     IEnumerator GetAllArtists(string uri)
@@ -370,6 +396,7 @@ public class WikipediaAPI : MonoBehaviour
                     break;
                 case UnityWebRequest.Result.Success:
                     allArtists = JsonUtility.FromJson<Artists>("{\"artists\":" + webRequest.downloadHandler.text + "}").artists;
+                    isAllArtistsSet = true;
                     break;
             }
         }
