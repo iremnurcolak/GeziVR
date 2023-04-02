@@ -83,6 +83,7 @@ public class WikipediaAPI : MonoBehaviour
         if(isArtistImageSet && isPaintingsSet && isArtistInfoSet)
         {
             GameObject.Find("CanvasLoading").transform.GetChild(0).gameObject.SetActive(false);
+            GameObject.Find("Canvas").transform.GetChild(0).gameObject.SetActive(true);
             isArtistImageSet = false;
             isPaintingsSet = false;
             isArtistInfoSet = false;
@@ -138,9 +139,9 @@ public class WikipediaAPI : MonoBehaviour
                 {
                     infoText.text = "No Wikipedia page found";
                 }
-                StartCoroutine(PutVisitedMuseum("https://gezivr.onrender.com/addVisitedMuseum/" + playerScriptable.token + "/" + artist1.contentId));
                 StartCoroutine(GetArtistImage("http://www.wikiart.org/en/" + artist1.url + "?json=2"));
                 StartCoroutine(GetPaintings("https://www.wikiart.org/en/App/Painting/PaintingsByArtist?artistUrl=" + artist1.url + "&json=2"));
+                StartCoroutine(PutVisitedMuseum("https://gezivr.onrender.com/addVisitedMuseum/" + playerScriptable.token + "/" + artist1.contentId));
                 break;
             }
         }
