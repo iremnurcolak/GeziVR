@@ -17,7 +17,6 @@ public class WikipediaAPI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI artTitle;
     [SerializeField] private TextMeshProUGUI artYear;
     [SerializeField] private TextMeshProUGUI artSize;
-
     public static bool isExitedPlane2 = false;
     public static bool isStatusChanged = false;
 
@@ -29,7 +28,6 @@ public class WikipediaAPI : MonoBehaviour
     private int index = 0;
 
     private bool isArtistImageSet = false;
-    private bool isPaintingsSet = false;
     private bool isArtistInfoSet = false;
     private bool isAllArtistsSet = false;
     
@@ -47,8 +45,8 @@ public class WikipediaAPI : MonoBehaviour
         GameObject.Find("Canvas").transform.GetChild(0).gameObject.SetActive(false);
         GameObject.Find("CanvasDescription").transform.GetChild(0).gameObject.SetActive(false);
         StartCoroutine(GetAllArtists("http://www.wikiart.org/en/App/Artist/AlphabetJson?v=new&inPublicDomain={true/false}"));
-    }
-    
+        
+    } 
     private void Update()
     {
         if(isStatusChanged)
@@ -80,20 +78,16 @@ public class WikipediaAPI : MonoBehaviour
                 }
             }
         }
-        if(isArtistImageSet && isPaintingsSet && isArtistInfoSet)
+        
+        if(isArtistImageSet && isArtistInfoSet)
         {
             GameObject.Find("CanvasLoading").transform.GetChild(0).gameObject.SetActive(false);
             GameObject.Find("Canvas").transform.GetChild(0).gameObject.SetActive(true);
+            GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(0).gameObject.SetActive(false);
             isArtistImageSet = false;
-            isPaintingsSet = false;
             isArtistInfoSet = false;
         }
-        if(isAllArtistsSet)
-        {
-            GameObject.Find("CanvasLoading").transform.GetChild(0).gameObject.SetActive(false);
-            GameObject.Find("Canvas").transform.GetChild(0).gameObject.SetActive(true);
-            isAllArtistsSet = false;
-        }
+
     }
     public void Search()
     {
@@ -105,7 +99,7 @@ public class WikipediaAPI : MonoBehaviour
         {
             if(artist1.url == search)
             {
-                
+                artist = artist1;
                 if(artist1.wikipediaUrl != "")
                 {
                     StartCoroutine(GetArtistSummary("https://en.wikipedia.org/api/rest_v1/page/summary/" + artist1.wikipediaUrl.Substring(artist1.wikipediaUrl.LastIndexOf('/') + 1)));
@@ -116,7 +110,6 @@ public class WikipediaAPI : MonoBehaviour
                 }
             
                 GetImage(artist1.image, imageArtist);
-                StartCoroutine(GetPaintings("https://www.wikiart.org/en/App/Painting/PaintingsByArtist?artistUrl=" + artist1.url + "&json=2"));
                 StartCoroutine(PutVisitedMuseum("https://gezivr.onrender.com/addVisitedMuseum/" + playerScriptable.token + "/" + artist1.contentId));
                 break;
             }
@@ -131,15 +124,12 @@ public class WikipediaAPI : MonoBehaviour
         GameObject.Find("Player").GetComponent<PlayerMovement2>().enabled = true;
         GameObject.Find("PlayerCam").GetComponent<PlayerCamera2>().enabled = true;
     }
-
     public void CloseDescription()
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false; 
         GameObject.Find("CanvasDescription").transform.GetChild(0).gameObject.SetActive(false);
     }
-
-
     public void GetRecommendedMuseums()
     {
         StartCoroutine(GetRecommendedMuseums("https://gezivr.onrender.com/getRecommendedMuseums/" + playerScriptable.token));
@@ -232,6 +222,7 @@ public class WikipediaAPI : MonoBehaviour
                     infoText.text = artistIn.extract;
                     artist.extract = artistIn.extract;
                     isArtistInfoSet = true;
+                    StartCoroutine(GetPaintings("https://www.wikiart.org/en/App/Painting/PaintingsByArtist?artistUrl=" + artist.url + "&json=2"));
                     break;
             }
         }
@@ -239,12 +230,12 @@ public class WikipediaAPI : MonoBehaviour
 
     IEnumerator GetPaintings(string uri)
     {
+     
+        GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(1).gameObject.SetActive(true);
 
-        Debug.Log(System.DateTime.Now);
         using (UnityWebRequest webRequest = UnityWebRequest.Get(uri))
         {
             yield return webRequest.SendWebRequest();
-            Debug.Log(System.DateTime.Now+"aaaaa");
             string[] pages = uri.Split('/');
             int page = pages.Length - 1;
 
@@ -259,7 +250,9 @@ public class WikipediaAPI : MonoBehaviour
                     break;
                 case UnityWebRequest.Result.Success:
                     allPaintings = JsonUtility.FromJson<RootObject>("{\"paintings\":" + webRequest.downloadHandler.text+ "}").paintings;
-                    for (int i = 0; i < 8; i++)
+                    
+                 
+                        for (int i = 0; i < 8; i++)
                     {
                         try
                         {
@@ -270,7 +263,7 @@ public class WikipediaAPI : MonoBehaviour
                             continue;
                         }
                     }
-
+                    
                     for (int i = 0; i < 8; i++)
                     {
                         if(i >= allPaintings.Length)
@@ -294,7 +287,8 @@ public class WikipediaAPI : MonoBehaviour
                         go.transform.GetChild(3).GetComponent<Renderer>().material.mainTexture = tex;
                     }
                     index = 8;
-                    isPaintingsSet = true;
+                    GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(1).gameObject.SetActive(false);
+                    GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(0).gameObject.SetActive(true);  
                     break;
             }
         }
@@ -378,7 +372,10 @@ public class WikipediaAPI : MonoBehaviour
                     break;
                 case UnityWebRequest.Result.Success:
                     allArtists = JsonUtility.FromJson<Artists>("{\"artists\":" + webRequest.downloadHandler.text + "}").artists;
-                    isAllArtistsSet = true;
+                    GameObject.Find("CanvasLoading").transform.GetChild(0).gameObject.SetActive(false);
+                    GameObject.Find("Canvas").transform.GetChild(0).gameObject.SetActive(true);
+                    GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(0).gameObject.SetActive(false);
+                    GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(1).gameObject.SetActive(false);
                     break;
             }
         }
