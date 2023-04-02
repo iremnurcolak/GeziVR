@@ -95,30 +95,6 @@ public class WikipediaAPI : MonoBehaviour
             isAllArtistsSet = false;
         }
     }
-
-  
-    public void GetImage(string url, Image image)
-    {
-        StartCoroutine(setImage(url, image));
-    }
-
-    public void DisableCanvas()
-    {
-        GameObject.Find("Canvas").transform.GetChild(0).gameObject.SetActive(false);
-        //bu cursor şeyleri vr'da deneme yaparken olmamali
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false; 
-        GameObject.Find("Player").GetComponent<PlayerMovement2>().enabled = true;
-        GameObject.Find("PlayerCam").GetComponent<PlayerCamera2>().enabled = true;
-    }
-
-    public void CloseDescription()
-    {
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false; 
-        GameObject.Find("CanvasDescription").transform.GetChild(0).gameObject.SetActive(false);
-    }
-
     public void Search()
     {
         GameObject.Find("Canvas").transform.GetChild(0).gameObject.SetActive(false);
@@ -139,13 +115,31 @@ public class WikipediaAPI : MonoBehaviour
                 {
                     infoText.text = "No Wikipedia page found";
                 }
-                StartCoroutine(GetArtistImage("http://www.wikiart.org/en/" + artist1.url + "?json=2"));
+            
+                GetImage(artist1.image, imageArtist);
                 StartCoroutine(GetPaintings("https://www.wikiart.org/en/App/Painting/PaintingsByArtist?artistUrl=" + artist1.url + "&json=2"));
                 StartCoroutine(PutVisitedMuseum("https://gezivr.onrender.com/addVisitedMuseum/" + playerScriptable.token + "/" + artist1.contentId));
                 break;
             }
         }
     }
+    public void DisableCanvas()
+    {
+        GameObject.Find("Canvas").transform.GetChild(0).gameObject.SetActive(false);
+        //bu cursor şeyleri vr'da deneme yaparken olmamali
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false; 
+        GameObject.Find("Player").GetComponent<PlayerMovement2>().enabled = true;
+        GameObject.Find("PlayerCam").GetComponent<PlayerCamera2>().enabled = true;
+    }
+
+    public void CloseDescription()
+    {
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false; 
+        GameObject.Find("CanvasDescription").transform.GetChild(0).gameObject.SetActive(false);
+    }
+
 
     public void GetRecommendedMuseums()
     {
@@ -243,33 +237,7 @@ public class WikipediaAPI : MonoBehaviour
                     break;
             }
         }
-    }
-
-    IEnumerator GetArtistImage(string uri)
-    {
-        using (UnityWebRequest webRequest = UnityWebRequest.Get(uri))
-        {
-            yield return webRequest.SendWebRequest();
-
-            string[] pages = uri.Split('/');
-            int page = pages.Length - 1;
-
-            switch (webRequest.result)
-            {
-                case UnityWebRequest.Result.ConnectionError:
-                case UnityWebRequest.Result.DataProcessingError:
-                    Debug.LogError(pages[page] + ": Error: " + webRequest.error);
-                    break;
-                case UnityWebRequest.Result.ProtocolError:
-                    Debug.LogError(pages[page] + ": HTTP Error: " + webRequest.error);
-                    break;
-                case UnityWebRequest.Result.Success:
-                    artist = JsonUtility.FromJson<WikiArtArtist>(webRequest.downloadHandler.text);
-                    GetImage(artist.image, imageArtist);
-                    break;
-            }
-        }
-    }
+    }  
 
     IEnumerator GetPaintings(string uri)
     {
@@ -376,7 +344,10 @@ public class WikipediaAPI : MonoBehaviour
         image.sprite = Sprite.Create(www.texture, new Rect(0, 0, www.texture.width, www.texture.height), new Vector2(0.5f, 0.5f));
         isArtistImageSet = true;
     }
-
+    private void GetImage(string url, Image image)
+    {
+        StartCoroutine(setImage(url, image));
+    }
     IEnumerator GetAllArtists(string uri)
     {
         using (UnityWebRequest webRequest = UnityWebRequest.Get(uri))
