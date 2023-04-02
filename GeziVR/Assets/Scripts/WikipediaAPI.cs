@@ -30,6 +30,8 @@ public class WikipediaAPI : MonoBehaviour
     private bool isArtistImageSet = false;
     private bool isArtistInfoSet = false;
     private bool isAllArtistsSet = false;
+
+    private float timeEnter = 0f;
     
     private WikiArtArtist[] allArtists;
     private List<WikiArtArtist> recommendedArtists = new List<WikiArtArtist>();
@@ -53,7 +55,7 @@ public class WikipediaAPI : MonoBehaviour
         {
             CheckPlanes();
         }
-        
+
         if (Input.GetMouseButtonDown(0))
         {
             Ray ray = cam.ScreenPointToRay(Input.mousePosition);
@@ -111,24 +113,42 @@ public class WikipediaAPI : MonoBehaviour
                 }
             
                 GetImage(artist1.image, imageArtist);
-                StartCoroutine(PutVisitedMuseum("https://gezivr.onrender.com/addVisitedMuseum/" + playerScriptable.token + "/" + artist1.contentId));
                 break;
             }
         }
     }
     public void DisableCanvas()
     {
+        inputField.text = "";
+        infoText.text = "";
+        imageArtist.sprite = null;
         GameObject.Find("Canvas").transform.GetChild(0).gameObject.SetActive(false);
+        GameObject.Find("Canvas").transform.GetChild(1).gameObject.SetActive(true);
         //bu cursor şeyleri vr'da deneme yaparken olmamali
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false; 
+        //Cursor.lockState = CursorLockMode.Locked;
+        //Cursor.visible = false; 
         GameObject.Find("Player").GetComponent<PlayerMovement2>().enabled = true;
         GameObject.Find("PlayerCam").GetComponent<PlayerCamera2>().enabled = true;
+        timeEnter = Time.time;
+        
+    }
+
+    public void ButtonExit()
+    {
+        float duration = Time.time - timeEnter;
+        Debug.Log(duration);
+        GameObject.Find("Canvas").transform.GetChild(1).gameObject.SetActive(false);
+        GameObject.Find("Canvas").transform.GetChild(0).gameObject.SetActive(true);
+        GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(0).gameObject.SetActive(false);
+        GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(1).gameObject.SetActive(false);
+
+        StartCoroutine(PutVisitedMuseum("https://gezivr.onrender.com/addVisitedMuseum/" + playerScriptable.token + "/" + artist.contentId + "/" + duration.ToString().Replace(',', '.')));
+
     }
     public void CloseDescription()
     {
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false; 
+        //Cursor.lockState = CursorLockMode.Locked;
+        //Cursor.visible = false; 
         GameObject.Find("CanvasDescription").transform.GetChild(0).gameObject.SetActive(false);
     }
     public void GetRecommendedMuseums()
@@ -231,7 +251,7 @@ public class WikipediaAPI : MonoBehaviour
 
     IEnumerator GetPaintings(string uri)
     {
-     
+        Debug.Log("GetPaintings");
         GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(1).gameObject.SetActive(true);
 
         using (UnityWebRequest webRequest = UnityWebRequest.Get(uri))
