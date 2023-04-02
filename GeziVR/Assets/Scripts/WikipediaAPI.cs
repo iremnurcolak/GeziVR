@@ -53,6 +53,7 @@ public class WikipediaAPI : MonoBehaviour
         {
             CheckPlanes();
         }
+        
         if (Input.GetMouseButtonDown(0))
         {
             Ray ray = cam.ScreenPointToRay(Input.mousePosition);
@@ -78,7 +79,7 @@ public class WikipediaAPI : MonoBehaviour
                 }
             }
         }
-        
+
         if(isArtistImageSet && isArtistInfoSet)
         {
             GameObject.Find("CanvasLoading").transform.GetChild(0).gameObject.SetActive(false);
@@ -250,9 +251,8 @@ public class WikipediaAPI : MonoBehaviour
                     break;
                 case UnityWebRequest.Result.Success:
                     allPaintings = JsonUtility.FromJson<RootObject>("{\"paintings\":" + webRequest.downloadHandler.text+ "}").paintings;
-                    
-                 
-                        for (int i = 0; i < 8; i++)
+
+                    for (int i = 0; i < 8; i++)
                     {
                         try
                         {
@@ -321,21 +321,19 @@ public class WikipediaAPI : MonoBehaviour
             {
                 continue;
             }
-                    
-
             window[i%8] = allPaintings[i];
             
             Texture2D tex = new Texture2D(2, 2);
             tex.LoadImage(allPaintings[i].imageBytes);
             GameObject go = GameObject.Find("Frame" + (i%8 + 1));
-           float imageRatioX = float.Parse(allPaintings[i].width)/( float.Parse(allPaintings[i].width) + float.Parse(allPaintings[i].height));
-                        float imageRatioY = float.Parse(allPaintings[i].height) / (float.Parse(allPaintings[i].width) + float.Parse(allPaintings[i].height));
-                        if(imageRatioY > 0.4)
-                        {
-                            imageRatioY = 0.4f;
-                            imageRatioX = imageRatioX*0.4f/imageRatioY;
-                        }
-                        go.transform.GetChild(3).transform.localScale = new Vector3( imageRatioX, go.transform.GetChild(3).transform.localScale.y, imageRatioY);
+            float imageRatioX = float.Parse(allPaintings[i].width)/( float.Parse(allPaintings[i].width) + float.Parse(allPaintings[i].height));
+            float imageRatioY = float.Parse(allPaintings[i].height) / (float.Parse(allPaintings[i].width) + float.Parse(allPaintings[i].height));
+            if(imageRatioY > 0.4)
+            {
+                imageRatioY = 0.4f;
+                imageRatioX = imageRatioX*0.4f/imageRatioY;
+            }
+            go.transform.GetChild(3).transform.localScale = new Vector3( imageRatioX, go.transform.GetChild(3).transform.localScale.y, imageRatioY);
             go.transform.GetChild(3).GetComponent<Renderer>().material.mainTexture = tex;
         }
         index += 8;
