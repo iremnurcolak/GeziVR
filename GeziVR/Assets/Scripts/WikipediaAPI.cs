@@ -6,7 +6,8 @@ using TMPro;
 using UnityEngine.UI;
 using System;
 using Newtonsoft.Json;
-using System.Threading;
+using UnityEngine.SceneManagement;
+
 public class WikipediaAPI : MonoBehaviour
 {
     [SerializeField] private Camera cam;
@@ -85,6 +86,8 @@ public class WikipediaAPI : MonoBehaviour
         if(isArtistImageSet && isArtistInfoSet)
         {
             GameObject.Find("CanvasLoading").transform.GetChild(0).gameObject.SetActive(false);
+            GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(5).gameObject.SetActive(true);
+            GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(4).gameObject.SetActive(true);
             GameObject.Find("Canvas").transform.GetChild(0).gameObject.SetActive(true);
             GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(0).gameObject.SetActive(false);
             isArtistImageSet = false;
@@ -139,6 +142,8 @@ public class WikipediaAPI : MonoBehaviour
         Debug.Log(duration);
         GameObject.Find("Canvas").transform.GetChild(1).gameObject.SetActive(false);
         GameObject.Find("Canvas").transform.GetChild(0).gameObject.SetActive(true);
+        GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(5).gameObject.SetActive(false);
+        GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(4).gameObject.SetActive(false);
         GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(0).gameObject.SetActive(false);
         GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(1).gameObject.SetActive(false);
 
@@ -366,10 +371,12 @@ public class WikipediaAPI : MonoBehaviour
         image.sprite = Sprite.Create(www.texture, new Rect(0, 0, www.texture.width, www.texture.height), new Vector2(0.5f, 0.5f));
         isArtistImageSet = true;
     }
+
     private void GetImage(string url, Image image)
     {
         StartCoroutine(setImage(url, image));
     }
+
     IEnumerator GetAllArtists(string uri)
     {
         using (UnityWebRequest webRequest = UnityWebRequest.Get(uri))
@@ -394,8 +401,15 @@ public class WikipediaAPI : MonoBehaviour
                     GameObject.Find("Canvas").transform.GetChild(0).gameObject.SetActive(true);
                     GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(0).gameObject.SetActive(false);
                     GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(1).gameObject.SetActive(false);
+                    GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(5).gameObject.SetActive(false);
+                    GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(4).gameObject.SetActive(false);
                     break;
             }
         }
+    }
+
+    public void GoBackMenu()
+    {
+        SceneManager.LoadScene("MenuScreen");
     }
 }
