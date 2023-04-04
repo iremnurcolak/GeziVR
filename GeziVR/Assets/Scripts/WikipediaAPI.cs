@@ -68,7 +68,7 @@ public class WikipediaAPI : MonoBehaviour
                 hitPoint.y = 0;
                 var playerPosition = transform.position;
                 playerPosition.y = 0;
-                var distance = Vector3.Distance(hitPoint, playerPosition);
+                //var distance = Vector3.Distance(hitPoint, playerPosition);
                 if(hit.transform.tag == "ArtInfo")
                 {
                     GameObject parent  = hit.transform.parent.gameObject;
@@ -94,7 +94,6 @@ public class WikipediaAPI : MonoBehaviour
             StartCoroutine(GetPaintings("https://www.wikiart.org/en/App/Painting/PaintingsByArtist?artistUrl=" + artist.url + "&json=2"));
             isArtistImageSet = false;
             isArtistInfoSet = false;
-            Debug.Log("Artist info and image set");
         }
 
     }
@@ -245,8 +244,7 @@ public class WikipediaAPI : MonoBehaviour
                     var artistIn = JsonUtility.FromJson<WikiArtArtist>(webRequest.downloadHandler.text);
                     infoText.text = artistIn.extract;
                     artist.extract = artistIn.extract;
-                    isArtistInfoSet = true;
-                    
+                    isArtistInfoSet = true;       
                     break;
             }
         }
@@ -254,7 +252,6 @@ public class WikipediaAPI : MonoBehaviour
 
     IEnumerator GetPaintings(string uri)
     {
-        Debug.Log("GetPaintings");
         GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(1).gameObject.SetActive(true);
 
         using (UnityWebRequest webRequest = UnityWebRequest.Get(uri))
