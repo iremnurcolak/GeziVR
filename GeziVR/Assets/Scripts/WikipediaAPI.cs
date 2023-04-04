@@ -30,8 +30,6 @@ public class WikipediaAPI : MonoBehaviour
 
     private bool isArtistImageSet = false;
     private bool isArtistInfoSet = false;
-    private bool isAllArtistsSet = false;
-
     private float timeEnter = 0f;
     
     private WikiArtArtist[] allArtists;

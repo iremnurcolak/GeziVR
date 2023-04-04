@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using Firebase.Extensions;
 using Firebase.Database;
-using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
