@@ -7,7 +7,7 @@ using Firebase.Database;
 using UnityEngine.UI;
 using TMPro;
 
-public class RaycastDeneme : MonoBehaviour
+public class RaycastGeziVR : MonoBehaviour
 {
     public Camera cam;
     public PlayerScriptable playerScriptable;
