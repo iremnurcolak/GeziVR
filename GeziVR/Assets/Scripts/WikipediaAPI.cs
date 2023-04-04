@@ -85,13 +85,16 @@ public class WikipediaAPI : MonoBehaviour
 
         if(isArtistImageSet && isArtistInfoSet)
         {
+            
             GameObject.Find("CanvasLoading").transform.GetChild(0).gameObject.SetActive(false);
+            GameObject.Find("Canvas").transform.GetChild(0).gameObject.SetActive(true);
             GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(5).gameObject.SetActive(true);
             GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(4).gameObject.SetActive(true);
-            GameObject.Find("Canvas").transform.GetChild(0).gameObject.SetActive(true);
             GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(0).gameObject.SetActive(false);
+            StartCoroutine(GetPaintings("https://www.wikiart.org/en/App/Painting/PaintingsByArtist?artistUrl=" + artist.url + "&json=2"));
             isArtistImageSet = false;
             isArtistInfoSet = false;
+            Debug.Log("Artist info and image set");
         }
 
     }
@@ -114,7 +117,6 @@ public class WikipediaAPI : MonoBehaviour
                 {
                     infoText.text = "No Wikipedia page found";
                 }
-            
                 GetImage(artist1.image, imageArtist);
                 break;
             }
@@ -127,9 +129,6 @@ public class WikipediaAPI : MonoBehaviour
         imageArtist.sprite = null;
         GameObject.Find("Canvas").transform.GetChild(0).gameObject.SetActive(false);
         GameObject.Find("Canvas").transform.GetChild(1).gameObject.SetActive(true);
-        //bu cursor şeyleri vr'da deneme yaparken olmamali
-        //Cursor.lockState = CursorLockMode.Locked;
-        //Cursor.visible = false; 
         GameObject.Find("Player").GetComponent<PlayerMovement2>().enabled = true;
         GameObject.Find("PlayerCam").GetComponent<PlayerCamera2>().enabled = true;
         timeEnter = Time.time;
@@ -139,7 +138,6 @@ public class WikipediaAPI : MonoBehaviour
     public void ButtonExit()
     {
         float duration = Time.time - timeEnter;
-        Debug.Log(duration);
         GameObject.Find("Canvas").transform.GetChild(1).gameObject.SetActive(false);
         GameObject.Find("Canvas").transform.GetChild(0).gameObject.SetActive(true);
         GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(5).gameObject.SetActive(false);
@@ -248,7 +246,7 @@ public class WikipediaAPI : MonoBehaviour
                     infoText.text = artistIn.extract;
                     artist.extract = artistIn.extract;
                     isArtistInfoSet = true;
-                    StartCoroutine(GetPaintings("https://www.wikiart.org/en/App/Painting/PaintingsByArtist?artistUrl=" + artist.url + "&json=2"));
+                    
                     break;
             }
         }
