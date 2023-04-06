@@ -7,6 +7,7 @@ using UnityEngine.UI;
 using System;
 using Newtonsoft.Json;
 using UnityEngine.SceneManagement;
+using UnityEngine.EventSystems;
 
 public class WikipediaAPI : MonoBehaviour
 {
@@ -18,6 +19,11 @@ public class WikipediaAPI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI artTitle;
     [SerializeField] private TextMeshProUGUI artYear;
     [SerializeField] private TextMeshProUGUI artSize;
+
+    [SerializeField] private GameObject scrollViewRecommendation;
+    [SerializeField] private GameObject buttonRecommend;
+    [SerializeField] private GameObject panelRecommendation;
+
     public static bool isExitedPlane2 = false;
     public static bool isStatusChanged = false;
 
@@ -95,6 +101,7 @@ public class WikipediaAPI : MonoBehaviour
         }
 
     }
+
     public void Search()
     {
         GameObject.Find("Canvas").transform.GetChild(0).gameObject.SetActive(false);
@@ -119,6 +126,7 @@ public class WikipediaAPI : MonoBehaviour
             }
         }
     }
+
     public void DisableCanvas()
     {
         inputField.text = "";
@@ -145,19 +153,27 @@ public class WikipediaAPI : MonoBehaviour
         StartCoroutine(PutVisitedMuseum("https://gezivr.onrender.com/addVisitedMuseum/" + playerScriptable.token + "/" + artist.contentId + "/" + duration.ToString().Replace(',', '.')));
 
     }
+
     public void CloseDescription()
     {
         //Cursor.lockState = CursorLockMode.Locked;
         //Cursor.visible = false; 
         GameObject.Find("CanvasDescription").transform.GetChild(0).gameObject.SetActive(false);
     }
+
     public void GetRecommendedMuseums()
     {
         StartCoroutine(GetRecommendedMuseums("https://gezivr.onrender.com/getRecommendedMuseums/" + playerScriptable.token));
+        
+
     }
 
     IEnumerator GetRecommendedMuseums(string uri)
     {
+        recommendedArtists = new List<WikiArtArtist>();
+        buttonRecommend.SetActive(false);
+        //GameObject.Find("textRecommending").gameObject.SetActive(true);
+                    
         using (UnityWebRequest webRequest = UnityWebRequest.Get(uri))
         {
             yield return webRequest.SendWebRequest();
@@ -178,6 +194,8 @@ public class WikipediaAPI : MonoBehaviour
                     Debug.Log("Success");
                     var data = webRequest.downloadHandler.text;
                     data = data.Substring(1, data.LastIndexOf(']') - 1);
+                    Debug.Log(data);
+                    
                     string[] museums = data.Split(',');
                     foreach (string museum in museums)
                     {
@@ -190,6 +208,28 @@ public class WikipediaAPI : MonoBehaviour
                             }
                         }
                     }
+                    //scrollViewRecommendation.gameObject.SetActive(true);
+                    GameObject.Find("textRecommending").gameObject.SetActive(false);
+                    panelRecommendation.gameObject.SetActive(true);
+                    //StartCoroutine(GetRecommendedMuseums("https://gezivr.onrender.com/getRecommendedMuseums/" + playerScriptable.token));
+                    int children = scrollViewRecommendation.transform.GetChild(0).transform.GetChild(0).transform.childCount;
+                    GameObject content = scrollViewRecommendation.transform.GetChild(0).transform.GetChild(0).gameObject;
+
+                    int i;
+                    for (i = 0; i < recommendedArtists.Count; i++)
+                    {
+                        GameObject child = content.transform.GetChild(i).gameObject;
+                        
+                        child.transform.GetChild(0).GetComponent<TMP_Text>().text = recommendedArtists[i].artistName;
+                    }
+                    if (i < children)
+                    {
+                        for (int j = i ; j < children; j++)
+                        {
+                            content.transform.GetChild(j).gameObject.SetActive(false);
+                        }
+                    }
+                    
                     break;
             }
         }
@@ -404,5 +444,16 @@ public class WikipediaAPI : MonoBehaviour
     public void GoBackMenu()
     {
         SceneManager.LoadScene("MenuScreen");
+    }
+
+    public void LoadRecommendedMuseum()
+    {
+        int index = int.Parse(EventSystem.current.currentSelectedGameObject.name);
+        //scrollViewRecommendation.SetActive(false);
+        panelRecommendation.SetActive(false);
+        inputField.text = recommendedArtists[index].url;
+        
+        Search();
+
     }
 }
