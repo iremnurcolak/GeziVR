@@ -54,6 +54,7 @@ public class WikipediaAPI : MonoBehaviour
         StartCoroutine(GetAllArtists("http://www.wikiart.org/en/App/Artist/AlphabetJson?v=new&inPublicDomain={true/false}"));
         
     } 
+    
     private void Update()
     {
         if(isStatusChanged)
@@ -137,7 +138,6 @@ public class WikipediaAPI : MonoBehaviour
         GameObject.Find("Player").GetComponent<PlayerMovement2>().enabled = true;
         GameObject.Find("PlayerCam").GetComponent<PlayerCamera2>().enabled = true;
         timeEnter = Time.time;
-        
     }
 
     public void ButtonExit()
@@ -149,7 +149,7 @@ public class WikipediaAPI : MonoBehaviour
         GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(4).gameObject.SetActive(false);
         GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(0).gameObject.SetActive(false);
         GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(1).gameObject.SetActive(false);
-
+        StartCoroutine(DeleteFromSuggestions("https://gezivr.onrender.com/deleteFromSuggestedMuseums/" + playerScriptable.token + "/" + artist.contentId));
         StartCoroutine(PutVisitedMuseum("https://gezivr.onrender.com/addVisitedMuseum/" + playerScriptable.token + "/" + artist.contentId + "/" + duration.ToString().Replace(',', '.')));
 
     }
@@ -166,6 +166,31 @@ public class WikipediaAPI : MonoBehaviour
         StartCoroutine(GetRecommendedMuseums("https://gezivr.onrender.com/getRecommendedMuseums/" + playerScriptable.token));
         
 
+    }
+
+    IEnumerator DeleteFromSuggestions(string uri)
+    {
+        using (UnityWebRequest webRequest = UnityWebRequest.Get(uri))
+        {
+            yield return webRequest.SendWebRequest();
+
+            string[] pages = uri.Split('/');
+            int page = pages.Length - 1;
+
+            switch (webRequest.result)
+            {
+                case UnityWebRequest.Result.ConnectionError:
+                case UnityWebRequest.Result.DataProcessingError:
+                    Debug.LogError(pages[page] + ": Error: " + webRequest.error);
+                    break;
+                case UnityWebRequest.Result.ProtocolError:
+                    Debug.LogError(pages[page] + ": HTTP Error: " + webRequest.error);
+                    break;
+                case UnityWebRequest.Result.Success:
+                    Debug.Log("Success");
+                    break;
+            }
+        }
     }
 
     IEnumerator GetRecommendedMuseums(string uri)
@@ -449,11 +474,9 @@ public class WikipediaAPI : MonoBehaviour
     public void LoadRecommendedMuseum()
     {
         int index = int.Parse(EventSystem.current.currentSelectedGameObject.name);
-        //scrollViewRecommendation.SetActive(false);
         panelRecommendation.SetActive(false);
         inputField.text = recommendedArtists[index].url;
         
         Search();
-
     }
 }
