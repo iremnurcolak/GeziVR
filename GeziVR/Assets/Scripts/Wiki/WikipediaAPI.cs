@@ -24,6 +24,11 @@ public class WikipediaAPI : MonoBehaviour
     [SerializeField] private GameObject buttonRecommend;
     [SerializeField] private GameObject panelRecommendation;
 
+    [SerializeField] private GameObject scrollViewSearch;
+    [SerializeField] private GameObject buttonTemplate;
+    [SerializeField] private GameObject searchPlane;
+
+
     public static bool isExitedPlane2 = false;
     public static bool isStatusChanged = false;
 
@@ -52,7 +57,7 @@ public class WikipediaAPI : MonoBehaviour
         GameObject.Find("Canvas").transform.GetChild(0).gameObject.SetActive(false);
         GameObject.Find("CanvasDescription").transform.GetChild(0).gameObject.SetActive(false);
         StartCoroutine(GetAllArtists("http://www.wikiart.org/en/App/Artist/AlphabetJson?v=new&inPublicDomain={true/false}"));
-        
+        searchPlane.transform.GetChild(1).gameObject.SetActive(false);
     } 
     
     private void Update()
@@ -103,23 +108,23 @@ public class WikipediaAPI : MonoBehaviour
 
     }
 
-    public void Search()
+    public void SearchByUrl(string search)
     {
         GameObject.Find("Canvas").transform.GetChild(0).gameObject.SetActive(false);
         GameObject.Find("CanvasLoading").transform.GetChild(0).gameObject.SetActive(true);
         artist = new WikiArtArtist();
-        search = inputField.text;
         foreach (WikiArtArtist artist1 in allArtists)
         {
             if(artist1.url == search)
             {
                 artist = artist1;
-                if(artist1.wikipediaUrl != "")
+                if(artist1.wikipediaUrl != ""  && artist1.wikipediaUrl != null)
                 {
                     StartCoroutine(GetArtistSummary("https://en.wikipedia.org/api/rest_v1/page/summary/" + artist1.wikipediaUrl.Substring(artist1.wikipediaUrl.LastIndexOf('/') + 1)));
                 }
                 else
                 {
+                    isArtistInfoSet = true;
                     infoText.text = "No Wikipedia page found";
                 }
                 GetImage(artist1.image, imageArtist);
@@ -219,7 +224,6 @@ public class WikipediaAPI : MonoBehaviour
                     Debug.Log("Success");
                     var data = webRequest.downloadHandler.text;
                     data = data.Substring(1, data.LastIndexOf(']') - 1);
-                    Debug.Log(data);
                     
                     string[] museums = data.Split(',');
                     foreach (string museum in museums)
@@ -475,8 +479,71 @@ public class WikipediaAPI : MonoBehaviour
     {
         int index = int.Parse(EventSystem.current.currentSelectedGameObject.name);
         panelRecommendation.SetActive(false);
-        inputField.text = recommendedArtists[index].url;
         
-        Search();
+        SearchByUrl(recommendedArtists[index].url);
+    }
+
+    public void OnSearchValueChanged()
+    {
+        if(inputField.text != ""){
+
+            searchPlane.transform.GetChild(1).gameObject.SetActive(true);
+            if(scrollViewSearch.transform.childCount > 0)
+            {
+                for (int j = 0; j < scrollViewSearch.transform.childCount; j++)
+                {
+                    Destroy(scrollViewSearch.transform.GetChild(j).gameObject);
+                }
+            }
+
+            for (int i = 0; i < allArtists.Length; i++)
+        {
+            if(allArtists[i].artistName.ToLower().StartsWith(inputField.text))
+            {
+                GameObject btn = (GameObject)Instantiate(buttonTemplate);
+                btn.transform.GetChild(0).gameObject.GetComponent<TMP_Text>().text = allArtists[i].artistName;
+                btn.gameObject.GetComponent<Button>().onClick.AddListener(() => { Search2(btn.transform.GetChild(0).gameObject.GetComponent<TMP_Text>().text); });
+                btn.transform.SetParent(scrollViewSearch.transform);
+            }
+        }
+        }
+        else
+        {
+            searchPlane.transform.GetChild(1).gameObject.SetActive(false);
+            if(scrollViewSearch.transform.childCount > 0)
+            {
+                for (int j = 0; j < scrollViewSearch.transform.childCount; j++)
+                {
+                    Destroy(scrollViewSearch.transform.GetChild(j).gameObject);
+                }
+            }
+        }
+    }
+
+    private void Search2(string artistName)
+    {
+        searchPlane.transform.GetChild(1).gameObject.SetActive(false);
+        
+        GameObject.Find("Canvas").transform.GetChild(0).gameObject.SetActive(false);
+        GameObject.Find("CanvasLoading").transform.GetChild(0).gameObject.SetActive(true);
+        artist = new WikiArtArtist();
+        foreach (WikiArtArtist artist1 in allArtists)
+        {
+            if(artist1.artistName == artistName)
+            {
+                artist = artist1;
+                if(artist1.wikipediaUrl != ""  && artist1.wikipediaUrl != null)
+                {
+                    StartCoroutine(GetArtistSummary("https://en.wikipedia.org/api/rest_v1/page/summary/" + artist1.wikipediaUrl.Substring(artist1.wikipediaUrl.LastIndexOf('/') + 1)));
+                }
+                else
+                {
+                    isArtistInfoSet = true;
+                    infoText.text = "No Wikipedia page found";
+                }
+                GetImage(artist1.image, imageArtist);
+                break;
+            }
+        }
     }
 }
