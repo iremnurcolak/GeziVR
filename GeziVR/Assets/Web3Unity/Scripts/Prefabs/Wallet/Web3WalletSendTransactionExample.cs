@@ -1,5 +1,6 @@
 using UnityEngine;
 using Web3Unity.Scripts.Library.Web3Wallet;
+using UnityEngine.UI;
 
 public class Web3WalletSendTransactionExample : MonoBehaviour
 {
