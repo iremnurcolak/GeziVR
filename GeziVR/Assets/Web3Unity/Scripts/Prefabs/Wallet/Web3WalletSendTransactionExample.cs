@@ -3,6 +3,13 @@ using Web3Unity.Scripts.Library.Web3Wallet;
 
 public class Web3WalletSendTransactionExample : MonoBehaviour
 {
+    public Text ReceiptText;
+    public Text AccountText;
+
+    void Start(){
+        AccountText.text = PlayerPrefs.GetString("Account");
+    }
+
     async public void OnSendTransaction()
     {
         // https://chainlist.org/
@@ -20,5 +27,6 @@ public class Web3WalletSendTransactionExample : MonoBehaviour
         // send transaction
         string response = await Web3Wallet.SendTransaction(chainId, to, value, data, gasLimit, gasPrice);
         print(response);
+        ReceiptText.text = response;
     }
 }
