@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: ProjectConfigData
   m_EditorClassIdentifier: 
   projectID: b449c26c-bd7d-4346-84b9-5e1fa08e9435
-  chainID: Please Enter Your Chain ID
-  chain: 
+  chainID: 4
+  chain: Rinkeby
   network: Rinkeby
   rpc: Please Enter Your RPC

@@ -20,4 +20,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Wikipedia.unity
     guid: 8e5990df2b033d6498be9297e62ffdcb
+  - enabled: 1
+    path: Assets/Web3Unity/Scenes/WalletLogin.unity
+    guid: cc28e1075e9584f1698219d041278648
+  - enabled: 1
+    path: Assets/Scenes/MetamaskTransactions.unity
+    guid: 6180a01a3ed98464c90c1b415a6d1037
   m_configObjects: {}

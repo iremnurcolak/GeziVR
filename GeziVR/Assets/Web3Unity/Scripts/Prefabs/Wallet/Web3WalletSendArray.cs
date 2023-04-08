@@ -7,7 +7,7 @@ public class Web3WalletSendArray : MonoBehaviour
     public async void SendArrayObject()
     {
         // https://chainlist.org/
-        var chainId = "5"; // goerli
+        var chainId = "4"; // goerli
         // contract to interact with 
         var contractAddress = "0x5244d0453A727EDa96299384370359f4A2B5b20a";
         // value in wei

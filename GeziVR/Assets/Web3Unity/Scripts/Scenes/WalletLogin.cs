@@ -22,10 +22,10 @@ public class WalletLogin : MonoBehaviour
         PlayerPrefs.SetString("Network", projectConfigSO.Network);
         PlayerPrefs.SetString("RPC", projectConfigSO.RPC);
         // if remember me is checked, set the account to the saved account
-        if (PlayerPrefs.HasKey("RememberMe") && PlayerPrefs.HasKey("Account"))
-            if (PlayerPrefs.GetInt("RememberMe") == 1 && PlayerPrefs.GetString("Account") != "")
-                // move to next scene
-                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        //if (PlayerPrefs.HasKey("RememberMe") && PlayerPrefs.HasKey("Account"))
+        //    if (PlayerPrefs.GetInt("RememberMe") == 1 && PlayerPrefs.GetString("Account") != "")
+        //        // move to next scene
+        //        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }
     public async void OnLogin()
     {
@@ -51,7 +51,7 @@ public class WalletLogin : MonoBehaviour
                 PlayerPrefs.SetInt("RememberMe", 0);
             print("Account: " + account);
             // load next scene
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 3);
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
         }
     }
     public string SignVerifySignature(string signatureString, string originalMessage)
