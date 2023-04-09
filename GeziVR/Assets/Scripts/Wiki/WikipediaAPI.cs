@@ -155,6 +155,9 @@ public class WikipediaAPI : MonoBehaviour
         GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(5).gameObject.SetActive(true);
         GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(0).gameObject.SetActive(false);
         GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(1).gameObject.SetActive(false);
+        GameObject.Find("textRecommending").gameObject.GetComponent<TMP_Text>().text = "Recommending museums for you...";
+        GameObject.Find("textRecommending").gameObject.SetActive(false);
+        
         StartCoroutine(DeleteFromSuggestions("https://gezivr.onrender.com/deleteFromSuggestedMuseums/" + playerScriptable.token + "/" + artist.contentId));
         StartCoroutine(PutVisitedMuseum("https://gezivr.onrender.com/addVisitedMuseum/" + playerScriptable.token + "/" + artist.contentId + "/" + duration.ToString().Replace(',', '.')));
 
@@ -219,11 +222,13 @@ public class WikipediaAPI : MonoBehaviour
                     Debug.LogError(pages[page] + ": Error: " + webRequest.error);
                     break;
                 case UnityWebRequest.Result.ProtocolError:
-                    Debug.LogError(pages[page] + ": HTTP Error: " + webRequest.error);
+                    Debug.Log("No recommended museums found");
+                    GameObject.Find("textRecommending").gameObject.GetComponent<TMP_Text>().text = "No recommended museums found";
                     break;
                 case UnityWebRequest.Result.Success:
                     Debug.Log("Success");
                     var data = webRequest.downloadHandler.text;
+                    Debug.Log(data + " " + data.Length);
                     data = data.Substring(1, data.LastIndexOf(']') - 1);
                     
                     string[] museums = data.Split(',');

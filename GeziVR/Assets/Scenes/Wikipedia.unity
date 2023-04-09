@@ -4511,7 +4511,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Recommending Museums You Might Like...
+  m_text: Recommending museums for you...
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 98a050a11e499e142bd9c55428ffd324, type: 2}
   m_sharedMaterial: {fileID: -4271327686731083461, guid: 98a050a11e499e142bd9c55428ffd324, type: 2}
