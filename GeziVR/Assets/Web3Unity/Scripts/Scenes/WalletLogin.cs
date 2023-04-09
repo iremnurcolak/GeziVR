@@ -51,7 +51,7 @@ public class WalletLogin : MonoBehaviour
                 PlayerPrefs.SetInt("RememberMe", 0);
             print("Account: " + account);
             // load next scene
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 3);
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
         }
     }
     public string SignVerifySignature(string signatureString, string originalMessage)
