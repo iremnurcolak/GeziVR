@@ -98,7 +98,7 @@ public class WikipediaAPI : MonoBehaviour
             
             GameObject.Find("CanvasLoading").transform.GetChild(0).gameObject.SetActive(false);
             GameObject.Find("Canvas").transform.GetChild(0).gameObject.SetActive(true);
-            GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(5).gameObject.SetActive(true);
+            GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(3).gameObject.SetActive(true);
             GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(4).gameObject.SetActive(true);
             GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(0).gameObject.SetActive(false);
             StartCoroutine(GetPaintings("https://www.wikiart.org/en/App/Painting/PaintingsByArtist?artistUrl=" + artist.url + "&json=2"));
@@ -150,8 +150,9 @@ public class WikipediaAPI : MonoBehaviour
         float duration = Time.time - timeEnter;
         GameObject.Find("Canvas").transform.GetChild(1).gameObject.SetActive(false);
         GameObject.Find("Canvas").transform.GetChild(0).gameObject.SetActive(true);
-        GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(5).gameObject.SetActive(false);
-        GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(4).gameObject.SetActive(false);
+        GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(3).gameObject.SetActive(false);
+        //GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(4).gameObject.SetActive(false);
+        GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(5).gameObject.SetActive(true);
         GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(0).gameObject.SetActive(false);
         GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(1).gameObject.SetActive(false);
         StartCoroutine(DeleteFromSuggestions("https://gezivr.onrender.com/deleteFromSuggestedMuseums/" + playerScriptable.token + "/" + artist.contentId));
@@ -463,8 +464,9 @@ public class WikipediaAPI : MonoBehaviour
                     GameObject.Find("Canvas").transform.GetChild(0).gameObject.SetActive(true);
                     GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(0).gameObject.SetActive(false);
                     GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(1).gameObject.SetActive(false);
-                    GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(5).gameObject.SetActive(false);
+                    GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(3).gameObject.SetActive(false);
                     GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(4).gameObject.SetActive(false);
+                    GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(5).gameObject.SetActive(true);
                     break;
             }
         }
