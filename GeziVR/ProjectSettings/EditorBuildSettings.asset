@@ -11,13 +11,13 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/MenuScreen.unity
     guid: 92fddf5ff023b8942af107fa99f62ae2
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/GeziVr.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/GalleryScreen.unity
     guid: 1a68af1f9129d814a89cc6a05652f76b
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Wikipedia.unity
     guid: 8e5990df2b033d6498be9297e62ffdcb
   m_configObjects: {}

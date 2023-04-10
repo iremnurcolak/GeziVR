@@ -9,7 +9,7 @@ public class PlayerScriptable : ScriptableObject
     public string email;
     public string profileImageUrl;
     public string token;
-    public int balance;
+    public float balance;
 
     public void Reset()
     {

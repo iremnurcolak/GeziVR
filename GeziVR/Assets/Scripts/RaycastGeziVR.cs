@@ -360,8 +360,8 @@ public class RaycastGeziVR : MonoBehaviour
         FirebaseDatabase.DefaultInstance.RootReference.Child("users").Child(playerScriptable.token).Child("gallery").Child(id).SetRawJsonValueAsync(json);
         FirebaseDatabase.DefaultInstance.RootReference.Child("users").Child(playerScriptable.token).Child("balance").SetValueAsync(playerScriptable.balance - int.Parse(piecePrice.text));
         pieceOwner.text = playerScriptable.name;
-        playerScriptable.balance -= int.Parse(piecePrice.text);
-        PlayerPrefs.SetInt("balance", playerScriptable.balance);
+        playerScriptable.balance -= float.Parse(piecePrice.text);
+        PlayerPrefs.SetFloat("balance", playerScriptable.balance);
         panel.transform.GetChild(0).transform.GetChild(5).GetComponent<Button>().interactable = false;
         ClosePopup();
     }
