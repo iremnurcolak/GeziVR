@@ -17,8 +17,11 @@ public class MenuController : MonoBehaviour
     void Start()
     {
         infoText.text = "Hos geldin " + playerScriptable.name + "!";
-        balanceText.text = playerScriptable.balance.ToString();
+        
         StartCoroutine(setImage(playerScriptable.profileImageUrl));
+        if(playerScriptable.accountAddress != "")
+            StartCoroutine(GetBalance("https://gezivr-web3.onrender.com/getBalance/" + playerScriptable.accountAddress));
+
     }
     
     void Update()
@@ -34,6 +37,22 @@ public class MenuController : MonoBehaviour
         yield return www;
 
         profilePicture.sprite = Sprite.Create(www.texture, new Rect(0, 0, www.texture.width, www.texture.height), new Vector2(0.5f, 0.5f));
+    }
+
+    IEnumerator GetBalance(string url)
+    {
+        WWW www = new WWW(url);
+        yield return www;
+        if (www.error == null)
+        {
+            Debug.Log("WWW Ok!: " + www.text);
+            playerScriptable.balance = float.Parse(www.text.Replace(".", ","));
+            balanceText.text = playerScriptable.balance.ToString();
+        }
+        else
+        {
+            Debug.Log("WWW Error: " + www.error);
+        }
     }
 
     public void EnterMuseum()
