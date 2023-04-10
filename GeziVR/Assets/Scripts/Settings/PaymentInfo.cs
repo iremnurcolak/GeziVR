@@ -29,7 +29,7 @@ public class PaymentInfo : MonoBehaviour
         if (www.error == null)
         {
             Debug.Log("WWW Ok!: " + www.text);
-            playerScriptable.balance = float.Parse(www.text);
+            playerScriptable.balance = float.Parse(www.text.Replace(".", ","));
             balance.text = www.text;
         }
         else

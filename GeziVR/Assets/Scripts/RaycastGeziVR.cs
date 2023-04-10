@@ -311,7 +311,6 @@ public class RaycastGeziVR : MonoBehaviour
                         }
                         else
                         {
-                            Debug.Log("Not enough money");
                             message.text = "Your balance is " + playerScriptable.balance + ". You don't have enough money to buy this piece for " + snapshot.Child("price").Value.ToString() + ".";
                             popup.transform.GetChild(0).transform.GetChild(0).GetComponent<Button>().gameObject.SetActive(false);
                             popup.transform.GetChild(0).transform.GetChild(1).GetComponent<Button>().gameObject.SetActive(false);
@@ -336,12 +335,14 @@ public class RaycastGeziVR : MonoBehaviour
 
     bool CheckBalance(float price)
     {
-        Debug.Log("Checking balance...");
-        Debug.Log("Balance: " + playerScriptable.balance);
-        Debug.Log("Price: " + price);
+        Debug.Log("Checking balance");
+        Debug.Log(playerScriptable.balance >= price);
+        Debug.Log("price" +price);
+        Debug.Log("balance" + playerScriptable.balance);
+        StartCoroutine(GetBalance("https://gezivr-web3.onrender.com/getBalance/" + playerScriptable.accountAddress));
         if(playerScriptable.balance >= price)
         {
-            Debug.Log("SATIN ALABILIR");
+            Debug.Log("Balance is enough");
             return true;
             
         }
@@ -365,7 +366,6 @@ public class RaycastGeziVR : MonoBehaviour
             FirebaseDatabase.DefaultInstance.RootReference.Child("pieces").Child("dinosaurs").Child(id).Child("owner").SetValueAsync(playerScriptable.token);
         }
         string json = "{\"piecePricePurchase\":" + p + "}";
-        Debug.Log(json);
         FirebaseDatabase.DefaultInstance.RootReference.Child("users").Child(playerScriptable.token).Child("gallery").Child(id).SetRawJsonValueAsync(json);
         //FirebaseDatabase.DefaultInstance.RootReference.Child("users").Child(playerScriptable.token).Child("balance").SetValueAsync(playerScriptable.balance - int.Parse(piecePrice.text));
         pieceOwner.text = playerScriptable.name;
@@ -387,8 +387,7 @@ public class RaycastGeziVR : MonoBehaviour
     {
         WWW www = new WWW(url);
         yield return www;
-        Debug.Log(www.text);
-        playerScriptable.balance = float.Parse(www.text);
+        playerScriptable.balance = float.Parse(www.text.Replace(".", ","));
         PlayerPrefs.SetFloat("balance", playerScriptable.balance);
     }
 
