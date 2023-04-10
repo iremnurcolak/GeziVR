@@ -51,4 +51,9 @@ public class MenuController : MonoBehaviour
     {
         SceneManager.LoadScene("Wikipedia");
     }
+
+    public void GoToPaymentSettings()
+    {
+        SceneManager.LoadScene("Settings");
+    }
 }
