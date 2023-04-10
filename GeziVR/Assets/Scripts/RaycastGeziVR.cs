@@ -16,7 +16,7 @@ public class RaycastGeziVR : MonoBehaviour
     public GameObject popup;
     private DataSnapshot snapshot;
     private string id;
-    private int piecePricePurchase;
+    private float piecePricePurchase;
     private string tag = "";
 
     public TMPro.TextMeshProUGUI pieceName;
@@ -252,12 +252,12 @@ public class RaycastGeziVR : MonoBehaviour
                 {
                     if(snapshot.Child("owner").Value.ToString() == "")
                     {
-                        bool canBuy = CheckBalance(Convert.ToInt32(snapshot.Child("price").Value.ToString()));
+                        bool canBuy = CheckBalance(float.Parse(snapshot.Child("price").Value.ToString()));
                         popup.GetComponent<Canvas>().enabled = true;
                         panel.GetComponent<CanvasGroup>().interactable = false;
                         if(canBuy)
                         {
-                            piecePricePurchase = Convert.ToInt32(snapshot.Child("price").Value.ToString());
+                            piecePricePurchase = float.Parse(snapshot.Child("price").Value.ToString());
                             message.text = "Your balance is " + playerScriptable.balance + ". Do you want to buy this piece for " + snapshot.Child("price").Value.ToString() + "?";
                             popup.transform.GetChild(0).transform.GetChild(0).GetComponent<Button>().gameObject.SetActive(true);
                             popup.transform.GetChild(0).transform.GetChild(1).GetComponent<Button>().gameObject.SetActive(true);
@@ -298,12 +298,12 @@ public class RaycastGeziVR : MonoBehaviour
                 {
                     if(snapshot.Child("owner").Value.ToString() == "")
                     {
-                        bool canBuy = CheckBalance(Convert.ToInt32(snapshot.Child("price").Value.ToString()));
+                        bool canBuy = CheckBalance(float.Parse(snapshot.Child("price").Value.ToString()));
                         popup.GetComponent<Canvas>().enabled = true;
                         panel.GetComponent<CanvasGroup>().interactable = false;
                         if(canBuy)
                         {
-                            piecePricePurchase = Convert.ToInt32(snapshot.Child("price").Value.ToString());
+                            piecePricePurchase = float.Parse(snapshot.Child("price").Value.ToString());
                             message.text = "Your balance is " + playerScriptable.balance + ". Do you want to buy this piece for " + snapshot.Child("price").Value.ToString() + "?";
                             popup.transform.GetChild(0).transform.GetChild(0).GetComponent<Button>().gameObject.SetActive(true);
                             popup.transform.GetChild(0).transform.GetChild(1).GetComponent<Button>().gameObject.SetActive(true);
@@ -311,6 +311,7 @@ public class RaycastGeziVR : MonoBehaviour
                         }
                         else
                         {
+                            Debug.Log("Not enough money");
                             message.text = "Your balance is " + playerScriptable.balance + ". You don't have enough money to buy this piece for " + snapshot.Child("price").Value.ToString() + ".";
                             popup.transform.GetChild(0).transform.GetChild(0).GetComponent<Button>().gameObject.SetActive(false);
                             popup.transform.GetChild(0).transform.GetChild(1).GetComponent<Button>().gameObject.SetActive(false);
@@ -333,12 +334,16 @@ public class RaycastGeziVR : MonoBehaviour
     
     }
 
-    bool CheckBalance(int price)
+    bool CheckBalance(float price)
     {
         Debug.Log("Checking balance...");
+        Debug.Log("Balance: " + playerScriptable.balance);
+        Debug.Log("Price: " + price);
         if(playerScriptable.balance >= price)
         {
+            Debug.Log("SATIN ALABILIR");
             return true;
+            
         }
         else
         {
@@ -348,6 +353,9 @@ public class RaycastGeziVR : MonoBehaviour
 
     public void ApprovePurchase()
     {
+        string p = piecePricePurchase.ToString().Replace(",", ".");
+        StartCoroutine(StartTransaction("https://gezivr-web3.onrender.com/sendTransaction/" + playerScriptable.accountAddress + "/" +
+            p + "/" + playerScriptable.privateKey));
         if(tag == "Skeleton")
         {
             FirebaseDatabase.DefaultInstance.RootReference.Child("pieces").Child("skeletons").Child(id).Child("owner").SetValueAsync(playerScriptable.token);
@@ -356,14 +364,32 @@ public class RaycastGeziVR : MonoBehaviour
         {
             FirebaseDatabase.DefaultInstance.RootReference.Child("pieces").Child("dinosaurs").Child(id).Child("owner").SetValueAsync(playerScriptable.token);
         }
-        string json = "{\"piecePricePurchase\":" + piecePricePurchase + "}";
+        string json = "{\"piecePricePurchase\":" + p + "}";
+        Debug.Log(json);
         FirebaseDatabase.DefaultInstance.RootReference.Child("users").Child(playerScriptable.token).Child("gallery").Child(id).SetRawJsonValueAsync(json);
-        FirebaseDatabase.DefaultInstance.RootReference.Child("users").Child(playerScriptable.token).Child("balance").SetValueAsync(playerScriptable.balance - int.Parse(piecePrice.text));
+        //FirebaseDatabase.DefaultInstance.RootReference.Child("users").Child(playerScriptable.token).Child("balance").SetValueAsync(playerScriptable.balance - int.Parse(piecePrice.text));
         pieceOwner.text = playerScriptable.name;
-        playerScriptable.balance -= float.Parse(piecePrice.text);
-        PlayerPrefs.SetFloat("balance", playerScriptable.balance);
+        //playerScriptable.balance -= float.Parse(piecePrice.text);
+        //PlayerPrefs.SetFloat("balance", playerScriptable.balance);
         panel.transform.GetChild(0).transform.GetChild(5).GetComponent<Button>().interactable = false;
         ClosePopup();
+    }
+
+    IEnumerator StartTransaction(string url)
+    {
+        WWW www = new WWW(url);
+        yield return www;
+        Debug.Log(www.text);
+        StartCoroutine(GetBalance("https://gezivr-web3.onrender.com/getBalance/" + playerScriptable.accountAddress));
+    }
+
+    IEnumerator GetBalance(string url)
+    {
+        WWW www = new WWW(url);
+        yield return www;
+        Debug.Log(www.text);
+        playerScriptable.balance = float.Parse(www.text);
+        PlayerPrefs.SetFloat("balance", playerScriptable.balance);
     }
 
     public void ClosePopup()

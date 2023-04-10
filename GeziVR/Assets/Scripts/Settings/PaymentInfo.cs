@@ -45,7 +45,7 @@ public class PaymentInfo : MonoBehaviour
         if (www.error == null)
         {
             Debug.Log("WWW Ok!: " + www.text);
-            //convert www.text to json 
+            playerScriptable.accountAddress = www.text;
             accountAddress.text = www.text;
             StartCoroutine(GetBalance("https://gezivr-web3.onrender.com/getBalance/" + www.text));
         }
@@ -62,7 +62,7 @@ public class PaymentInfo : MonoBehaviour
         if (www.error == null)
         {
             Debug.Log("WWW Ok!: " + www.text);
-
+            playerScriptable.privateKey = www.text;
             privateKey.text = www.text;
         }
         else
@@ -78,6 +78,8 @@ public class PaymentInfo : MonoBehaviour
         if (www.error == null)
         {
             Debug.Log("Update Payment Ok!: " + www.text);
+            playerScriptable.privateKey = privateKey.text;
+            playerScriptable.accountAddress = accountAddress.text;
             StartCoroutine(GetBalance("https://gezivr-web3.onrender.com/getBalance/" + accountAddress.text));
         }
         else
@@ -86,6 +88,10 @@ public class PaymentInfo : MonoBehaviour
         }
     }
     
+    public void GoBackMenu()
+    {
+        UnityEngine.SceneManagement.SceneManager.LoadScene("MenuScreen");
+    }
 
 
 }
