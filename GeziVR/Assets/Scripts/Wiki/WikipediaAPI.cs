@@ -138,6 +138,12 @@ public class WikipediaAPI : MonoBehaviour
         inputField.text = "";
         infoText.text = "";
         imageArtist.sprite = null;
+        if(GameObject.Find("textRecommending").gameObject.activeSelf)
+        {
+            GameObject.Find("textRecommending").gameObject.GetComponent<TMP_Text>().text = "Recommending museums for you...";
+            GameObject.Find("textRecommending").gameObject.SetActive(false);
+        }
+        
         GameObject.Find("Canvas").transform.GetChild(0).gameObject.SetActive(false);
         GameObject.Find("Canvas").transform.GetChild(1).gameObject.SetActive(true);
         GameObject.Find("Player").GetComponent<PlayerMovement2>().enabled = true;
@@ -155,8 +161,7 @@ public class WikipediaAPI : MonoBehaviour
         GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(5).gameObject.SetActive(true);
         GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(0).gameObject.SetActive(false);
         GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(1).gameObject.SetActive(false);
-        GameObject.Find("textRecommending").gameObject.GetComponent<TMP_Text>().text = "Recommending museums for you...";
-        GameObject.Find("textRecommending").gameObject.SetActive(false);
+        
         
         StartCoroutine(DeleteFromSuggestions("https://gezivr.onrender.com/deleteFromSuggestedMuseums/" + playerScriptable.token + "/" + artist.contentId));
         StartCoroutine(PutVisitedMuseum("https://gezivr.onrender.com/addVisitedMuseum/" + playerScriptable.token + "/" + artist.contentId + "/" + duration.ToString().Replace(',', '.')));
