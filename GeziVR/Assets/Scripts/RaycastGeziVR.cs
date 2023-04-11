@@ -6,6 +6,7 @@ using Firebase.Extensions;
 using Firebase.Database;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class RaycastGeziVR : MonoBehaviour
 {
@@ -38,6 +39,7 @@ public class RaycastGeziVR : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0) && !isPanelOpen)
         {
+
             Ray ray = cam.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
 
@@ -115,6 +117,11 @@ public class RaycastGeziVR : MonoBehaviour
                                 }
                             }
                         }); 
+                    }
+
+                    else if(tag == "DynamicMuseum")
+                    {
+                        SceneManager.LoadScene("Wikipedia");
                     }
                 }
             }
