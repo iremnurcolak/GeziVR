@@ -25,6 +25,8 @@ public class RaycastGeziVR : MonoBehaviour
     public TMPro.TextMeshProUGUI pieceOwner;
     public TMPro.TextMeshProUGUI message;
 
+    [SerializeField] private GameObject loadingPurchase;
+
     void Start()
     {
         cam =  GameObject.Find("CameraHolder").transform.GetChild(0).GetComponent<Camera>();
@@ -355,24 +357,14 @@ public class RaycastGeziVR : MonoBehaviour
     public void ApprovePurchase()
     {
         string p = piecePricePurchase.ToString().Replace(",", ".");
+        loadingPurchase.SetActive(true);
+        message.text = "";
+        popup.transform.GetChild(0).transform.GetChild(0).GetComponent<Button>().gameObject.SetActive(false);
+        popup.transform.GetChild(0).transform.GetChild(1).GetComponent<Button>().gameObject.SetActive(false);
         StartCoroutine(StartTransaction("https://gezivr-web3.onrender.com/sendTransaction/" + playerScriptable.accountAddress + "/" +
             p + "/" + playerScriptable.privateKey));
-        if(tag == "Skeleton")
-        {
-            FirebaseDatabase.DefaultInstance.RootReference.Child("pieces").Child("skeletons").Child(id).Child("owner").SetValueAsync(playerScriptable.token);
-        }
-        else if(tag == "Dino")
-        {
-            FirebaseDatabase.DefaultInstance.RootReference.Child("pieces").Child("dinosaurs").Child(id).Child("owner").SetValueAsync(playerScriptable.token);
-        }
-        string json = "{\"piecePricePurchase\":" + p + "}";
-        FirebaseDatabase.DefaultInstance.RootReference.Child("users").Child(playerScriptable.token).Child("gallery").Child(id).SetRawJsonValueAsync(json);
-        //FirebaseDatabase.DefaultInstance.RootReference.Child("users").Child(playerScriptable.token).Child("balance").SetValueAsync(playerScriptable.balance - int.Parse(piecePrice.text));
-        pieceOwner.text = playerScriptable.name;
-        //playerScriptable.balance -= float.Parse(piecePrice.text);
-        //PlayerPrefs.SetFloat("balance", playerScriptable.balance);
-        panel.transform.GetChild(0).transform.GetChild(5).GetComponent<Button>().interactable = false;
-        ClosePopup();
+        
+        
     }
 
     IEnumerator StartTransaction(string url)
@@ -380,6 +372,32 @@ public class RaycastGeziVR : MonoBehaviour
         WWW www = new WWW(url);
         yield return www;
         Debug.Log(www.text);
+        loadingPurchase.SetActive(false);
+        if(www.text == "Success")
+        {
+            Debug.Log("Transaction successful");
+            if(tag == "Skeleton")
+            {
+                FirebaseDatabase.DefaultInstance.RootReference.Child("pieces").Child("skeletons").Child(id).Child("owner").SetValueAsync(playerScriptable.token);
+            }
+            else if(tag == "Dino")
+            {
+                FirebaseDatabase.DefaultInstance.RootReference.Child("pieces").Child("dinosaurs").Child(id).Child("owner").SetValueAsync(playerScriptable.token);
+            }
+            string json = "{\"piecePricePurchase\":" + piecePricePurchase.ToString().Replace(",", ".") + "}";
+            FirebaseDatabase.DefaultInstance.RootReference.Child("users").Child(playerScriptable.token).Child("gallery").Child(id).SetRawJsonValueAsync(json);
+            //FirebaseDatabase.DefaultInstance.RootReference.Child("users").Child(playerScriptable.token).Child("balance").SetValueAsync(playerScriptable.balance - int.Parse(piecePrice.text));
+            pieceOwner.text = playerScriptable.name;
+            //playerScriptable.balance -= float.Parse(piecePrice.text);
+            //PlayerPrefs.SetFloat("balance", playerScriptable.balance);
+            panel.transform.GetChild(0).transform.GetChild(5).GetComponent<Button>().interactable = false;
+            StartCoroutine(AutoClosePopup("Success"));
+        }
+        else
+        {
+            Debug.Log("Transaction failed");
+            StartCoroutine(AutoClosePopup("Failed"));
+        }
         StartCoroutine(GetBalance("https://gezivr-web3.onrender.com/getBalance/" + playerScriptable.accountAddress));
     }
 
@@ -391,10 +409,20 @@ public class RaycastGeziVR : MonoBehaviour
         PlayerPrefs.SetFloat("balance", playerScriptable.balance);
     }
 
-    public void ClosePopup()
+    IEnumerator AutoClosePopup(string status)
     {
+        message.text = "Purchase " + status ;
+        yield return new WaitForSeconds(2);
         popup.GetComponent<Canvas>().enabled = false;
+        popup.transform.GetChild(0).transform.GetChild(0).GetComponent<Button>().gameObject.SetActive(true);
+        popup.transform.GetChild(0).transform.GetChild(1).GetComponent<Button>().gameObject.SetActive(true);
         panel.GetComponent<CanvasGroup>().interactable = true;
     }   
 
+    public void ClosePopup()
+    {
+
+        popup.GetComponent<Canvas>().enabled = false;
+        panel.GetComponent<CanvasGroup>().interactable = true;
+    }  
 }
