@@ -27,7 +27,7 @@ public class WikipediaAPI : MonoBehaviour
     [SerializeField] private GameObject scrollViewSearch;
     [SerializeField] private GameObject buttonTemplate;
     [SerializeField] private GameObject searchPlane;
-
+    [SerializeField] private GameObject textRecommending;
 
     public static bool isExitedPlane2 = false;
     public static bool isStatusChanged = false;
@@ -138,10 +138,10 @@ public class WikipediaAPI : MonoBehaviour
         inputField.text = "";
         infoText.text = "";
         imageArtist.sprite = null;
-        if(GameObject.Find("textRecommending").gameObject.activeSelf)
+        if(textRecommending.activeSelf)
         {
-            GameObject.Find("textRecommending").gameObject.GetComponent<TMP_Text>().text = "Recommending museums for you...";
-            GameObject.Find("textRecommending").gameObject.SetActive(false);
+            textRecommending.gameObject.GetComponent<TMP_Text>().text = "Recommending museums for you...";
+           textRecommending.gameObject.SetActive(false);
         }
         
         GameObject.Find("Canvas").transform.GetChild(0).gameObject.SetActive(false);
@@ -228,7 +228,7 @@ public class WikipediaAPI : MonoBehaviour
                     break;
                 case UnityWebRequest.Result.ProtocolError:
                     Debug.Log("No recommended museums found");
-                    GameObject.Find("textRecommending").gameObject.GetComponent<TMP_Text>().text = "No recommended museums found";
+                    textRecommending.gameObject.GetComponent<TMP_Text>().text = "No recommended museums found";
                     break;
                 case UnityWebRequest.Result.Success:
                     Debug.Log("Success");

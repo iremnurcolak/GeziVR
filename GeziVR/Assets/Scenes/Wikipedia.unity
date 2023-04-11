@@ -6912,6 +6912,7 @@ MonoBehaviour:
   scrollViewSearch: {fileID: 4808740}
   buttonTemplate: {fileID: 3429987063929476036, guid: ff94842cd994499438a3591012dcf645, type: 3}
   searchPlane: {fileID: 765092821}
+  textRecommending: {fileID: 642938345}
 --- !u!1 &972732383
 GameObject:
   m_ObjectHideFlags: 0
