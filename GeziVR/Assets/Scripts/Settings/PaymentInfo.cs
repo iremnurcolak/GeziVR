@@ -9,12 +9,30 @@ public class PaymentInfo : MonoBehaviour
     [SerializeField] private TMP_InputField privateKey;
     [SerializeField] private  TMP_InputField accountAddress;
     [SerializeField] private TMP_Text balance;
+
+    private bool isBalanceSet = false;
+    private bool isPrivateKeySet = false;
+    private bool isAccountAddressSet = false;
+
+    [SerializeField] private GameObject loadingPanel;
+    [SerializeField] private GameObject paymentInfoPanel;
+    
     
     void Start()
     {
+        paymentInfoPanel.SetActive(false);
+        loadingPanel.SetActive(true);
         StartCoroutine(GetAccountAddress("https://gezivr.onrender.com/getAccountAddress/" + playerScriptable.token));
         StartCoroutine(GetPrivateKey("https://gezivr.onrender.com/getPrivateKey/" + playerScriptable.token));
-        
+    }
+
+    void Update()
+    {
+        if (isBalanceSet && isPrivateKeySet && isAccountAddressSet)
+        {
+            loadingPanel.SetActive(false);
+            paymentInfoPanel.SetActive(true);
+        }
     }
 
     public void UpdatePaymentInfo()
@@ -31,6 +49,7 @@ public class PaymentInfo : MonoBehaviour
             Debug.Log("WWW Ok!: " + www.text);
             playerScriptable.balance = float.Parse(www.text.Replace(".", ","));
             balance.text = www.text;
+            isBalanceSet = true;
         }
         else
         {
@@ -47,6 +66,7 @@ public class PaymentInfo : MonoBehaviour
             Debug.Log("WWW Ok!: " + www.text);
             playerScriptable.accountAddress = www.text;
             accountAddress.text = www.text;
+            isAccountAddressSet = true;
             StartCoroutine(GetBalance("https://gezivr-web3.onrender.com/getBalance/" + www.text));
         }
         else
@@ -64,6 +84,7 @@ public class PaymentInfo : MonoBehaviour
             Debug.Log("WWW Ok!: " + www.text);
             playerScriptable.privateKey = www.text;
             privateKey.text = www.text;
+            isPrivateKeySet = true;
         }
         else
         {
