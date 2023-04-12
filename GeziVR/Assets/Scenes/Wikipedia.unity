@@ -307,7 +307,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 18136175}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.2899983, y: -5.64, z: 17.29}
+  m_LocalPosition: {x: -0.15, y: -5.64, z: 17.29}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1728,11 +1728,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7993840736314398471, guid: 427efffa8d0a98b4b969e205012d9332, type: 3}
       propertyPath: m_TagString
-      value: ArtInfo
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 8710091975938435613, guid: 427efffa8d0a98b4b969e205012d9332, type: 3}
       propertyPath: m_TagString
-      value: Untagged
+      value: ArtInfo
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 427efffa8d0a98b4b969e205012d9332, type: 3}
@@ -1939,7 +1939,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 200600226}
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
-  m_LocalPosition: {x: 0.3500017, y: -5.64, z: 19.86}
+  m_LocalPosition: {x: 0.49, y: -5.64, z: 19.86}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2118,7 +2118,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5329889025805086280, guid: 427efffa8d0a98b4b969e205012d9332, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.94900167
+      value: 1.15
       objectReference: {fileID: 0}
     - target: {fileID: 5329889025805086280, guid: 427efffa8d0a98b4b969e205012d9332, type: 3}
       propertyPath: m_LocalPosition.y
@@ -2158,11 +2158,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7993840736314398471, guid: 427efffa8d0a98b4b969e205012d9332, type: 3}
       propertyPath: m_TagString
-      value: ArtInfo
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 8710091975938435613, guid: 427efffa8d0a98b4b969e205012d9332, type: 3}
       propertyPath: m_TagString
-      value: Untagged
+      value: ArtInfo
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 427efffa8d0a98b4b969e205012d9332, type: 3}
@@ -3787,11 +3787,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7993840736314398471, guid: 427efffa8d0a98b4b969e205012d9332, type: 3}
       propertyPath: m_TagString
-      value: ArtInfo
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 8710091975938435613, guid: 427efffa8d0a98b4b969e205012d9332, type: 3}
       propertyPath: m_TagString
-      value: Untagged
+      value: ArtInfo
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 427efffa8d0a98b4b969e205012d9332, type: 3}
@@ -3979,7 +3979,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5329889025805086280, guid: 427efffa8d0a98b4b969e205012d9332, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.94
+      value: -1.06
       objectReference: {fileID: 0}
     - target: {fileID: 5329889025805086280, guid: 427efffa8d0a98b4b969e205012d9332, type: 3}
       propertyPath: m_LocalPosition.y
@@ -4019,11 +4019,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7993840736314398471, guid: 427efffa8d0a98b4b969e205012d9332, type: 3}
       propertyPath: m_TagString
-      value: ArtInfo
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 8710091975938435613, guid: 427efffa8d0a98b4b969e205012d9332, type: 3}
       propertyPath: m_TagString
-      value: Untagged
+      value: ArtInfo
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 427efffa8d0a98b4b969e205012d9332, type: 3}
@@ -4612,11 +4612,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7993840736314398471, guid: 427efffa8d0a98b4b969e205012d9332, type: 3}
       propertyPath: m_TagString
-      value: ArtInfo
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 8710091975938435613, guid: 427efffa8d0a98b4b969e205012d9332, type: 3}
       propertyPath: m_TagString
-      value: Untagged
+      value: ArtInfo
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 427efffa8d0a98b4b969e205012d9332, type: 3}
@@ -5713,11 +5713,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7993840736314398471, guid: 427efffa8d0a98b4b969e205012d9332, type: 3}
       propertyPath: m_TagString
-      value: ArtInfo
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 8710091975938435613, guid: 427efffa8d0a98b4b969e205012d9332, type: 3}
       propertyPath: m_TagString
-      value: Untagged
+      value: ArtInfo
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 427efffa8d0a98b4b969e205012d9332, type: 3}
@@ -9596,11 +9596,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7993840736314398471, guid: 427efffa8d0a98b4b969e205012d9332, type: 3}
       propertyPath: m_TagString
-      value: ArtInfo
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 8710091975938435613, guid: 427efffa8d0a98b4b969e205012d9332, type: 3}
       propertyPath: m_TagString
-      value: Untagged
+      value: ArtInfo
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 427efffa8d0a98b4b969e205012d9332, type: 3}
@@ -11637,11 +11637,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7993840736314398471, guid: 427efffa8d0a98b4b969e205012d9332, type: 3}
       propertyPath: m_TagString
-      value: ArtInfo
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 8710091975938435613, guid: 427efffa8d0a98b4b969e205012d9332, type: 3}
       propertyPath: m_TagString
-      value: Untagged
+      value: ArtInfo
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 427efffa8d0a98b4b969e205012d9332, type: 3}
