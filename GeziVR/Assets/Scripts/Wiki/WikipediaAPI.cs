@@ -154,6 +154,8 @@ public class WikipediaAPI : MonoBehaviour
     public void ButtonExit()
     {
         float duration = Time.time - timeEnter;
+        GameObject.Find("Player").GetComponent<PlayerMovement2>().enabled = false;
+        GameObject.Find("PlayerCam").GetComponent<PlayerCamera2>().enabled = false;
         GameObject.Find("Canvas").transform.GetChild(1).gameObject.SetActive(false);
         GameObject.Find("Canvas").transform.GetChild(0).gameObject.SetActive(true);
         GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(3).gameObject.SetActive(false);
