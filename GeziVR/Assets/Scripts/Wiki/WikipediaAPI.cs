@@ -90,6 +90,10 @@ public class WikipediaAPI : MonoBehaviour
                     Cursor.lockState = CursorLockMode.None;
                     Cursor.visible = true; 
                 }
+                else if(hit.transform.tag == "ExitDoor")
+                {
+                    SceneManager.LoadScene("GeziVr");
+                }
             }
         }
 
