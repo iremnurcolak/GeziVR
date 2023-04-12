@@ -1728,11 +1728,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7993840736314398471, guid: 427efffa8d0a98b4b969e205012d9332, type: 3}
       propertyPath: m_TagString
-      value: Untagged
+      value: ArtInfo
       objectReference: {fileID: 0}
     - target: {fileID: 8710091975938435613, guid: 427efffa8d0a98b4b969e205012d9332, type: 3}
       propertyPath: m_TagString
-      value: ArtInfo
+      value: Untagged
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 427efffa8d0a98b4b969e205012d9332, type: 3}
@@ -2158,11 +2158,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7993840736314398471, guid: 427efffa8d0a98b4b969e205012d9332, type: 3}
       propertyPath: m_TagString
-      value: Untagged
+      value: ArtInfo
       objectReference: {fileID: 0}
     - target: {fileID: 8710091975938435613, guid: 427efffa8d0a98b4b969e205012d9332, type: 3}
       propertyPath: m_TagString
-      value: ArtInfo
+      value: Untagged
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 427efffa8d0a98b4b969e205012d9332, type: 3}
@@ -3787,11 +3787,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7993840736314398471, guid: 427efffa8d0a98b4b969e205012d9332, type: 3}
       propertyPath: m_TagString
-      value: Untagged
+      value: ArtInfo
       objectReference: {fileID: 0}
     - target: {fileID: 8710091975938435613, guid: 427efffa8d0a98b4b969e205012d9332, type: 3}
       propertyPath: m_TagString
-      value: ArtInfo
+      value: Untagged
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 427efffa8d0a98b4b969e205012d9332, type: 3}
@@ -4019,11 +4019,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7993840736314398471, guid: 427efffa8d0a98b4b969e205012d9332, type: 3}
       propertyPath: m_TagString
-      value: Untagged
+      value: ArtInfo
       objectReference: {fileID: 0}
     - target: {fileID: 8710091975938435613, guid: 427efffa8d0a98b4b969e205012d9332, type: 3}
       propertyPath: m_TagString
-      value: ArtInfo
+      value: Untagged
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 427efffa8d0a98b4b969e205012d9332, type: 3}
@@ -4612,11 +4612,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7993840736314398471, guid: 427efffa8d0a98b4b969e205012d9332, type: 3}
       propertyPath: m_TagString
-      value: Untagged
+      value: ArtInfo
       objectReference: {fileID: 0}
     - target: {fileID: 8710091975938435613, guid: 427efffa8d0a98b4b969e205012d9332, type: 3}
       propertyPath: m_TagString
-      value: ArtInfo
+      value: Untagged
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 427efffa8d0a98b4b969e205012d9332, type: 3}
@@ -5713,11 +5713,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7993840736314398471, guid: 427efffa8d0a98b4b969e205012d9332, type: 3}
       propertyPath: m_TagString
-      value: Untagged
+      value: ArtInfo
       objectReference: {fileID: 0}
     - target: {fileID: 8710091975938435613, guid: 427efffa8d0a98b4b969e205012d9332, type: 3}
       propertyPath: m_TagString
-      value: ArtInfo
+      value: Untagged
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 427efffa8d0a98b4b969e205012d9332, type: 3}
@@ -9596,11 +9596,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7993840736314398471, guid: 427efffa8d0a98b4b969e205012d9332, type: 3}
       propertyPath: m_TagString
-      value: Untagged
+      value: ArtInfo
       objectReference: {fileID: 0}
     - target: {fileID: 8710091975938435613, guid: 427efffa8d0a98b4b969e205012d9332, type: 3}
       propertyPath: m_TagString
-      value: ArtInfo
+      value: Untagged
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 427efffa8d0a98b4b969e205012d9332, type: 3}
@@ -11637,11 +11637,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7993840736314398471, guid: 427efffa8d0a98b4b969e205012d9332, type: 3}
       propertyPath: m_TagString
-      value: Untagged
+      value: ArtInfo
       objectReference: {fileID: 0}
     - target: {fileID: 8710091975938435613, guid: 427efffa8d0a98b4b969e205012d9332, type: 3}
       propertyPath: m_TagString
-      value: ArtInfo
+      value: Untagged
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 427efffa8d0a98b4b969e205012d9332, type: 3}
