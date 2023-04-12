@@ -391,7 +391,7 @@ public class RaycastGeziVR : MonoBehaviour
 
             loadingPurchase.SetActive(false);
             Debug.Log(www.downloadHandler.text);
-            if (www.isNetworkError || www.isHttpError)
+            if (www.result == UnityWebRequest.Result.ConnectionError || www.result == UnityWebRequest.Result.ProtocolError)
             {
                 Debug.Log(www.error);
                 StartCoroutine(AutoClosePopup("Failed"));
@@ -426,10 +426,22 @@ public class RaycastGeziVR : MonoBehaviour
 
     IEnumerator GetBalance(string url)
     {
-        WWW www = new WWW(url);
-        yield return www;
-        playerScriptable.balance = float.Parse(www.text.Replace(".", ","));
-        PlayerPrefs.SetFloat("balance", playerScriptable.balance);
+        using(UnityWebRequest www = UnityWebRequest.Get(url))
+        {
+            yield return www.SendWebRequest();
+            if(www.result == UnityWebRequest.Result.ConnectionError || www.result == UnityWebRequest.Result.ProtocolError)
+            {
+                Debug.Log(www.error);
+            }
+            else
+            {
+                Debug.Log(www.downloadHandler.text);
+                
+                playerScriptable.balance = float.Parse(www.downloadHandler.text.Replace(".", ","));
+                PlayerPrefs.SetFloat("balance", playerScriptable.balance);
+            }
+        }
+        
     }
 
     IEnumerator AutoClosePopup(string status)
