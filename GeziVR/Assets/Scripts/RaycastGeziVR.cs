@@ -6,6 +6,12 @@ using Firebase.Extensions;
 using Firebase.Database;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
+using UnityEngine.Networking;
+using Newtonsoft.Json;
+using System.IO;
+using System.Security.Cryptography;
+using System.Text;
 
 public class RaycastGeziVR : MonoBehaviour
 {
@@ -25,6 +31,8 @@ public class RaycastGeziVR : MonoBehaviour
     public TMPro.TextMeshProUGUI pieceOwner;
     public TMPro.TextMeshProUGUI message;
 
+    [SerializeField] private GameObject loadingPurchase;
+
     void Start()
     {
         cam =  GameObject.Find("CameraHolder").transform.GetChild(0).GetComponent<Camera>();
@@ -38,6 +46,7 @@ public class RaycastGeziVR : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0) && !isPanelOpen)
         {
+
             Ray ray = cam.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
 
@@ -116,6 +125,11 @@ public class RaycastGeziVR : MonoBehaviour
                             }
                         }); 
                     }
+
+                    else if(tag == "DynamicMuseum")
+                    {
+                        SceneManager.LoadScene("Wikipedia");
+                    }
                 }
             }
         }
@@ -123,7 +137,6 @@ public class RaycastGeziVR : MonoBehaviour
 
     void OpenPanel()    
     {
-        Debug.Log("Panel is opening");
         isPanelOpen = true;
         panel.GetComponent<Canvas>().enabled = true; 
         Cursor.lockState = CursorLockMode.None;
@@ -131,7 +144,6 @@ public class RaycastGeziVR : MonoBehaviour
         //bu cursor şeyleri vr'da deneme yaparken olmamali
         Cursor.visible = true; 
 
-        Debug.Log("Panel is opened");    
         if(tag == "Skeleton")
         {
             FirebaseDatabase.DefaultInstance.RootReference.Child("pieces").Child("skeletons").Child(id).GetValueAsync().ContinueWithOnMainThread(t => {
@@ -226,7 +238,6 @@ public class RaycastGeziVR : MonoBehaviour
         //panel = cam.transform.GetChild(0).gameObject; 
         isPanelOpen = false;
         panel.GetComponent<Canvas>().enabled = false;
-        Debug.Log("Panel is closed");
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false; 
         pieceName.text = "";
@@ -337,12 +348,9 @@ public class RaycastGeziVR : MonoBehaviour
     {
         Debug.Log("Checking balance");
         Debug.Log(playerScriptable.balance >= price);
-        Debug.Log("price" +price);
-        Debug.Log("balance" + playerScriptable.balance);
         StartCoroutine(GetBalance("https://gezivr-web3.onrender.com/getBalance/" + playerScriptable.accountAddress));
         if(playerScriptable.balance >= price)
         {
-            Debug.Log("Balance is enough");
             return true;
             
         }
@@ -355,46 +363,113 @@ public class RaycastGeziVR : MonoBehaviour
     public void ApprovePurchase()
     {
         string p = piecePricePurchase.ToString().Replace(",", ".");
-        StartCoroutine(StartTransaction("https://gezivr-web3.onrender.com/sendTransaction/" + playerScriptable.accountAddress + "/" +
-            p + "/" + playerScriptable.privateKey));
-        if(tag == "Skeleton")
-        {
-            FirebaseDatabase.DefaultInstance.RootReference.Child("pieces").Child("skeletons").Child(id).Child("owner").SetValueAsync(playerScriptable.token);
-        }
-        else if(tag == "Dino")
-        {
-            FirebaseDatabase.DefaultInstance.RootReference.Child("pieces").Child("dinosaurs").Child(id).Child("owner").SetValueAsync(playerScriptable.token);
-        }
-        string json = "{\"piecePricePurchase\":" + p + "}";
-        FirebaseDatabase.DefaultInstance.RootReference.Child("users").Child(playerScriptable.token).Child("gallery").Child(id).SetRawJsonValueAsync(json);
-        //FirebaseDatabase.DefaultInstance.RootReference.Child("users").Child(playerScriptable.token).Child("balance").SetValueAsync(playerScriptable.balance - int.Parse(piecePrice.text));
-        pieceOwner.text = playerScriptable.name;
-        //playerScriptable.balance -= float.Parse(piecePrice.text);
-        //PlayerPrefs.SetFloat("balance", playerScriptable.balance);
-        panel.transform.GetChild(0).transform.GetChild(5).GetComponent<Button>().interactable = false;
-        ClosePopup();
+        loadingPurchase.SetActive(true);
+        message.text = "";
+        popup.transform.GetChild(0).transform.GetChild(0).GetComponent<Button>().gameObject.SetActive(false);
+        popup.transform.GetChild(0).transform.GetChild(1).GetComponent<Button>().gameObject.SetActive(false);
+
+    
+        StartCoroutine(StartTransaction("https://gezivr-web3.onrender.com/sendTransaction", playerScriptable.token,p));
+        
+        
     }
 
-    IEnumerator StartTransaction(string url)
+    
+
+    IEnumerator StartTransaction(string url, string token, string amount)
     {
-        WWW www = new WWW(url);
-        yield return www;
-        Debug.Log(www.text);
+        JsonTransaction jsonData = new JsonTransaction(token, amount);
+        var jsonDataToSend = JsonConvert.SerializeObject(jsonData);
+        var data = System.Text.Encoding.UTF8.GetBytes(jsonDataToSend);
+        using (UnityWebRequest www = new UnityWebRequest(url, "POST"))
+        {
+            www.SetRequestHeader("Content-Type", "application/json");
+            byte [] bodyRaw = Encoding.UTF8.GetBytes(jsonDataToSend);
+            www.uploadHandler = (UploadHandler) new UploadHandlerRaw(bodyRaw);
+            www.downloadHandler = (DownloadHandler) new DownloadHandlerBuffer();
+            yield return www.SendWebRequest();
+
+            loadingPurchase.SetActive(false);
+            Debug.Log(www.downloadHandler.text);
+            if (www.result == UnityWebRequest.Result.ConnectionError || www.result == UnityWebRequest.Result.ProtocolError)
+            {
+                Debug.Log(www.error);
+                StartCoroutine(AutoClosePopup("Failed"));
+            }
+            else
+            {
+                Debug.Log("Transaction successful");
+                if(tag == "Skeleton")
+                {
+                    FirebaseDatabase.DefaultInstance.RootReference.Child("pieces").Child("skeletons").Child(id).Child("owner").SetValueAsync(playerScriptable.token);
+                }
+                else if(tag == "Dino")
+                {
+                    FirebaseDatabase.DefaultInstance.RootReference.Child("pieces").Child("dinosaurs").Child(id).Child("owner").SetValueAsync(playerScriptable.token);
+                }
+                string json = "{\"piecePricePurchase\":" + piecePricePurchase.ToString().Replace(",", ".") + "}";
+                FirebaseDatabase.DefaultInstance.RootReference.Child("users").Child(playerScriptable.token).Child("gallery").Child(id).SetRawJsonValueAsync(json);
+                //FirebaseDatabase.DefaultInstance.RootReference.Child("users").Child(playerScriptable.token).Child("balance").SetValueAsync(playerScriptable.balance - int.Parse(piecePrice.text));
+                pieceOwner.text = playerScriptable.name;
+                //playerScriptable.balance -= float.Parse(piecePrice.text);
+                //PlayerPrefs.SetFloat("balance", playerScriptable.balance);
+                panel.transform.GetChild(0).transform.GetChild(5).GetComponent<Button>().interactable = false;
+                StartCoroutine(AutoClosePopup("Success"));
+            }
+        }
+        
+
         StartCoroutine(GetBalance("https://gezivr-web3.onrender.com/getBalance/" + playerScriptable.accountAddress));
+
+        
     }
 
     IEnumerator GetBalance(string url)
     {
-        WWW www = new WWW(url);
-        yield return www;
-        playerScriptable.balance = float.Parse(www.text.Replace(".", ","));
-        PlayerPrefs.SetFloat("balance", playerScriptable.balance);
+        using(UnityWebRequest www = UnityWebRequest.Get(url))
+        {
+            yield return www.SendWebRequest();
+            if(www.result == UnityWebRequest.Result.ConnectionError || www.result == UnityWebRequest.Result.ProtocolError)
+            {
+                Debug.Log(www.error);
+            }
+            else
+            {
+                Debug.Log(www.downloadHandler.text);
+                
+                playerScriptable.balance = float.Parse(www.downloadHandler.text.Replace(".", ","));
+                PlayerPrefs.SetFloat("balance", playerScriptable.balance);
+            }
+        }
+        
     }
 
-    public void ClosePopup()
+    IEnumerator AutoClosePopup(string status)
     {
+        message.text = "Purchase " + status ;
+        yield return new WaitForSeconds(2);
         popup.GetComponent<Canvas>().enabled = false;
+        popup.transform.GetChild(0).transform.GetChild(0).GetComponent<Button>().gameObject.SetActive(true);
+        popup.transform.GetChild(0).transform.GetChild(1).GetComponent<Button>().gameObject.SetActive(true);
         panel.GetComponent<CanvasGroup>().interactable = true;
     }   
 
+    public void ClosePopup()
+    {
+
+        popup.GetComponent<Canvas>().enabled = false;
+        panel.GetComponent<CanvasGroup>().interactable = true;
+    }  
+}
+
+public class JsonTransaction
+{
+    public string userId;
+    public string amount;
+
+    public JsonTransaction(string userId, string amount)
+    {
+        this.userId = userId;
+        this.amount = amount;
+    }
 }
