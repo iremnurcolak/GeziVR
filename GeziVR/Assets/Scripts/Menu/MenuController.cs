@@ -5,7 +5,7 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-
+using UnityEngine.Networking;
 public class MenuController : MonoBehaviour
 {
     public TMPro.TextMeshProUGUI infoText;
@@ -41,17 +41,24 @@ public class MenuController : MonoBehaviour
 
     IEnumerator GetBalance(string url)
     {
-        WWW www = new WWW(url);
-        yield return www;
-        if (www.error == null)
+        using (UnityWebRequest webRequest = UnityWebRequest.Get(url))
         {
-            Debug.Log("WWW Ok!: " + www.text);
-            playerScriptable.balance = float.Parse(www.text.Replace(".", ","));
-            balanceText.text = playerScriptable.balance.ToString();
-        }
-        else
-        {
-            Debug.Log("WWW Error: " + www.error);
+            // Request and wait for the desired page.
+            yield return webRequest.SendWebRequest();
+ 
+            string[] pages = url.Split('/');
+            int page = pages.Length - 1;
+ 
+            if (webRequest.result == UnityWebRequest.Result.ConnectionError)
+            {
+                Debug.Log(pages[page] + ": Error: " + webRequest.error);
+            }
+            else
+            {
+                Debug.Log(pages[page] + ":\nReceived: " + webRequest.downloadHandler.text);
+                playerScriptable.balance = float.Parse(webRequest.downloadHandler.text.Replace(".", ","));
+                balanceText.text = playerScriptable.balance.ToString();
+            }
         }
     }
 

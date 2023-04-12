@@ -7,7 +7,6 @@ public class User
     public int balance;
     public string visitedMuseums;
 
-    public string privateKey;
     public string accountAddress;
 
     public User(string name, string email, string profileImageUrl)
@@ -17,7 +16,6 @@ public class User
         this.profileImageUrl = profileImageUrl;
         this.balance = 0;
         this.visitedMuseums = "";
-        this.privateKey = "";
         this.accountAddress = "";
     }
 }
