@@ -29,6 +29,7 @@ public class PaymentInfo : MonoBehaviour
     {
         paymentInfoPanel.SetActive(false);
         loadingPanel.SetActive(true);
+        
         StartCoroutine(GetAccountAddress("https://gezivr.onrender.com/getAccountAddress/" + playerScriptable.token));
         StartCoroutine(GetPrivateKey("https://gezivr.onrender.com/getPrivateKey/" + playerScriptable.token));
     }
@@ -73,11 +74,18 @@ public class PaymentInfo : MonoBehaviour
         yield return www;
         if (www.error == null)
         {
-            Debug.Log("WWW Ok!: " + www.text);
-            playerScriptable.accountAddress = www.text;
-            accountAddress.text = www.text;
+            if(www.text != "No account address"){
+                Debug.Log("WWW Ok!: " + www.text);
+                playerScriptable.accountAddress = www.text;
+                accountAddress.text = www.text;
+                
+                StartCoroutine(GetBalance("https://gezivr-web3.onrender.com/getBalance/" + www.text));
+            }
+            else
+            {
+                isBalanceSet = true;
+            }
             isAccountAddressSet = true;
-            StartCoroutine(GetBalance("https://gezivr-web3.onrender.com/getBalance/" + www.text));
         }
         else
         {
@@ -93,10 +101,14 @@ public class PaymentInfo : MonoBehaviour
         {
             Debug.Log("WWW Ok!: " + www.text);
             var json = JsonUtility.FromJson<JsonPrivateKey>(www.text);
-            string private_key = DecryptAES(json.privateKey);
-            private_key = private_key.Substring(0, json.length);
-            playerScriptable.privateKey = private_key;
-            privateKey.text = private_key;
+            Debug.Log("AAAA"  + json.privateKey);
+            if(json.privateKey != null && json.privateKey != "")
+            {
+                string private_key = DecryptAES(json.privateKey);
+                private_key = private_key.Substring(0, json.length);
+                playerScriptable.privateKey = private_key;
+                privateKey.text = private_key;
+            }
             isPrivateKeySet = true;
         }
         else
@@ -118,7 +130,7 @@ public class PaymentInfo : MonoBehaviour
             www.downloadHandler = (DownloadHandler) new DownloadHandlerBuffer();
             yield return www.SendWebRequest();
 
-            if (www.isNetworkError || www.isHttpError)
+            if (www.result == UnityWebRequest.Result.ConnectionError || www.result == UnityWebRequest.Result.ProtocolError)
             {
                 Debug.Log(www.error);
             }
