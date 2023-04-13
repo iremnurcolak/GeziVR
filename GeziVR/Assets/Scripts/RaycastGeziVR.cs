@@ -130,6 +130,54 @@ public class RaycastGeziVR : MonoBehaviour
                     {
                         SceneManager.LoadScene("Wikipedia");
                     }
+
+                    else if(tag == "EntranceDino")
+                    {
+                        popup.GetComponent<Canvas>().enabled = true;
+                        Cursor.lockState = CursorLockMode.None;
+                        //bu cursor şeyleri vr'da deneme yaparken olmamali
+                        Cursor.visible = true;
+                        GameObject.Find("Player").GetComponent<PlayerMovement>().enabled = false;
+                        GameObject.Find("PlayerCam").GetComponent<PlayerCamera>().enabled = false;
+                        FirebaseDatabase.DefaultInstance.RootReference.Child("museums").Child("dino-museum").GetValueAsync().ContinueWithOnMainThread(t => {
+                            if (t.IsFaulted)
+                            {
+                                Debug.Log("Error");
+                            }
+                            else if (t.IsCompleted)
+                            {
+                                snapshot = t.Result;
+                                Debug.Log(snapshot);
+                                
+                                
+                                if (snapshot.Exists)
+                                {
+                                    bool canBuy = CheckBalance(float.Parse(snapshot.Child("price").Value.ToString()));
+                                    if(canBuy)
+                                    {
+                                        message.text = "Do you want to enter the Dinosaur Museum for " + snapshot.Child("price").Value.ToString() + " ETH ?";
+                                        piecePricePurchase = float.Parse(snapshot.Child("price").Value.ToString());
+                                    }
+                                    else
+                                    {
+                                        message.text = "You don't have enough money to enter the Dinosaur museum";
+                                        popup.transform.GetChild(0).transform.GetChild(0).GetComponent<Button>().gameObject.SetActive(false);
+                                        popup.transform.GetChild(0).transform.GetChild(1).GetComponent<Button>().gameObject.SetActive(false);
+                                        popup.transform.GetChild(0).transform.GetChild(3).GetComponent<Button>().gameObject.SetActive(true);
+                                    }
+                                }
+                                else
+                                {
+                                    Debug.Log("Museum does not exist");
+                                }
+                            }
+                        });
+                        
+                    }
+                    else if(tag == "ExitDoorDino")
+                    {
+                        GameObject.Find("Player").gameObject.GetComponent<Rigidbody>().position = new Vector3(41, -4, -49);
+                    }
                 }
             }
         }
@@ -266,6 +314,7 @@ public class RaycastGeziVR : MonoBehaviour
                         bool canBuy = CheckBalance(float.Parse(snapshot.Child("price").Value.ToString()));
                         popup.GetComponent<Canvas>().enabled = true;
                         panel.GetComponent<CanvasGroup>().interactable = false;
+                         
                         if(canBuy)
                         {
                             piecePricePurchase = float.Parse(snapshot.Child("price").Value.ToString());
@@ -347,12 +396,16 @@ public class RaycastGeziVR : MonoBehaviour
     bool CheckBalance(float price)
     {
         Debug.Log("Checking balance");
+        
+        if(playerScriptable.accountAddress == "")
+        {
+            return false;
+        }
         Debug.Log(playerScriptable.balance >= price);
         StartCoroutine(GetBalance("https://gezivr-web3.onrender.com/getBalance/" + playerScriptable.accountAddress));
         if(playerScriptable.balance >= price)
         {
             return true;
-            
         }
         else
         {
@@ -368,10 +421,7 @@ public class RaycastGeziVR : MonoBehaviour
         popup.transform.GetChild(0).transform.GetChild(0).GetComponent<Button>().gameObject.SetActive(false);
         popup.transform.GetChild(0).transform.GetChild(1).GetComponent<Button>().gameObject.SetActive(false);
 
-    
         StartCoroutine(StartTransaction("https://gezivr-web3.onrender.com/sendTransaction", playerScriptable.token,p));
-        
-        
     }
 
     
@@ -407,13 +457,16 @@ public class RaycastGeziVR : MonoBehaviour
                 {
                     FirebaseDatabase.DefaultInstance.RootReference.Child("pieces").Child("dinosaurs").Child(id).Child("owner").SetValueAsync(playerScriptable.token);
                 }
-                string json = "{\"piecePricePurchase\":" + piecePricePurchase.ToString().Replace(",", ".") + "}";
-                FirebaseDatabase.DefaultInstance.RootReference.Child("users").Child(playerScriptable.token).Child("gallery").Child(id).SetRawJsonValueAsync(json);
-                //FirebaseDatabase.DefaultInstance.RootReference.Child("users").Child(playerScriptable.token).Child("balance").SetValueAsync(playerScriptable.balance - int.Parse(piecePrice.text));
-                pieceOwner.text = playerScriptable.name;
-                //playerScriptable.balance -= float.Parse(piecePrice.text);
-                //PlayerPrefs.SetFloat("balance", playerScriptable.balance);
-                panel.transform.GetChild(0).transform.GetChild(5).GetComponent<Button>().interactable = false;
+                if(tag != "EntranceDino")
+                {
+                    string json = "{\"piecePricePurchase\":" + piecePricePurchase.ToString().Replace(",", ".") + "}";
+                    FirebaseDatabase.DefaultInstance.RootReference.Child("users").Child(playerScriptable.token).Child("gallery").Child(id).SetRawJsonValueAsync(json);
+                    //FirebaseDatabase.DefaultInstance.RootReference.Child("users").Child(playerScriptable.token).Child("balance").SetValueAsync(playerScriptable.balance - int.Parse(piecePrice.text));
+                    pieceOwner.text = playerScriptable.name;
+                    //playerScriptable.balance -= float.Parse(piecePrice.text);
+                    //PlayerPrefs.SetFloat("balance", playerScriptable.balance);
+                    panel.transform.GetChild(0).transform.GetChild(5).GetComponent<Button>().interactable = false;
+                }
                 StartCoroutine(AutoClosePopup("Success"));
             }
         }
@@ -448,17 +501,44 @@ public class RaycastGeziVR : MonoBehaviour
     {
         message.text = "Purchase " + status ;
         yield return new WaitForSeconds(2);
+        if(tag == "EntranceDino")
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+        
+        //bu cursor şeyleri vr'da deneme yaparken olmamali
+            Cursor.visible = false;
+            GameObject.Find("Player").GetComponent<PlayerMovement>().enabled = true;
+            GameObject.Find("PlayerCam").GetComponent<PlayerCamera>().enabled = true;
+            GameObject.Find("Player").gameObject.GetComponent<Rigidbody>().position = new Vector3(44, -4, -36);
+        }
         popup.GetComponent<Canvas>().enabled = false;
         popup.transform.GetChild(0).transform.GetChild(0).GetComponent<Button>().gameObject.SetActive(true);
         popup.transform.GetChild(0).transform.GetChild(1).GetComponent<Button>().gameObject.SetActive(true);
-        panel.GetComponent<CanvasGroup>().interactable = true;
+        if(tag != "EntranceDino")
+        {
+            panel.GetComponent<CanvasGroup>().interactable = true;
+        }
+
     }   
 
     public void ClosePopup()
     {
 
         popup.GetComponent<Canvas>().enabled = false;
-        panel.GetComponent<CanvasGroup>().interactable = true;
+        
+        if(tag != "EntranceDino")
+        {
+            panel.GetComponent<CanvasGroup>().interactable = true;
+        }
+        if(tag == "EntranceDino")
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+        
+        //bu cursor şeyleri vr'da deneme yaparken olmamali
+            Cursor.visible = false;
+            GameObject.Find("Player").GetComponent<PlayerMovement>().enabled = true;
+            GameObject.Find("PlayerCam").GetComponent<PlayerCamera>().enabled = true;
+        }
     }  
 }
 

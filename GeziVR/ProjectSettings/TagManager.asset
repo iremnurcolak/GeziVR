@@ -9,6 +9,8 @@ TagManager:
   - ArtInfo
   - DynamicMuseum
   - ExitDoor
+  - ExitDoorDino
+  - EntranceDino
   layers:
   - Default
   - TransparentFX
