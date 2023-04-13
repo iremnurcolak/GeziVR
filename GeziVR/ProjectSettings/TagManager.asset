@@ -8,6 +8,7 @@ TagManager:
   - Dino
   - ArtInfo
   - DynamicMuseum
+  - ExitDoor
   layers:
   - Default
   - TransparentFX
