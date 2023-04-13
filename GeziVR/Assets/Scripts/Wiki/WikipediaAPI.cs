@@ -29,7 +29,7 @@ public class WikipediaAPI : MonoBehaviour
     [SerializeField] private GameObject searchPlane;
     [SerializeField] private GameObject textRecommending;
 
-    public static bool isExitedPlane2 = false;
+    
     public static bool isStatusChanged = false;
 
     private WikiArtArtist artist;
@@ -37,6 +37,8 @@ public class WikipediaAPI : MonoBehaviour
 
     private WikiArtPainting [] allPaintings; 
     private WikiArtPainting [] window = new WikiArtPainting[8];
+
+    private bool areAllPaintingsShown = false;
     private int index = 0;
 
     private bool isArtistImageSet = false;
@@ -62,10 +64,6 @@ public class WikipediaAPI : MonoBehaviour
     
     private void Update()
     {
-        if(isStatusChanged)
-        {
-            CheckPlanes();
-        }
 
         if (Input.GetMouseButtonDown(0))
         {
@@ -83,12 +81,16 @@ public class WikipediaAPI : MonoBehaviour
                 {
                     GameObject parent  = hit.transform.parent.gameObject;
                     int index = parent.name.Substring(parent.name.Length - 1)[0] - '1';
-                    artTitle.text = window[index].title;
-                    artYear.text = window[index].yearAsString;
-                    artSize.text = window[index].width + "x" + window[index].height;    
-                    GameObject.Find("CanvasDescription").transform.GetChild(0).gameObject.SetActive(true);
-                    Cursor.lockState = CursorLockMode.None;
-                    Cursor.visible = true; 
+                    if(window[index] != null)
+                    {
+                        artTitle.text = window[index].title;
+                        artYear.text = window[index].yearAsString;
+                        artSize.text = window[index].width + "x" + window[index].height;    
+                        GameObject.Find("CanvasDescription").transform.GetChild(0).gameObject.SetActive(true);
+                        Cursor.lockState = CursorLockMode.None;
+                        Cursor.visible = true; 
+                    }
+                    
                 }
                 else if(hit.transform.tag == "ExitDoor")
                 {
@@ -109,6 +111,7 @@ public class WikipediaAPI : MonoBehaviour
             isArtistImageSet = false;
             isArtistInfoSet = false;
         }
+        
 
     }
 
@@ -167,11 +170,11 @@ public class WikipediaAPI : MonoBehaviour
         GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(5).gameObject.SetActive(true);
         GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(0).gameObject.SetActive(false);
         GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(1).gameObject.SetActive(false);
-        
-        
+        GameObject.Find("Canvas").transform.GetChild(1).transform.GetChild(0).gameObject.GetComponent<Button>().interactable = true;
+        GameObject.Find("Canvas").transform.GetChild(1).transform.GetChild(1).gameObject.GetComponent<Button>().interactable = true;
         StartCoroutine(DeleteFromSuggestions("https://gezivr.onrender.com/deleteFromSuggestedMuseums/" + playerScriptable.token + "/" + artist.contentId));
         StartCoroutine(PutVisitedMuseum("https://gezivr.onrender.com/addVisitedMuseum/" + playerScriptable.token + "/" + artist.contentId + "/" + duration.ToString().Replace(',', '.')));
-
+        index = 0;
     }
 
     public void CloseDescription()
@@ -336,6 +339,7 @@ public class WikipediaAPI : MonoBehaviour
 
     IEnumerator GetPaintings(string uri)
     {
+        GameObject.Find("Canvas").transform.GetChild(1).transform.GetChild(2).gameObject.GetComponent<Button>().interactable = false;
         GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(1).gameObject.SetActive(true);
 
         using (UnityWebRequest webRequest = UnityWebRequest.Get(uri))
@@ -372,23 +376,28 @@ public class WikipediaAPI : MonoBehaviour
                     {
                         if(i >= allPaintings.Length)
                         {
-                            break;
+                            GameObject go = GameObject.Find("Frame" + (i%8 + 1));
+                            areAllPaintingsShown = true;
+                            go.transform.GetChild(3).GetComponent<Renderer>().material.mainTexture = null;
+                            window[i] = null;
                         }
 
-                        window[i] = allPaintings[i];
-                        
-                        Texture2D tex = new Texture2D(2, 2);
-                        tex.LoadImage(allPaintings[i].imageBytes);
-                        GameObject go = GameObject.Find("Frame" + (i + 1));
-                        float imageRatioX = float.Parse(allPaintings[i].width)/( float.Parse(allPaintings[i].width) + float.Parse(allPaintings[i].height));
-                        float imageRatioY = float.Parse(allPaintings[i].height) / (float.Parse(allPaintings[i].width) + float.Parse(allPaintings[i].height));
-                        if(imageRatioY > 0.4)
-                        {
-                            imageRatioY = 0.4f;
-                            imageRatioX = imageRatioX*0.4f/imageRatioY;
+                        else{
+                            window[i] = allPaintings[i];
+                            
+                            Texture2D tex = new Texture2D(2, 2);
+                            tex.LoadImage(allPaintings[i].imageBytes);
+                            GameObject go = GameObject.Find("Frame" + (i + 1));
+                            float imageRatioX = float.Parse(allPaintings[i].width)/( float.Parse(allPaintings[i].width) + float.Parse(allPaintings[i].height));
+                            float imageRatioY = float.Parse(allPaintings[i].height) / (float.Parse(allPaintings[i].width) + float.Parse(allPaintings[i].height));
+                            if(imageRatioY > 0.4)
+                            {
+                                imageRatioY = 0.4f;
+                                imageRatioX = imageRatioX*0.4f/imageRatioY;
+                            }
+                            go.transform.GetChild(3).transform.localScale = new Vector3( imageRatioX, go.transform.GetChild(3).transform.localScale.y, imageRatioY);
+                            go.transform.GetChild(3).GetComponent<Renderer>().material.mainTexture = tex;
                         }
-                        go.transform.GetChild(3).transform.localScale = new Vector3( imageRatioX, go.transform.GetChild(3).transform.localScale.y, imageRatioY);
-                        go.transform.GetChild(3).GetComponent<Renderer>().material.mainTexture = tex;
                     }
                     index = 8;
                     GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(1).gameObject.SetActive(false);
@@ -398,31 +407,73 @@ public class WikipediaAPI : MonoBehaviour
         }
     }
 
-    private void CheckPlanes()
-    {
-        isStatusChanged = false;
-        if(isExitedPlane2)
-        {
-            isExitedPlane2 = false;
-            SetNewWindow();
-        }
-    }
 
-    private void SetNewWindow()
+    public void SetNewWindow()
     {
+        GameObject.Find("Canvas").transform.GetChild(1).transform.GetChild(2).gameObject.GetComponent<Button>().interactable = true;
         for (int i = index; i < index+8; i++)
         {
+            if(areAllPaintingsShown)
+            {
+                GameObject.Find("Canvas").transform.GetChild(1).transform.GetChild(1).gameObject.GetComponent<Button>().interactable = false;
+            }
             if(i >= allPaintings.Length)
             {
-                break;
+                GameObject go = GameObject.Find("Frame" + (i%8 + 1));
+                areAllPaintingsShown = true;
+                go.transform.GetChild(3).GetComponent<Renderer>().material.mainTexture = null;
+                window[i%8] = null;
             }
-       
+            else
+            {
+                try
+                {
+                    allPaintings[i].imageBytes = new System.Net.WebClient().DownloadData(allPaintings[i].image);
+                }
+                catch (Exception e)
+                {
+                    window[i%8] = null;
+                    GameObject.Find("Frame" + (i%8 + 1)).transform.GetChild(3).GetComponent<Renderer>().material.mainTexture = null;
+                    continue;
+                }
+                window[i%8] = allPaintings[i];
+                
+                Texture2D tex = new Texture2D(2, 2);
+                tex.LoadImage(allPaintings[i].imageBytes);
+                GameObject go = GameObject.Find("Frame" + (i%8 + 1));
+                float imageRatioX = float.Parse(allPaintings[i].width)/( float.Parse(allPaintings[i].width) + float.Parse(allPaintings[i].height));
+                float imageRatioY = float.Parse(allPaintings[i].height) / (float.Parse(allPaintings[i].width) + float.Parse(allPaintings[i].height));
+                if(imageRatioY > 0.4)
+                {
+                    imageRatioY = 0.4f;
+                    imageRatioX = imageRatioX*0.4f/imageRatioY;
+                }
+                go.transform.GetChild(3).transform.localScale = new Vector3( imageRatioX, go.transform.GetChild(3).transform.localScale.y, imageRatioY);
+                go.transform.GetChild(3).GetComponent<Renderer>().material.mainTexture = tex;
+            }
+        }
+        index += 8;
+    }
+
+    public void SetPrevWindow()
+    {
+        areAllPaintingsShown = false;
+        GameObject.Find("Canvas").transform.GetChild(1).transform.GetChild(1).gameObject.GetComponent<Button>().interactable = true;
+        if(index == 16)
+        {
+            GameObject.Find("Canvas").transform.GetChild(1).transform.GetChild(2).gameObject.GetComponent<Button>().interactable = false;
+        }
+        for (int i = index-16; i < index-8; i++)
+        {
             try
             {
                 allPaintings[i].imageBytes = new System.Net.WebClient().DownloadData(allPaintings[i].image);
             }
             catch (Exception e)
             {
+                window[i%8] = null;
+           
+                GameObject.Find("Frame" + (i%8 + 1)).transform.GetChild(3).GetComponent<Renderer>().material.mainTexture = null;
                 continue;
             }
             window[i%8] = allPaintings[i];
@@ -439,8 +490,9 @@ public class WikipediaAPI : MonoBehaviour
             }
             go.transform.GetChild(3).transform.localScale = new Vector3( imageRatioX, go.transform.GetChild(3).transform.localScale.y, imageRatioY);
             go.transform.GetChild(3).GetComponent<Renderer>().material.mainTexture = tex;
+            
         }
-        index += 8;
+        index -= 8;
     }
 
     IEnumerator setImage(string url, Image image) {
