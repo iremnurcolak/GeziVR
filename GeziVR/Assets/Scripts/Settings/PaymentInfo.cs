@@ -139,7 +139,11 @@ public class PaymentInfo : MonoBehaviour
                 Debug.Log("Update Payment Ok!");
                 playerScriptable.privateKey = privateKey.text;
                 playerScriptable.accountAddress = accountAddress;
-                StartCoroutine(GetBalance("https://gezivr-web3.onrender.com/getBalance/" + accountAddress));
+                if(accountAddress != "")
+                    StartCoroutine(GetBalance("https://gezivr-web3.onrender.com/getBalance/" + accountAddress));
+                else
+                    playerScriptable.balance = 0;
+                    balance.text = "0";
             }
         }
         

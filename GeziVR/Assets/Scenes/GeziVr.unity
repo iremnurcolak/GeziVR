@@ -25780,7 +25780,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4287368372840696056, guid: b4ebd55c7d482d444aa091b7615cc95a, type: 3}
       propertyPath: m_TagString
-      value: DynamicMuseum
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 4287368373055598589, guid: b4ebd55c7d482d444aa091b7615cc95a, type: 3}
       propertyPath: m_TagString
