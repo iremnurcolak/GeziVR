@@ -75,27 +75,33 @@ public class WikipediaAPI : MonoBehaviour
             {
                 var hitPoint = hit.point;
                 hitPoint.y = 0;
-                var playerPosition = transform.position;
+                var playerPosition = GameObject.Find("Player").gameObject.GetComponent<Rigidbody>().position;
                 playerPosition.y = 0;
-                //var distance = Vector3.Distance(hitPoint, playerPosition);
-                if(hit.transform.tag == "ArtInfo")
+                
+                var distance = Vector3.Distance(hitPoint, playerPosition);
+                if(distance < 20)
                 {
-                    GameObject parent  = hit.transform.parent.gameObject;
-                    int index = parent.name.Substring(parent.name.Length - 1)[0] - '1';
-                    if(window[index] != null)
+                    Debug.Log("Distance: " + distance);
+                    if(hit.transform.tag == "ArtInfo")
                     {
-                        artTitle.text = window[index].title;
-                        artYear.text = window[index].yearAsString;
-                        artSize.text = window[index].width + "x" + window[index].height;    
-                        GameObject.Find("CanvasDescription").transform.GetChild(0).gameObject.SetActive(true);
-                        Cursor.lockState = CursorLockMode.None;
-                        Cursor.visible = true; 
+                        Debug.Log("ArtInfo");
+                        GameObject parent  = hit.transform.parent.gameObject;
+                        int index = parent.name.Substring(parent.name.Length - 1)[0] - '1';
+                        if(window[index] != null)
+                        {
+                            artTitle.text = window[index].title;
+                            artYear.text = window[index].yearAsString;
+                            artSize.text = window[index].width + "x" + window[index].height;    
+                            GameObject.Find("CanvasDescription").transform.GetChild(0).gameObject.SetActive(true);
+                            Cursor.lockState = CursorLockMode.None;
+                            Cursor.visible = true; 
+                        }
+                        
                     }
-                    
-                }
-                else if(hit.transform.tag == "ExitDoor")
-                {
-                    SceneManager.LoadScene("GeziVr");
+                    else if(hit.transform.tag == "ExitDoor")
+                    {
+                        SceneManager.LoadScene("GeziVr");
+                    }
                 }
             }
         }
