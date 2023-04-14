@@ -79,11 +79,11 @@ public class RaycastGeziVR : MonoBehaviour
                                     if(snapshot.Child("owner").Value.ToString() != "")
                                     {
                                         
-                                        panel.transform.GetChild(0).transform.GetChild(5).GetComponent<Button>().interactable = false;
+                                        panel.transform.GetChild(0).transform.GetChild(3).GetComponent<Button>().interactable = false;
                                     }
                                     else
                                     {
-                                        panel.transform.GetChild(0).transform.GetChild(5).GetComponent<Button>().interactable = true;
+                                        panel.transform.GetChild(0).transform.GetChild(3).GetComponent<Button>().interactable = true;
                                     }
                                     
                                 }
@@ -110,11 +110,11 @@ public class RaycastGeziVR : MonoBehaviour
                                     if(snapshot.Child("owner").Value.ToString() != "")
                                     {
                                         
-                                        panel.transform.GetChild(0).transform.GetChild(5).GetComponent<Button>().interactable = false;
+                                        panel.transform.GetChild(0).transform.GetChild(3).GetComponent<Button>().interactable = false;
                                     }
                                     else
                                     {
-                                        panel.transform.GetChild(0).transform.GetChild(5).GetComponent<Button>().interactable = true;
+                                        panel.transform.GetChild(0).transform.GetChild(3).GetComponent<Button>().interactable = true;
                                     }
                                     
                                 }
@@ -133,6 +133,7 @@ public class RaycastGeziVR : MonoBehaviour
 
                     else if(tag == "EntranceDino")
                     {
+                        isPanelOpen = true;
                         popup.GetComponent<Canvas>().enabled = true;
                         Cursor.lockState = CursorLockMode.None;
                         //bu cursor şeyleri vr'da deneme yaparken olmamali
@@ -219,6 +220,7 @@ public class RaycastGeziVR : MonoBehaviour
                                 if (snapshot.Exists)
                                 {
                                     pieceOwner.text = "Owner: " + snapshot.Child("name").Value.ToString();
+
                                 }
                                 else
                                 {
@@ -465,7 +467,7 @@ public class RaycastGeziVR : MonoBehaviour
                     pieceOwner.text = "Owner: " +playerScriptable.name;
                     //playerScriptable.balance -= float.Parse(piecePrice.text);
                     //PlayerPrefs.SetFloat("balance", playerScriptable.balance);
-                    panel.transform.GetChild(0).transform.GetChild(5).GetComponent<Button>().interactable = false;
+                    panel.transform.GetChild(0).transform.GetChild(3).GetComponent<Button>().interactable = false;
                 }
                 StartCoroutine(AutoClosePopup("Success"));
             }
@@ -499,6 +501,7 @@ public class RaycastGeziVR : MonoBehaviour
 
     IEnumerator AutoClosePopup(string status)
     {
+        isPanelOpen = false;
         message.text = "Purchase " + status ;
         yield return new WaitForSeconds(2);
         if(tag == "EntranceDino")
@@ -523,7 +526,7 @@ public class RaycastGeziVR : MonoBehaviour
 
     public void ClosePopup()
     {
-
+        isPanelOpen = false;
         popup.GetComponent<Canvas>().enabled = false;
         
         if(tag != "EntranceDino")
