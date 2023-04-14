@@ -26,7 +26,7 @@ public class RaycastGeziVR : MonoBehaviour
     private string tag = "";
 
     public TMPro.TextMeshProUGUI pieceName;
-    public TMPro.TextMeshProUGUI pieceDescription;
+    public GameObject pieceDescription;
     public TMPro.TextMeshProUGUI piecePrice;
     public TMPro.TextMeshProUGUI pieceOwner;
     public TMPro.TextMeshProUGUI message;
@@ -205,8 +205,8 @@ public class RaycastGeziVR : MonoBehaviour
                     if (snapshot.Exists)
                     {
                         pieceName.text = snapshot.Child("name").Value.ToString();
-                        pieceDescription.text = snapshot.Child("description").Value.ToString();
-                        piecePrice.text = snapshot.Child("price").Value.ToString();
+                        pieceDescription.transform.GetComponent<TextMeshProUGUI>().text = snapshot.Child("description").Value.ToString();
+                        piecePrice.text = "Price: " + snapshot.Child("price").Value.ToString();
 
                         FirebaseDatabase.DefaultInstance.RootReference.Child("users").Child(snapshot.Child("owner").Value.ToString()).GetValueAsync().ContinueWithOnMainThread(t => {
                             if (t.IsFaulted)
@@ -218,7 +218,7 @@ public class RaycastGeziVR : MonoBehaviour
                                 snapshot = t.Result;
                                 if (snapshot.Exists)
                                 {
-                                    pieceOwner.text = snapshot.Child("name").Value.ToString();
+                                    pieceOwner.text = "Owner: " + snapshot.Child("name").Value.ToString();
                                 }
                                 else
                                 {
@@ -248,8 +248,8 @@ public class RaycastGeziVR : MonoBehaviour
                     if (snapshot.Exists)
                     {
                         pieceName.text = snapshot.Child("name").Value.ToString();
-                        pieceDescription.text = snapshot.Child("description").Value.ToString();
-                        piecePrice.text = snapshot.Child("price").Value.ToString();
+                        pieceDescription.transform.GetComponent<TextMeshProUGUI>().text = snapshot.Child("description").Value.ToString();
+                        piecePrice.text = "Price: " + snapshot.Child("price").Value.ToString();
 
                         FirebaseDatabase.DefaultInstance.RootReference.Child("users").Child(snapshot.Child("owner").Value.ToString()).GetValueAsync().ContinueWithOnMainThread(t => {
                             if (t.IsFaulted)
@@ -261,7 +261,7 @@ public class RaycastGeziVR : MonoBehaviour
                                 snapshot = t.Result;
                                 if (snapshot.Exists)
                                 {
-                                    pieceOwner.text = snapshot.Child("name").Value.ToString();
+                                    pieceOwner.text = "Owner: " +snapshot.Child("name").Value.ToString();
                                 }
                                 else
                                 {
@@ -289,7 +289,7 @@ public class RaycastGeziVR : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false; 
         pieceName.text = "";
-        pieceDescription.text = "";
+        pieceDescription.transform.GetComponent<TextMeshProUGUI>().text = "";
         piecePrice.text = "";
         pieceOwner.text = "";
     }
@@ -462,7 +462,7 @@ public class RaycastGeziVR : MonoBehaviour
                     string json = "{\"piecePricePurchase\":" + piecePricePurchase.ToString().Replace(",", ".") + "}";
                     FirebaseDatabase.DefaultInstance.RootReference.Child("users").Child(playerScriptable.token).Child("gallery").Child(id).SetRawJsonValueAsync(json);
                     //FirebaseDatabase.DefaultInstance.RootReference.Child("users").Child(playerScriptable.token).Child("balance").SetValueAsync(playerScriptable.balance - int.Parse(piecePrice.text));
-                    pieceOwner.text = playerScriptable.name;
+                    pieceOwner.text = "Owner: " +playerScriptable.name;
                     //playerScriptable.balance -= float.Parse(piecePrice.text);
                     //PlayerPrefs.SetFloat("balance", playerScriptable.balance);
                     panel.transform.GetChild(0).transform.GetChild(5).GetComponent<Button>().interactable = false;
