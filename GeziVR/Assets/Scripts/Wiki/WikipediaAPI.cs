@@ -407,6 +407,7 @@ public class WikipediaAPI : MonoBehaviour
                     index = 8;
                     GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(1).gameObject.SetActive(false);
                     GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(0).gameObject.SetActive(true);  
+                    GameObject.Find("Player").gameObject.GetComponent<Rigidbody>().position = new Vector3(59, -10, -132);
                     break;
             }
         }
