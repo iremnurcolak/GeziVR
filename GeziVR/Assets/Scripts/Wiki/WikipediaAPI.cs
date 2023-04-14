@@ -14,6 +14,7 @@ public class WikipediaAPI : MonoBehaviour
     [SerializeField] private Camera cam;
     [SerializeField] private TMP_InputField inputField;
     [SerializeField] private TextMeshProUGUI infoText;
+    [SerializeField] private TextMeshProUGUI artistNameText;
     [SerializeField] private Image imageArtist;
     [SerializeField] private PlayerScriptable playerScriptable;
     [SerializeField] private TextMeshProUGUI artTitle;
@@ -106,6 +107,7 @@ public class WikipediaAPI : MonoBehaviour
             GameObject.Find("Canvas").transform.GetChild(0).gameObject.SetActive(true);
             GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(3).gameObject.SetActive(true);
             GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(4).gameObject.SetActive(true);
+            GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(10).gameObject.SetActive(true);
             GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(0).gameObject.SetActive(false);
             StartCoroutine(GetPaintings("https://www.wikiart.org/en/App/Painting/PaintingsByArtist?artistUrl=" + artist.url + "&json=2"));
             isArtistImageSet = false;
@@ -125,6 +127,8 @@ public class WikipediaAPI : MonoBehaviour
             if(artist1.url == search)
             {
                 artist = artist1;
+                artistNameText.text = artist1.artistName;
+                
                 if(artist1.wikipediaUrl != ""  && artist1.wikipediaUrl != null)
                 {
                     StartCoroutine(GetArtistSummary("https://en.wikipedia.org/api/rest_v1/page/summary/" + artist1.wikipediaUrl.Substring(artist1.wikipediaUrl.LastIndexOf('/') + 1)));
@@ -144,6 +148,7 @@ public class WikipediaAPI : MonoBehaviour
     {
         inputField.text = "";
         infoText.text = "";
+        artistNameText.text = "";
         imageArtist.sprite = null;
         if(textRecommending.activeSelf)
         {
@@ -166,6 +171,7 @@ public class WikipediaAPI : MonoBehaviour
         GameObject.Find("Canvas").transform.GetChild(1).gameObject.SetActive(false);
         GameObject.Find("Canvas").transform.GetChild(0).gameObject.SetActive(true);
         GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(3).gameObject.SetActive(false);
+        GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(10).gameObject.SetActive(false);
         //GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(4).gameObject.SetActive(false);
         GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(5).gameObject.SetActive(true);
         GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(0).gameObject.SetActive(false);
@@ -242,7 +248,6 @@ public class WikipediaAPI : MonoBehaviour
                 case UnityWebRequest.Result.Success:
                     Debug.Log("Success");
                     var data = webRequest.downloadHandler.text;
-                    Debug.Log(data + " " + data.Length);
                     data = data.Substring(1, data.LastIndexOf(']') - 1);
                     
                     string[] museums = data.Split(',');
@@ -407,7 +412,6 @@ public class WikipediaAPI : MonoBehaviour
         }
     }
 
-
     public void SetNewWindow()
     {
         GameObject.Find("Canvas").transform.GetChild(1).transform.GetChild(2).gameObject.GetComponent<Button>().interactable = true;
@@ -533,6 +537,7 @@ public class WikipediaAPI : MonoBehaviour
                     GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(0).gameObject.SetActive(false);
                     GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(1).gameObject.SetActive(false);
                     GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(3).gameObject.SetActive(false);
+                    GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(10).gameObject.SetActive(false);
                     GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(4).gameObject.SetActive(false);
                     GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(5).gameObject.SetActive(true);
                     break;
@@ -602,6 +607,7 @@ public class WikipediaAPI : MonoBehaviour
             if(artist1.artistName == artistName)
             {
                 artist = artist1;
+                artistNameText.text = artist1.artistName;
                 if(artist1.wikipediaUrl != ""  && artist1.wikipediaUrl != null)
                 {
                     StartCoroutine(GetArtistSummary("https://en.wikipedia.org/api/rest_v1/page/summary/" + artist1.wikipediaUrl.Substring(artist1.wikipediaUrl.LastIndexOf('/') + 1)));
