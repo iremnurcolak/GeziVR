@@ -44,6 +44,8 @@ public class WikipediaAPI : MonoBehaviour
     private bool isArtistImageSet = false;
     private bool isArtistInfoSet = false;
     private float timeEnter = 0f;
+
+    private bool isCanvasActive = false;
     
     private WikiArtArtist[] allArtists;
     private List<WikiArtArtist> recommendedArtists = new List<WikiArtArtist>();
@@ -57,6 +59,7 @@ public class WikipediaAPI : MonoBehaviour
         Cursor.visible = true; 
         GameObject.Find("CanvasLoading").transform.GetChild(0).gameObject.SetActive(true);
         GameObject.Find("Canvas").transform.GetChild(0).gameObject.SetActive(false);
+        isCanvasActive = true;
         GameObject.Find("CanvasDescription").transform.GetChild(0).gameObject.SetActive(false);
         StartCoroutine(GetAllArtists("http://www.wikiart.org/en/App/Artist/AlphabetJson?v=new&inPublicDomain={true/false}"));
         searchPlane.transform.GetChild(1).gameObject.SetActive(false);
@@ -70,7 +73,7 @@ public class WikipediaAPI : MonoBehaviour
             Ray ray = cam.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
 
-            if (Physics.Raycast(ray, out hit))
+            if (Physics.Raycast(ray, out hit) && isCanvasActive == false)
             {
                 var hitPoint = hit.point;
                 hitPoint.y = 0;
@@ -87,6 +90,7 @@ public class WikipediaAPI : MonoBehaviour
                         artYear.text = window[index].yearAsString;
                         artSize.text = window[index].width + "x" + window[index].height;    
                         GameObject.Find("CanvasDescription").transform.GetChild(0).gameObject.SetActive(true);
+                        isCanvasActive = true;
                         Cursor.lockState = CursorLockMode.None;
                         Cursor.visible = true; 
                     }
@@ -156,10 +160,12 @@ public class WikipediaAPI : MonoBehaviour
         GameObject.Find("Player").GetComponent<PlayerMovement2>().enabled = true;
         GameObject.Find("PlayerCam").GetComponent<PlayerCamera2>().enabled = true;
         timeEnter = Time.time;
+        isCanvasActive = false;
     }
 
     public void ButtonExit()
     {
+        isCanvasActive = true;
         float duration = Time.time - timeEnter;
         GameObject.Find("Player").GetComponent<PlayerMovement2>().enabled = false;
         GameObject.Find("PlayerCam").GetComponent<PlayerCamera2>().enabled = false;
@@ -181,6 +187,7 @@ public class WikipediaAPI : MonoBehaviour
     {
         //Cursor.lockState = CursorLockMode.Locked;
         //Cursor.visible = false; 
+        isCanvasActive = false;
         GameObject.Find("CanvasDescription").transform.GetChild(0).gameObject.SetActive(false);
     }
 
