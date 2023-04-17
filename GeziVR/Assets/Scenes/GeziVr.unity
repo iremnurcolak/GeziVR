@@ -14580,6 +14580,10 @@ PrefabInstance:
       propertyPath: airMultiplier
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 5959205155818878485, guid: 5761842d3de394b82a11e102f08dbb32, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5959205155818878491, guid: 5761842d3de394b82a11e102f08dbb32, type: 3}
       propertyPath: m_LocalScale.x
       value: 1
