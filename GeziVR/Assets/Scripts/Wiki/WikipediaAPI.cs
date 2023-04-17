@@ -46,6 +46,7 @@ public class WikipediaAPI : MonoBehaviour
     private bool isArtistInfoSet = false;
     private float timeEnter = 0f;
     
+    private bool isCanvasActive = false;
     private WikiArtArtist[] allArtists;
     private List<WikiArtArtist> recommendedArtists = new List<WikiArtArtist>();
 
@@ -56,6 +57,7 @@ public class WikipediaAPI : MonoBehaviour
         //bu cursor şeyleri vr'da deneme yaparken olmamali
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true; 
+         isCanvasActive = true;
         GameObject.Find("CanvasLoading").transform.GetChild(0).gameObject.SetActive(true);
         GameObject.Find("Canvas").transform.GetChild(0).gameObject.SetActive(false);
         GameObject.Find("CanvasDescription").transform.GetChild(0).gameObject.SetActive(false);
@@ -71,7 +73,7 @@ public class WikipediaAPI : MonoBehaviour
             Ray ray = cam.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
 
-            if (Physics.Raycast(ray, out hit))
+            if (Physics.Raycast(ray, out hit) && isCanvasActive == false)
             {
                 var hitPoint = hit.point;
                 hitPoint.y = 0;
@@ -167,10 +169,12 @@ public class WikipediaAPI : MonoBehaviour
         GameObject.Find("Player").GetComponent<PlayerMovement2>().enabled = true;
         GameObject.Find("PlayerCam").GetComponent<PlayerCamera2>().enabled = true;
         timeEnter = Time.time;
+        isCanvasActive = false;
     }
 
     public void ButtonExit()
     {
+        isCanvasActive = true;
         float duration = Time.time - timeEnter;
         GameObject.Find("Player").GetComponent<PlayerMovement2>().enabled = false;
         GameObject.Find("PlayerCam").GetComponent<PlayerCamera2>().enabled = false;
@@ -194,6 +198,7 @@ public class WikipediaAPI : MonoBehaviour
         //Cursor.lockState = CursorLockMode.Locked;
         //Cursor.visible = false; 
         GameObject.Find("CanvasDescription").transform.GetChild(0).gameObject.SetActive(false);
+        isCanvasActive = false;
     }
 
     public void GetRecommendedMuseums()
@@ -413,7 +418,7 @@ public class WikipediaAPI : MonoBehaviour
                     index = 8;
                     GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(1).gameObject.SetActive(false);
                     GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(0).gameObject.SetActive(true);  
-                    GameObject.Find("Player").gameObject.GetComponent<Rigidbody>().position = new Vector3(59, -10, -132);
+                    GameObject.Find("Player").gameObject.GetComponent<Rigidbody>().position = new Vector3(138.02f, -25.79f, -159.6f);
                     break;
             }
         }
