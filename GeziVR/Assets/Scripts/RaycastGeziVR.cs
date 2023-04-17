@@ -177,7 +177,7 @@ public class RaycastGeziVR : MonoBehaviour
                     }
                     else if(tag == "ExitDoorDino")
                     {
-                        GameObject.Find("Player").gameObject.GetComponent<Rigidbody>().position = new Vector3(41, -4, -49);
+                        SceneManager.LoadScene("MainArea");
                     }
                 }
             }
@@ -512,7 +512,7 @@ public class RaycastGeziVR : MonoBehaviour
             Cursor.visible = false;
             GameObject.Find("Player").GetComponent<PlayerMovement>().enabled = true;
             GameObject.Find("PlayerCam").GetComponent<PlayerCamera>().enabled = true;
-            GameObject.Find("Player").gameObject.GetComponent<Rigidbody>().position = new Vector3(44, -4, -36);
+            SceneManager.LoadScene("GeziVr");
         }
         popup.GetComponent<Canvas>().enabled = false;
         popup.transform.GetChild(0).transform.GetChild(0).GetComponent<Button>().gameObject.SetActive(true);

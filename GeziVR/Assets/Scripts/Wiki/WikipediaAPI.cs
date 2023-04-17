@@ -637,6 +637,6 @@ public class WikipediaAPI : MonoBehaviour
 
     public void BackToArea()
     {
-        SceneManager.LoadScene("GeziVr");
+        SceneManager.LoadScene("MainArea");
     }
 }
