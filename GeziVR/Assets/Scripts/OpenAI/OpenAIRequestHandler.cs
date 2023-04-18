@@ -17,20 +17,22 @@ namespace OpenAI_handler
 
         IEnumerator generateImages(string uri)
         {
-            print("generate");
             var webRequest = UnityWebRequest.Get(uri);
             webRequest.certificateHandler = null;
             
             yield return webRequest.SendWebRequest();
-            print(webRequest.downloadHandler.text);
             MyDictionary dict = JsonUtility.FromJson<MyDictionary>(webRequest.downloadHandler.text);
             using (var client = new WebClient())
             {
-                for (int i = 1; i <= 1; i++)
-                {
-                    client.DownloadFile(dict.img1, Application.dataPath+string.Format("/GeneratedImages/img{0}.png", i));
-                }
-                
+                // kac tane kullanilacaksa eklenip silinebilir, 4 te denendi yavas calisiyor
+                client.DownloadFile(dict.img1, Application.dataPath + "/GeneratedImages/img1.png");
+                client.DownloadFile(dict.img2, Application.dataPath + "/GeneratedImages/img2.png");
+                client.DownloadFile(dict.img3, Application.dataPath + "/GeneratedImages/img3.png");
+                client.DownloadFile(dict.img4, Application.dataPath + "/GeneratedImages/img4.png");
+                client.DownloadFile(dict.img4, Application.dataPath + "/GeneratedImages/img5.png");
+                client.DownloadFile(dict.img4, Application.dataPath + "/GeneratedImages/img6.png");
+                client.DownloadFile(dict.img4, Application.dataPath + "/GeneratedImages/img7.png");
+                client.DownloadFile(dict.img4, Application.dataPath + "/GeneratedImages/img8.png");
             }
         }
     }
