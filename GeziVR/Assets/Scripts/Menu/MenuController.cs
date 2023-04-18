@@ -19,7 +19,8 @@ public class MenuController : MonoBehaviour
     {
         infoText.text = "Hos geldin " + playerScriptable.name + "!";
         balanceText.text = playerScriptable.balance.ToString();
-        gameObject.AddComponent<OpenAIRequestHandler>().generate();
+        // Sunum sırasında alt satir yorumdan cikarilmali
+        // gameObject.AddComponent<OpenAIRequestHandler>().generate();
         StartCoroutine(setImage(playerScriptable.profileImageUrl));
     }
     
@@ -40,7 +41,6 @@ public class MenuController : MonoBehaviour
 
     public void EnterMuseum()
     {
-        // gameObject.AddComponent<OpenAIRequestHandler>().get();
         SceneManager.LoadScene("GeziVr");
     }
 
