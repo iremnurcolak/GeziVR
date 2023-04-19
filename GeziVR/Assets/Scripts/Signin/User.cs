@@ -7,8 +7,6 @@ public class User
     public int balance;
     public string visitedMuseums;
 
-    public string accountAddress;
-
     public User(string name, string email, string profileImageUrl)
     {
         this.name = name;
@@ -16,6 +14,5 @@ public class User
         this.profileImageUrl = profileImageUrl;
         this.balance = 0;
         this.visitedMuseums = "";
-        this.accountAddress = "";
     }
 }

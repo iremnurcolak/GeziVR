@@ -7,10 +7,6 @@ TagManager:
   - Skeleton
   - Dino
   - ArtInfo
-  - DynamicMuseum
-  - ExitDoor
-  - ExitDoorDino
-  - EntranceDino
   layers:
   - Default
   - TransparentFX

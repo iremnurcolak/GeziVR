@@ -14,7 +14,6 @@ public class WikipediaAPI : MonoBehaviour
     [SerializeField] private Camera cam;
     [SerializeField] private TMP_InputField inputField;
     [SerializeField] private TextMeshProUGUI infoText;
-    [SerializeField] private TextMeshProUGUI artistNameText;
     [SerializeField] private Image imageArtist;
     [SerializeField] private PlayerScriptable playerScriptable;
     [SerializeField] private TextMeshProUGUI artTitle;
@@ -28,9 +27,9 @@ public class WikipediaAPI : MonoBehaviour
     [SerializeField] private GameObject scrollViewSearch;
     [SerializeField] private GameObject buttonTemplate;
     [SerializeField] private GameObject searchPlane;
-    [SerializeField] private GameObject textRecommending;
 
-    
+
+    public static bool isExitedPlane2 = false;
     public static bool isStatusChanged = false;
 
     private WikiArtArtist artist;
@@ -38,15 +37,12 @@ public class WikipediaAPI : MonoBehaviour
 
     private WikiArtPainting [] allPaintings; 
     private WikiArtPainting [] window = new WikiArtPainting[8];
-
-    private bool areAllPaintingsShown = false;
     private int index = 0;
 
     private bool isArtistImageSet = false;
     private bool isArtistInfoSet = false;
     private float timeEnter = 0f;
     
-    private bool isCanvasActive = false;
     private WikiArtArtist[] allArtists;
     private List<WikiArtArtist> recommendedArtists = new List<WikiArtArtist>();
 
@@ -57,7 +53,6 @@ public class WikipediaAPI : MonoBehaviour
         //bu cursor şeyleri vr'da deneme yaparken olmamali
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true; 
-         isCanvasActive = true;
         GameObject.Find("CanvasLoading").transform.GetChild(0).gameObject.SetActive(true);
         GameObject.Find("Canvas").transform.GetChild(0).gameObject.SetActive(false);
         GameObject.Find("CanvasDescription").transform.GetChild(0).gameObject.SetActive(false);
@@ -67,43 +62,33 @@ public class WikipediaAPI : MonoBehaviour
     
     private void Update()
     {
+        if(isStatusChanged)
+        {
+            CheckPlanes();
+        }
 
         if (Input.GetMouseButtonDown(0))
         {
             Ray ray = cam.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
 
-            if (Physics.Raycast(ray, out hit) && isCanvasActive == false)
+            if (Physics.Raycast(ray, out hit))
             {
                 var hitPoint = hit.point;
                 hitPoint.y = 0;
-                var playerPosition = GameObject.Find("Player").gameObject.GetComponent<Rigidbody>().position;
+                var playerPosition = transform.position;
                 playerPosition.y = 0;
-                
-                var distance = Vector3.Distance(hitPoint, playerPosition);
-                if(distance < 20)
+                //var distance = Vector3.Distance(hitPoint, playerPosition);
+                if(hit.transform.tag == "ArtInfo")
                 {
-                    Debug.Log("Distance: " + distance);
-                    if(hit.transform.tag == "ArtInfo")
-                    {
-                        Debug.Log("ArtInfo");
-                        GameObject parent  = hit.transform.parent.gameObject;
-                        int index = parent.name.Substring(parent.name.Length - 1)[0] - '1';
-                        if(window[index] != null)
-                        {
-                            artTitle.text = window[index].title;
-                            artYear.text = window[index].yearAsString;
-                            artSize.text = window[index].width + "x" + window[index].height;    
-                            GameObject.Find("CanvasDescription").transform.GetChild(0).gameObject.SetActive(true);
-                            Cursor.lockState = CursorLockMode.None;
-                            Cursor.visible = true; 
-                        }
-                        
-                    }
-                    else if(hit.transform.tag == "ExitDoor")
-                    {
-                        SceneManager.LoadScene("GeziVr");
-                    }
+                    GameObject parent  = hit.transform.parent.gameObject;
+                    int index = parent.name.Substring(parent.name.Length - 1)[0] - '1';
+                    artTitle.text = window[index].title;
+                    artYear.text = window[index].yearAsString;
+                    artSize.text = window[index].width + "x" + window[index].height;    
+                    GameObject.Find("CanvasDescription").transform.GetChild(0).gameObject.SetActive(true);
+                    Cursor.lockState = CursorLockMode.None;
+                    Cursor.visible = true; 
                 }
             }
         }
@@ -113,15 +98,13 @@ public class WikipediaAPI : MonoBehaviour
             
             GameObject.Find("CanvasLoading").transform.GetChild(0).gameObject.SetActive(false);
             GameObject.Find("Canvas").transform.GetChild(0).gameObject.SetActive(true);
-            GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(3).gameObject.SetActive(true);
+            GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(5).gameObject.SetActive(true);
             GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(4).gameObject.SetActive(true);
-            GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(10).gameObject.SetActive(true);
             GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(0).gameObject.SetActive(false);
             StartCoroutine(GetPaintings("https://www.wikiart.org/en/App/Painting/PaintingsByArtist?artistUrl=" + artist.url + "&json=2"));
             isArtistImageSet = false;
             isArtistInfoSet = false;
         }
-        
 
     }
 
@@ -135,8 +118,6 @@ public class WikipediaAPI : MonoBehaviour
             if(artist1.url == search)
             {
                 artist = artist1;
-                artistNameText.text = artist1.artistName;
-                
                 if(artist1.wikipediaUrl != ""  && artist1.wikipediaUrl != null)
                 {
                     StartCoroutine(GetArtistSummary("https://en.wikipedia.org/api/rest_v1/page/summary/" + artist1.wikipediaUrl.Substring(artist1.wikipediaUrl.LastIndexOf('/') + 1)));
@@ -156,41 +137,26 @@ public class WikipediaAPI : MonoBehaviour
     {
         inputField.text = "";
         infoText.text = "";
-        artistNameText.text = "";
         imageArtist.sprite = null;
-        if(textRecommending.activeSelf)
-        {
-            textRecommending.gameObject.GetComponent<TMP_Text>().text = "Recommending museums for you...";
-           textRecommending.gameObject.SetActive(false);
-        }
-        
         GameObject.Find("Canvas").transform.GetChild(0).gameObject.SetActive(false);
         GameObject.Find("Canvas").transform.GetChild(1).gameObject.SetActive(true);
         GameObject.Find("Player").GetComponent<PlayerMovement2>().enabled = true;
         GameObject.Find("PlayerCam").GetComponent<PlayerCamera2>().enabled = true;
         timeEnter = Time.time;
-        isCanvasActive = false;
     }
 
     public void ButtonExit()
     {
-        isCanvasActive = true;
         float duration = Time.time - timeEnter;
-        GameObject.Find("Player").GetComponent<PlayerMovement2>().enabled = false;
-        GameObject.Find("PlayerCam").GetComponent<PlayerCamera2>().enabled = false;
         GameObject.Find("Canvas").transform.GetChild(1).gameObject.SetActive(false);
         GameObject.Find("Canvas").transform.GetChild(0).gameObject.SetActive(true);
-        GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(3).gameObject.SetActive(false);
-        GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(10).gameObject.SetActive(false);
-        //GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(4).gameObject.SetActive(false);
-        GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(5).gameObject.SetActive(true);
+        GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(5).gameObject.SetActive(false);
+        GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(4).gameObject.SetActive(false);
         GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(0).gameObject.SetActive(false);
         GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(1).gameObject.SetActive(false);
-        GameObject.Find("Canvas").transform.GetChild(1).transform.GetChild(0).gameObject.GetComponent<Button>().interactable = true;
-        GameObject.Find("Canvas").transform.GetChild(1).transform.GetChild(1).gameObject.GetComponent<Button>().interactable = true;
         StartCoroutine(DeleteFromSuggestions("https://gezivr.onrender.com/deleteFromSuggestedMuseums/" + playerScriptable.token + "/" + artist.contentId));
         StartCoroutine(PutVisitedMuseum("https://gezivr.onrender.com/addVisitedMuseum/" + playerScriptable.token + "/" + artist.contentId + "/" + duration.ToString().Replace(',', '.')));
-        index = 0;
+
     }
 
     public void CloseDescription()
@@ -198,7 +164,6 @@ public class WikipediaAPI : MonoBehaviour
         //Cursor.lockState = CursorLockMode.Locked;
         //Cursor.visible = false; 
         GameObject.Find("CanvasDescription").transform.GetChild(0).gameObject.SetActive(false);
-        isCanvasActive = false;
     }
 
     public void GetRecommendedMuseums()
@@ -253,8 +218,7 @@ public class WikipediaAPI : MonoBehaviour
                     Debug.LogError(pages[page] + ": Error: " + webRequest.error);
                     break;
                 case UnityWebRequest.Result.ProtocolError:
-                    Debug.Log("No recommended museums found");
-                    textRecommending.gameObject.GetComponent<TMP_Text>().text = "No recommended museums found";
+                    Debug.LogError(pages[page] + ": HTTP Error: " + webRequest.error);
                     break;
                 case UnityWebRequest.Result.Success:
                     Debug.Log("Success");
@@ -355,7 +319,6 @@ public class WikipediaAPI : MonoBehaviour
 
     IEnumerator GetPaintings(string uri)
     {
-        GameObject.Find("Canvas").transform.GetChild(1).transform.GetChild(2).gameObject.GetComponent<Button>().interactable = false;
         GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(1).gameObject.SetActive(true);
 
         using (UnityWebRequest webRequest = UnityWebRequest.Get(uri))
@@ -392,104 +355,57 @@ public class WikipediaAPI : MonoBehaviour
                     {
                         if(i >= allPaintings.Length)
                         {
-                            GameObject go = GameObject.Find("Frame" + (i%8 + 1));
-                            areAllPaintingsShown = true;
-                            go.transform.GetChild(3).GetComponent<Renderer>().material.mainTexture = null;
-                            window[i] = null;
+                            break;
                         }
 
-                        else{
-                            window[i] = allPaintings[i];
-                            
-                            Texture2D tex = new Texture2D(2, 2);
-                            tex.LoadImage(allPaintings[i].imageBytes);
-                            GameObject go = GameObject.Find("Frame" + (i + 1));
-                            float imageRatioX = float.Parse(allPaintings[i].width)/( float.Parse(allPaintings[i].width) + float.Parse(allPaintings[i].height));
-                            float imageRatioY = float.Parse(allPaintings[i].height) / (float.Parse(allPaintings[i].width) + float.Parse(allPaintings[i].height));
-                            if(imageRatioY > 0.4)
-                            {
-                                imageRatioY = 0.4f;
-                                imageRatioX = imageRatioX*0.4f/imageRatioY;
-                            }
-                            go.transform.GetChild(3).transform.localScale = new Vector3( imageRatioX, go.transform.GetChild(3).transform.localScale.y, imageRatioY);
-                            go.transform.GetChild(3).GetComponent<Renderer>().material.mainTexture = tex;
+                        window[i] = allPaintings[i];
+                        
+                        Texture2D tex = new Texture2D(2, 2);
+                        tex.LoadImage(allPaintings[i].imageBytes);
+                        GameObject go = GameObject.Find("Frame" + (i + 1));
+                        float imageRatioX = float.Parse(allPaintings[i].width)/( float.Parse(allPaintings[i].width) + float.Parse(allPaintings[i].height));
+                        float imageRatioY = float.Parse(allPaintings[i].height) / (float.Parse(allPaintings[i].width) + float.Parse(allPaintings[i].height));
+                        if(imageRatioY > 0.4)
+                        {
+                            imageRatioY = 0.4f;
+                            imageRatioX = imageRatioX*0.4f/imageRatioY;
                         }
+                        go.transform.GetChild(3).transform.localScale = new Vector3( imageRatioX, go.transform.GetChild(3).transform.localScale.y, imageRatioY);
+                        go.transform.GetChild(3).GetComponent<Renderer>().material.mainTexture = tex;
                     }
                     index = 8;
                     GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(1).gameObject.SetActive(false);
                     GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(0).gameObject.SetActive(true);  
-                    GameObject.Find("Player").gameObject.GetComponent<Rigidbody>().position = new Vector3(138.02f, -25.79f, -159.6f);
                     break;
             }
         }
     }
 
-    public void SetNewWindow()
+    private void CheckPlanes()
     {
-        GameObject.Find("Canvas").transform.GetChild(1).transform.GetChild(2).gameObject.GetComponent<Button>().interactable = true;
-        for (int i = index; i < index+8; i++)
+        isStatusChanged = false;
+        if(isExitedPlane2)
         {
-            if(areAllPaintingsShown)
-            {
-                GameObject.Find("Canvas").transform.GetChild(1).transform.GetChild(1).gameObject.GetComponent<Button>().interactable = false;
-            }
-            if(i >= allPaintings.Length)
-            {
-                GameObject go = GameObject.Find("Frame" + (i%8 + 1));
-                areAllPaintingsShown = true;
-                go.transform.GetChild(3).GetComponent<Renderer>().material.mainTexture = null;
-                window[i%8] = null;
-            }
-            else
-            {
-                try
-                {
-                    allPaintings[i].imageBytes = new System.Net.WebClient().DownloadData(allPaintings[i].image);
-                }
-                catch (Exception e)
-                {
-                    window[i%8] = null;
-                    GameObject.Find("Frame" + (i%8 + 1)).transform.GetChild(3).GetComponent<Renderer>().material.mainTexture = null;
-                    continue;
-                }
-                window[i%8] = allPaintings[i];
-                
-                Texture2D tex = new Texture2D(2, 2);
-                tex.LoadImage(allPaintings[i].imageBytes);
-                GameObject go = GameObject.Find("Frame" + (i%8 + 1));
-                float imageRatioX = float.Parse(allPaintings[i].width)/( float.Parse(allPaintings[i].width) + float.Parse(allPaintings[i].height));
-                float imageRatioY = float.Parse(allPaintings[i].height) / (float.Parse(allPaintings[i].width) + float.Parse(allPaintings[i].height));
-                if(imageRatioY > 0.4)
-                {
-                    imageRatioY = 0.4f;
-                    imageRatioX = imageRatioX*0.4f/imageRatioY;
-                }
-                go.transform.GetChild(3).transform.localScale = new Vector3( imageRatioX, go.transform.GetChild(3).transform.localScale.y, imageRatioY);
-                go.transform.GetChild(3).GetComponent<Renderer>().material.mainTexture = tex;
-            }
+            isExitedPlane2 = false;
+            SetNewWindow();
         }
-        index += 8;
     }
 
-    public void SetPrevWindow()
+    private void SetNewWindow()
     {
-        areAllPaintingsShown = false;
-        GameObject.Find("Canvas").transform.GetChild(1).transform.GetChild(1).gameObject.GetComponent<Button>().interactable = true;
-        if(index == 16)
+        for (int i = index; i < index+8; i++)
         {
-            GameObject.Find("Canvas").transform.GetChild(1).transform.GetChild(2).gameObject.GetComponent<Button>().interactable = false;
-        }
-        for (int i = index-16; i < index-8; i++)
-        {
+            if(i >= allPaintings.Length)
+            {
+                break;
+            }
+       
             try
             {
                 allPaintings[i].imageBytes = new System.Net.WebClient().DownloadData(allPaintings[i].image);
             }
             catch (Exception e)
             {
-                window[i%8] = null;
-           
-                GameObject.Find("Frame" + (i%8 + 1)).transform.GetChild(3).GetComponent<Renderer>().material.mainTexture = null;
                 continue;
             }
             window[i%8] = allPaintings[i];
@@ -506,9 +422,8 @@ public class WikipediaAPI : MonoBehaviour
             }
             go.transform.GetChild(3).transform.localScale = new Vector3( imageRatioX, go.transform.GetChild(3).transform.localScale.y, imageRatioY);
             go.transform.GetChild(3).GetComponent<Renderer>().material.mainTexture = tex;
-            
         }
-        index -= 8;
+        index += 8;
     }
 
     IEnumerator setImage(string url, Image image) {
@@ -548,10 +463,8 @@ public class WikipediaAPI : MonoBehaviour
                     GameObject.Find("Canvas").transform.GetChild(0).gameObject.SetActive(true);
                     GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(0).gameObject.SetActive(false);
                     GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(1).gameObject.SetActive(false);
-                    GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(3).gameObject.SetActive(false);
-                    GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(10).gameObject.SetActive(false);
+                    GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(5).gameObject.SetActive(false);
                     GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(4).gameObject.SetActive(false);
-                    GameObject.Find("Canvas").transform.GetChild(0).transform.GetChild(5).gameObject.SetActive(true);
                     break;
             }
         }
@@ -619,7 +532,6 @@ public class WikipediaAPI : MonoBehaviour
             if(artist1.artistName == artistName)
             {
                 artist = artist1;
-                artistNameText.text = artist1.artistName;
                 if(artist1.wikipediaUrl != ""  && artist1.wikipediaUrl != null)
                 {
                     StartCoroutine(GetArtistSummary("https://en.wikipedia.org/api/rest_v1/page/summary/" + artist1.wikipediaUrl.Substring(artist1.wikipediaUrl.LastIndexOf('/') + 1)));
@@ -633,10 +545,5 @@ public class WikipediaAPI : MonoBehaviour
                 break;
             }
         }
-    }
-
-    public void BackToArea()
-    {
-        SceneManager.LoadScene("MainArea");
     }
 }

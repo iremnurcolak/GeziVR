@@ -52,7 +52,6 @@ public class GoogleSignInFirebase : MonoBehaviour
     }
 
     public void SignInWithGoogle() { OnSignIn(); }
-    
     public void SignOutFromGoogle() { OnSignOut(); }
 
     private void OnSignIn()
