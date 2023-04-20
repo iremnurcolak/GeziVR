@@ -20,7 +20,9 @@ public class MenuController : MonoBehaviour
     void Start()
     {
         infoText.text = "Hos geldin " + playerScriptable.name + "!";
-        
+        // Sunum sırasında alt satir yorumdan cikarilmali
+        // gameObject.AddComponent<OpenAIRequestHandler>().generate();
+
         StartCoroutine(setImage(playerScriptable.profileImageUrl));
         if(playerScriptable.accountAddress == "")
             StartCoroutine(GetAccountAddress("https://gezivr.onrender.com/getAccountAddress/" + playerScriptable.token));
