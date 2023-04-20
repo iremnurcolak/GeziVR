@@ -31,6 +31,7 @@ public class RaycastGeziVR : MonoBehaviour
     public TMPro.TextMeshProUGUI pieceOwner;
     public TMPro.TextMeshProUGUI message;
 
+
     [SerializeField] private GameObject loadingPurchase;
 
     void Start()
@@ -147,25 +148,11 @@ public class RaycastGeziVR : MonoBehaviour
                             }
                             else if (t.IsCompleted)
                             {
-                                snapshot = t.Result;
-                                Debug.Log(snapshot);
-                                
-                                
                                 if (snapshot.Exists)
                                 {
-                                    bool canBuy = CheckBalance(float.Parse(snapshot.Child("price").Value.ToString()));
-                                    if(canBuy)
-                                    {
-                                        message.text = "Do you want to enter the Dinosaur Museum for " + snapshot.Child("price").Value.ToString() + " ETH ?";
-                                        piecePricePurchase = float.Parse(snapshot.Child("price").Value.ToString());
-                                    }
-                                    else
-                                    {
-                                        message.text = "You don't have enough money to enter the Dinosaur museum";
-                                        popup.transform.GetChild(0).transform.GetChild(0).GetComponent<Button>().gameObject.SetActive(false);
-                                        popup.transform.GetChild(0).transform.GetChild(1).GetComponent<Button>().gameObject.SetActive(false);
-                                        popup.transform.GetChild(0).transform.GetChild(3).GetComponent<Button>().gameObject.SetActive(true);
-                                    }
+                                    StartCoroutine(CheckBalanceEnterMuseum("https://gezivr-web3.onrender.com/getBalance/" + playerScriptable.accountAddress, 
+                                    float.Parse(snapshot.Child("price").Value.ToString())));
+
                                 }
                                 else
                                 {
@@ -286,6 +273,7 @@ public class RaycastGeziVR : MonoBehaviour
     public void ClosePanel()
     {
         //panel = cam.transform.GetChild(0).gameObject; 
+
         isPanelOpen = false;
         panel.GetComponent<Canvas>().enabled = false;
         Cursor.lockState = CursorLockMode.Locked;
@@ -313,25 +301,11 @@ public class RaycastGeziVR : MonoBehaviour
                 {
                     if(snapshot.Child("owner").Value.ToString() == "")
                     {
-                        bool canBuy = CheckBalance(float.Parse(snapshot.Child("price").Value.ToString()));
+                        isPanelOpen = true;
                         popup.GetComponent<Canvas>().enabled = true;
                         panel.GetComponent<CanvasGroup>().interactable = false;
-                         
-                        if(canBuy)
-                        {
-                            piecePricePurchase = float.Parse(snapshot.Child("price").Value.ToString());
-                            message.text = "Your balance is " + playerScriptable.balance + ". Do you want to buy this piece for " + snapshot.Child("price").Value.ToString() + "?";
-                            popup.transform.GetChild(0).transform.GetChild(0).GetComponent<Button>().gameObject.SetActive(true);
-                            popup.transform.GetChild(0).transform.GetChild(1).GetComponent<Button>().gameObject.SetActive(true);
-                            popup.transform.GetChild(0).transform.GetChild(3).GetComponent<Button>().gameObject.SetActive(false);
-                        }
-                        else
-                        {
-                            message.text = "Your balance is " + playerScriptable.balance + ". You don't have enough money to buy this piece for " + snapshot.Child("price").Value.ToString() + ".";
-                            popup.transform.GetChild(0).transform.GetChild(0).GetComponent<Button>().gameObject.SetActive(false);
-                            popup.transform.GetChild(0).transform.GetChild(1).GetComponent<Button>().gameObject.SetActive(false);
-                            popup.transform.GetChild(0).transform.GetChild(3).GetComponent<Button>().gameObject.SetActive(true);
-                        }
+                        StartCoroutine(CheckBalanceBuy("https://gezivr-web3.onrender.com/getBalance/" + playerScriptable.accountAddress, 
+                        float.Parse(snapshot.Child("price").Value.ToString())));                        
                     }
                     else
                     {
@@ -360,24 +334,12 @@ public class RaycastGeziVR : MonoBehaviour
                 {
                     if(snapshot.Child("owner").Value.ToString() == "")
                     {
-                        bool canBuy = CheckBalance(float.Parse(snapshot.Child("price").Value.ToString()));
+                       isPanelOpen = true;
                         popup.GetComponent<Canvas>().enabled = true;
                         panel.GetComponent<CanvasGroup>().interactable = false;
-                        if(canBuy)
-                        {
-                            piecePricePurchase = float.Parse(snapshot.Child("price").Value.ToString());
-                            message.text = "Your balance is " + playerScriptable.balance + ". Do you want to buy this piece for " + snapshot.Child("price").Value.ToString() + "?";
-                            popup.transform.GetChild(0).transform.GetChild(0).GetComponent<Button>().gameObject.SetActive(true);
-                            popup.transform.GetChild(0).transform.GetChild(1).GetComponent<Button>().gameObject.SetActive(true);
-                            popup.transform.GetChild(0).transform.GetChild(3).GetComponent<Button>().gameObject.SetActive(false);
-                        }
-                        else
-                        {
-                            message.text = "Your balance is " + playerScriptable.balance + ". You don't have enough money to buy this piece for " + snapshot.Child("price").Value.ToString() + ".";
-                            popup.transform.GetChild(0).transform.GetChild(0).GetComponent<Button>().gameObject.SetActive(false);
-                            popup.transform.GetChild(0).transform.GetChild(1).GetComponent<Button>().gameObject.SetActive(false);
-                            popup.transform.GetChild(0).transform.GetChild(3).GetComponent<Button>().gameObject.SetActive(true);
-                        }
+                        
+                        StartCoroutine(CheckBalanceBuy("https://gezivr-web3.onrender.com/getBalance/" + playerScriptable.accountAddress, 
+                            float.Parse(snapshot.Child("price").Value.ToString())));       
                     }
                     else
                     {
@@ -395,23 +357,67 @@ public class RaycastGeziVR : MonoBehaviour
     
     }
 
-    bool CheckBalance(float price)
+
+    IEnumerator CheckBalanceEnterMuseum(string url, float price)
     {
-        Debug.Log("Checking balance");
-        
-        if(playerScriptable.accountAddress == "")
+        using(UnityWebRequest www = UnityWebRequest.Get(url))
         {
-            return false;
+            yield return www.SendWebRequest();
+            if(www.result == UnityWebRequest.Result.ConnectionError || www.result == UnityWebRequest.Result.ProtocolError)
+            {
+                Debug.Log(www.error);
+            }
+            else
+            {
+                playerScriptable.balance = float.Parse(www.downloadHandler.text.Replace(".", ","));
+                PlayerPrefs.SetFloat("balance", playerScriptable.balance);
+
+                if(playerScriptable.balance >= price)
+                {
+                    message.text = "Do you want to enter the Dinosaur Museum for " + price.ToString() + " ETH ?";
+                    piecePricePurchase = price;
+                }
+                else
+                {
+                    message.text = "You don't have enough money to enter the Dinosaur museum";
+                    popup.transform.GetChild(0).transform.GetChild(0).GetComponent<Button>().gameObject.SetActive(false);
+                    popup.transform.GetChild(0).transform.GetChild(1).GetComponent<Button>().gameObject.SetActive(false);
+                    popup.transform.GetChild(0).transform.GetChild(3).GetComponent<Button>().gameObject.SetActive(true);
+                }
+            }
         }
-        Debug.Log(playerScriptable.balance >= price);
-        StartCoroutine(GetBalance("https://gezivr-web3.onrender.com/getBalance/" + playerScriptable.accountAddress));
-        if(playerScriptable.balance >= price)
+    }
+
+    IEnumerator CheckBalanceBuy(string url, float price)
+    {
+        using(UnityWebRequest www = UnityWebRequest.Get(url))
         {
-            return true;
-        }
-        else
-        {
-            return false;
+            yield return www.SendWebRequest();
+            if(www.result == UnityWebRequest.Result.ConnectionError || www.result == UnityWebRequest.Result.ProtocolError)
+            {
+                Debug.Log(www.error);
+            }
+            else
+            {
+                playerScriptable.balance = float.Parse(www.downloadHandler.text.Replace(".", ","));
+                PlayerPrefs.SetFloat("balance", playerScriptable.balance);
+
+                if(playerScriptable.balance >= price)
+                {
+                    piecePricePurchase = price;
+                    message.text = "Your balance is " + playerScriptable.balance + ". Do you want to buy this piece for " + price + "?";
+                    popup.transform.GetChild(0).transform.GetChild(0).GetComponent<Button>().gameObject.SetActive(true);
+                    popup.transform.GetChild(0).transform.GetChild(1).GetComponent<Button>().gameObject.SetActive(true);
+                    popup.transform.GetChild(0).transform.GetChild(3).GetComponent<Button>().gameObject.SetActive(false);
+                }
+                else
+                {
+                    message.text = "Your balance is " + playerScriptable.balance + ". You don't have enough money to buy this piece for " + price + ".";
+                    popup.transform.GetChild(0).transform.GetChild(0).GetComponent<Button>().gameObject.SetActive(false);
+                    popup.transform.GetChild(0).transform.GetChild(1).GetComponent<Button>().gameObject.SetActive(false);
+                    popup.transform.GetChild(0).transform.GetChild(3).GetComponent<Button>().gameObject.SetActive(true);
+                }
+            }
         }
     }
 
@@ -442,7 +448,6 @@ public class RaycastGeziVR : MonoBehaviour
             yield return www.SendWebRequest();
 
             loadingPurchase.SetActive(false);
-            Debug.Log(www.downloadHandler.text);
             if (www.result == UnityWebRequest.Result.ConnectionError || www.result == UnityWebRequest.Result.ProtocolError)
             {
                 Debug.Log(www.error);
@@ -473,10 +478,6 @@ public class RaycastGeziVR : MonoBehaviour
             }
         }
         
-
-        StartCoroutine(GetBalance("https://gezivr-web3.onrender.com/getBalance/" + playerScriptable.accountAddress));
-
-        
     }
 
     IEnumerator GetBalance(string url)
@@ -490,8 +491,6 @@ public class RaycastGeziVR : MonoBehaviour
             }
             else
             {
-                Debug.Log(www.downloadHandler.text);
-                
                 playerScriptable.balance = float.Parse(www.downloadHandler.text.Replace(".", ","));
                 PlayerPrefs.SetFloat("balance", playerScriptable.balance);
             }
@@ -501,11 +500,12 @@ public class RaycastGeziVR : MonoBehaviour
 
     IEnumerator AutoClosePopup(string status)
     {
-        isPanelOpen = false;
+        
         message.text = "Purchase " + status ;
         yield return new WaitForSeconds(2);
         if(tag == "EntranceDino")
         {
+            isPanelOpen = false;
             Cursor.lockState = CursorLockMode.Locked;
         
         //bu cursor şeyleri vr'da deneme yaparken olmamali
@@ -526,7 +526,7 @@ public class RaycastGeziVR : MonoBehaviour
 
     public void ClosePopup()
     {
-        isPanelOpen = false;
+        
         popup.GetComponent<Canvas>().enabled = false;
         
         if(tag != "EntranceDino")
@@ -535,6 +535,7 @@ public class RaycastGeziVR : MonoBehaviour
         }
         if(tag == "EntranceDino")
         {
+            isPanelOpen = false;
             Cursor.lockState = CursorLockMode.Locked;
         
         //bu cursor şeyleri vr'da deneme yaparken olmamali
