@@ -20,4 +20,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Wikipedia.unity
     guid: 8e5990df2b033d6498be9297e62ffdcb
+  - enabled: 1
+    path: Assets/Scenes/Settings.unity
+    guid: 076668a325dfcd948ac6cf5001b7b3f1
+  - enabled: 1
+    path: Assets/Scenes/MainArea.unity
+    guid: 01f84c11f5d057e4f9b25576b579bfd5
   m_configObjects: {}

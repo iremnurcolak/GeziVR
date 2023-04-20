@@ -6,6 +6,12 @@ using Firebase.Extensions;
 using Firebase.Database;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
+using UnityEngine.Networking;
+using Newtonsoft.Json;
+using System.IO;
+using System.Security.Cryptography;
+using System.Text;
 
 public class RaycastGeziVR : MonoBehaviour
 {
@@ -16,14 +22,16 @@ public class RaycastGeziVR : MonoBehaviour
     public GameObject popup;
     private DataSnapshot snapshot;
     private string id;
-    private int piecePricePurchase;
+    private float piecePricePurchase;
     private string tag = "";
 
     public TMPro.TextMeshProUGUI pieceName;
-    public TMPro.TextMeshProUGUI pieceDescription;
+    public GameObject pieceDescription;
     public TMPro.TextMeshProUGUI piecePrice;
     public TMPro.TextMeshProUGUI pieceOwner;
     public TMPro.TextMeshProUGUI message;
+
+    [SerializeField] private GameObject loadingPurchase;
 
     void Start()
     {
@@ -38,6 +46,7 @@ public class RaycastGeziVR : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0) && !isPanelOpen)
         {
+
             Ray ray = cam.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
 
@@ -70,11 +79,11 @@ public class RaycastGeziVR : MonoBehaviour
                                     if(snapshot.Child("owner").Value.ToString() != "")
                                     {
                                         
-                                        panel.transform.GetChild(0).transform.GetChild(5).GetComponent<Button>().interactable = false;
+                                        panel.transform.GetChild(0).transform.GetChild(3).GetComponent<Button>().interactable = false;
                                     }
                                     else
                                     {
-                                        panel.transform.GetChild(0).transform.GetChild(5).GetComponent<Button>().interactable = true;
+                                        panel.transform.GetChild(0).transform.GetChild(3).GetComponent<Button>().interactable = true;
                                     }
                                     
                                 }
@@ -101,11 +110,11 @@ public class RaycastGeziVR : MonoBehaviour
                                     if(snapshot.Child("owner").Value.ToString() != "")
                                     {
                                         
-                                        panel.transform.GetChild(0).transform.GetChild(5).GetComponent<Button>().interactable = false;
+                                        panel.transform.GetChild(0).transform.GetChild(3).GetComponent<Button>().interactable = false;
                                     }
                                     else
                                     {
-                                        panel.transform.GetChild(0).transform.GetChild(5).GetComponent<Button>().interactable = true;
+                                        panel.transform.GetChild(0).transform.GetChild(3).GetComponent<Button>().interactable = true;
                                     }
                                     
                                 }
@@ -116,6 +125,60 @@ public class RaycastGeziVR : MonoBehaviour
                             }
                         }); 
                     }
+
+                    else if(tag == "DynamicMuseum")
+                    {
+                        SceneManager.LoadScene("Wikipedia");
+                    }
+
+                    else if(tag == "EntranceDino")
+                    {
+                        isPanelOpen = true;
+                        popup.GetComponent<Canvas>().enabled = true;
+                        Cursor.lockState = CursorLockMode.None;
+                        //bu cursor şeyleri vr'da deneme yaparken olmamali
+                        Cursor.visible = true;
+                        GameObject.Find("Player").GetComponent<PlayerMovement>().enabled = false;
+                        GameObject.Find("PlayerCam").GetComponent<PlayerCamera>().enabled = false;
+                        FirebaseDatabase.DefaultInstance.RootReference.Child("museums").Child("dino-museum").GetValueAsync().ContinueWithOnMainThread(t => {
+                            if (t.IsFaulted)
+                            {
+                                Debug.Log("Error");
+                            }
+                            else if (t.IsCompleted)
+                            {
+                                snapshot = t.Result;
+                                Debug.Log(snapshot);
+                                
+                                
+                                if (snapshot.Exists)
+                                {
+                                    bool canBuy = CheckBalance(float.Parse(snapshot.Child("price").Value.ToString()));
+                                    if(canBuy)
+                                    {
+                                        message.text = "Do you want to enter the Dinosaur Museum for " + snapshot.Child("price").Value.ToString() + " ETH ?";
+                                        piecePricePurchase = float.Parse(snapshot.Child("price").Value.ToString());
+                                    }
+                                    else
+                                    {
+                                        message.text = "You don't have enough money to enter the Dinosaur museum";
+                                        popup.transform.GetChild(0).transform.GetChild(0).GetComponent<Button>().gameObject.SetActive(false);
+                                        popup.transform.GetChild(0).transform.GetChild(1).GetComponent<Button>().gameObject.SetActive(false);
+                                        popup.transform.GetChild(0).transform.GetChild(3).GetComponent<Button>().gameObject.SetActive(true);
+                                    }
+                                }
+                                else
+                                {
+                                    Debug.Log("Museum does not exist");
+                                }
+                            }
+                        });
+                        
+                    }
+                    else if(tag == "ExitDoorDino")
+                    {
+                        SceneManager.LoadScene("MainArea");
+                    }
                 }
             }
         }
@@ -123,7 +186,6 @@ public class RaycastGeziVR : MonoBehaviour
 
     void OpenPanel()    
     {
-        Debug.Log("Panel is opening");
         isPanelOpen = true;
         panel.GetComponent<Canvas>().enabled = true; 
         Cursor.lockState = CursorLockMode.None;
@@ -131,7 +193,6 @@ public class RaycastGeziVR : MonoBehaviour
         //bu cursor şeyleri vr'da deneme yaparken olmamali
         Cursor.visible = true; 
 
-        Debug.Log("Panel is opened");    
         if(tag == "Skeleton")
         {
             FirebaseDatabase.DefaultInstance.RootReference.Child("pieces").Child("skeletons").Child(id).GetValueAsync().ContinueWithOnMainThread(t => {
@@ -145,8 +206,8 @@ public class RaycastGeziVR : MonoBehaviour
                     if (snapshot.Exists)
                     {
                         pieceName.text = snapshot.Child("name").Value.ToString();
-                        pieceDescription.text = snapshot.Child("description").Value.ToString();
-                        piecePrice.text = snapshot.Child("price").Value.ToString();
+                        pieceDescription.transform.GetComponent<TextMeshProUGUI>().text = snapshot.Child("description").Value.ToString();
+                        piecePrice.text = "Price: " + snapshot.Child("price").Value.ToString();
 
                         FirebaseDatabase.DefaultInstance.RootReference.Child("users").Child(snapshot.Child("owner").Value.ToString()).GetValueAsync().ContinueWithOnMainThread(t => {
                             if (t.IsFaulted)
@@ -158,7 +219,8 @@ public class RaycastGeziVR : MonoBehaviour
                                 snapshot = t.Result;
                                 if (snapshot.Exists)
                                 {
-                                    pieceOwner.text = snapshot.Child("name").Value.ToString();
+                                    pieceOwner.text = "Owner: " + snapshot.Child("name").Value.ToString();
+
                                 }
                                 else
                                 {
@@ -188,8 +250,8 @@ public class RaycastGeziVR : MonoBehaviour
                     if (snapshot.Exists)
                     {
                         pieceName.text = snapshot.Child("name").Value.ToString();
-                        pieceDescription.text = snapshot.Child("description").Value.ToString();
-                        piecePrice.text = snapshot.Child("price").Value.ToString();
+                        pieceDescription.transform.GetComponent<TextMeshProUGUI>().text = snapshot.Child("description").Value.ToString();
+                        piecePrice.text = "Price: " + snapshot.Child("price").Value.ToString();
 
                         FirebaseDatabase.DefaultInstance.RootReference.Child("users").Child(snapshot.Child("owner").Value.ToString()).GetValueAsync().ContinueWithOnMainThread(t => {
                             if (t.IsFaulted)
@@ -201,7 +263,7 @@ public class RaycastGeziVR : MonoBehaviour
                                 snapshot = t.Result;
                                 if (snapshot.Exists)
                                 {
-                                    pieceOwner.text = snapshot.Child("name").Value.ToString();
+                                    pieceOwner.text = "Owner: " +snapshot.Child("name").Value.ToString();
                                 }
                                 else
                                 {
@@ -226,11 +288,10 @@ public class RaycastGeziVR : MonoBehaviour
         //panel = cam.transform.GetChild(0).gameObject; 
         isPanelOpen = false;
         panel.GetComponent<Canvas>().enabled = false;
-        Debug.Log("Panel is closed");
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false; 
         pieceName.text = "";
-        pieceDescription.text = "";
+        pieceDescription.transform.GetComponent<TextMeshProUGUI>().text = "";
         piecePrice.text = "";
         pieceOwner.text = "";
     }
@@ -252,12 +313,13 @@ public class RaycastGeziVR : MonoBehaviour
                 {
                     if(snapshot.Child("owner").Value.ToString() == "")
                     {
-                        bool canBuy = CheckBalance(Convert.ToInt32(snapshot.Child("price").Value.ToString()));
+                        bool canBuy = CheckBalance(float.Parse(snapshot.Child("price").Value.ToString()));
                         popup.GetComponent<Canvas>().enabled = true;
                         panel.GetComponent<CanvasGroup>().interactable = false;
+                         
                         if(canBuy)
                         {
-                            piecePricePurchase = Convert.ToInt32(snapshot.Child("price").Value.ToString());
+                            piecePricePurchase = float.Parse(snapshot.Child("price").Value.ToString());
                             message.text = "Your balance is " + playerScriptable.balance + ". Do you want to buy this piece for " + snapshot.Child("price").Value.ToString() + "?";
                             popup.transform.GetChild(0).transform.GetChild(0).GetComponent<Button>().gameObject.SetActive(true);
                             popup.transform.GetChild(0).transform.GetChild(1).GetComponent<Button>().gameObject.SetActive(true);
@@ -298,12 +360,12 @@ public class RaycastGeziVR : MonoBehaviour
                 {
                     if(snapshot.Child("owner").Value.ToString() == "")
                     {
-                        bool canBuy = CheckBalance(Convert.ToInt32(snapshot.Child("price").Value.ToString()));
+                        bool canBuy = CheckBalance(float.Parse(snapshot.Child("price").Value.ToString()));
                         popup.GetComponent<Canvas>().enabled = true;
                         panel.GetComponent<CanvasGroup>().interactable = false;
                         if(canBuy)
                         {
-                            piecePricePurchase = Convert.ToInt32(snapshot.Child("price").Value.ToString());
+                            piecePricePurchase = float.Parse(snapshot.Child("price").Value.ToString());
                             message.text = "Your balance is " + playerScriptable.balance + ". Do you want to buy this piece for " + snapshot.Child("price").Value.ToString() + "?";
                             popup.transform.GetChild(0).transform.GetChild(0).GetComponent<Button>().gameObject.SetActive(true);
                             popup.transform.GetChild(0).transform.GetChild(1).GetComponent<Button>().gameObject.SetActive(true);
@@ -333,9 +395,16 @@ public class RaycastGeziVR : MonoBehaviour
     
     }
 
-    bool CheckBalance(int price)
+    bool CheckBalance(float price)
     {
-        Debug.Log("Checking balance...");
+        Debug.Log("Checking balance");
+        
+        if(playerScriptable.accountAddress == "")
+        {
+            return false;
+        }
+        Debug.Log(playerScriptable.balance >= price);
+        StartCoroutine(GetBalance("https://gezivr-web3.onrender.com/getBalance/" + playerScriptable.accountAddress));
         if(playerScriptable.balance >= price)
         {
             return true;
@@ -348,28 +417,142 @@ public class RaycastGeziVR : MonoBehaviour
 
     public void ApprovePurchase()
     {
-        if(tag == "Skeleton")
-        {
-            FirebaseDatabase.DefaultInstance.RootReference.Child("pieces").Child("skeletons").Child(id).Child("owner").SetValueAsync(playerScriptable.token);
-        }
-        else if(tag == "Dino")
-        {
-            FirebaseDatabase.DefaultInstance.RootReference.Child("pieces").Child("dinosaurs").Child(id).Child("owner").SetValueAsync(playerScriptable.token);
-        }
-        string json = "{\"piecePricePurchase\":" + piecePricePurchase + "}";
-        FirebaseDatabase.DefaultInstance.RootReference.Child("users").Child(playerScriptable.token).Child("gallery").Child(id).SetRawJsonValueAsync(json);
-        FirebaseDatabase.DefaultInstance.RootReference.Child("users").Child(playerScriptable.token).Child("balance").SetValueAsync(playerScriptable.balance - int.Parse(piecePrice.text));
-        pieceOwner.text = playerScriptable.name;
-        playerScriptable.balance -= int.Parse(piecePrice.text);
-        PlayerPrefs.SetInt("balance", playerScriptable.balance);
-        panel.transform.GetChild(0).transform.GetChild(5).GetComponent<Button>().interactable = false;
-        ClosePopup();
+        string p = piecePricePurchase.ToString().Replace(",", ".");
+        loadingPurchase.SetActive(true);
+        message.text = "";
+        popup.transform.GetChild(0).transform.GetChild(0).GetComponent<Button>().gameObject.SetActive(false);
+        popup.transform.GetChild(0).transform.GetChild(1).GetComponent<Button>().gameObject.SetActive(false);
+
+        StartCoroutine(StartTransaction("https://gezivr-web3.onrender.com/sendTransaction", playerScriptable.token,p));
     }
+
+    
+
+    IEnumerator StartTransaction(string url, string token, string amount)
+    {
+        JsonTransaction jsonData = new JsonTransaction(token, amount);
+        var jsonDataToSend = JsonConvert.SerializeObject(jsonData);
+        var data = System.Text.Encoding.UTF8.GetBytes(jsonDataToSend);
+        using (UnityWebRequest www = new UnityWebRequest(url, "POST"))
+        {
+            www.SetRequestHeader("Content-Type", "application/json");
+            byte [] bodyRaw = Encoding.UTF8.GetBytes(jsonDataToSend);
+            www.uploadHandler = (UploadHandler) new UploadHandlerRaw(bodyRaw);
+            www.downloadHandler = (DownloadHandler) new DownloadHandlerBuffer();
+            yield return www.SendWebRequest();
+
+            loadingPurchase.SetActive(false);
+            Debug.Log(www.downloadHandler.text);
+            if (www.result == UnityWebRequest.Result.ConnectionError || www.result == UnityWebRequest.Result.ProtocolError)
+            {
+                Debug.Log(www.error);
+                StartCoroutine(AutoClosePopup("Failed"));
+            }
+            else
+            {
+                Debug.Log("Transaction successful");
+                if(tag == "Skeleton")
+                {
+                    FirebaseDatabase.DefaultInstance.RootReference.Child("pieces").Child("skeletons").Child(id).Child("owner").SetValueAsync(playerScriptable.token);
+                }
+                else if(tag == "Dino")
+                {
+                    FirebaseDatabase.DefaultInstance.RootReference.Child("pieces").Child("dinosaurs").Child(id).Child("owner").SetValueAsync(playerScriptable.token);
+                }
+                if(tag != "EntranceDino")
+                {
+                    string json = "{\"piecePricePurchase\":" + piecePricePurchase.ToString().Replace(",", ".") + "}";
+                    FirebaseDatabase.DefaultInstance.RootReference.Child("users").Child(playerScriptable.token).Child("gallery").Child(id).SetRawJsonValueAsync(json);
+                    //FirebaseDatabase.DefaultInstance.RootReference.Child("users").Child(playerScriptable.token).Child("balance").SetValueAsync(playerScriptable.balance - int.Parse(piecePrice.text));
+                    pieceOwner.text = "Owner: " +playerScriptable.name;
+                    //playerScriptable.balance -= float.Parse(piecePrice.text);
+                    //PlayerPrefs.SetFloat("balance", playerScriptable.balance);
+                    panel.transform.GetChild(0).transform.GetChild(3).GetComponent<Button>().interactable = false;
+                }
+                StartCoroutine(AutoClosePopup("Success"));
+            }
+        }
+        
+
+        StartCoroutine(GetBalance("https://gezivr-web3.onrender.com/getBalance/" + playerScriptable.accountAddress));
+
+        
+    }
+
+    IEnumerator GetBalance(string url)
+    {
+        using(UnityWebRequest www = UnityWebRequest.Get(url))
+        {
+            yield return www.SendWebRequest();
+            if(www.result == UnityWebRequest.Result.ConnectionError || www.result == UnityWebRequest.Result.ProtocolError)
+            {
+                Debug.Log(www.error);
+            }
+            else
+            {
+                Debug.Log(www.downloadHandler.text);
+                
+                playerScriptable.balance = float.Parse(www.downloadHandler.text.Replace(".", ","));
+                PlayerPrefs.SetFloat("balance", playerScriptable.balance);
+            }
+        }
+        
+    }
+
+    IEnumerator AutoClosePopup(string status)
+    {
+        isPanelOpen = false;
+        message.text = "Purchase " + status ;
+        yield return new WaitForSeconds(2);
+        if(tag == "EntranceDino")
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+        
+        //bu cursor şeyleri vr'da deneme yaparken olmamali
+            Cursor.visible = false;
+            GameObject.Find("Player").GetComponent<PlayerMovement>().enabled = true;
+            GameObject.Find("PlayerCam").GetComponent<PlayerCamera>().enabled = true;
+            SceneManager.LoadScene("GeziVr");
+        }
+        popup.GetComponent<Canvas>().enabled = false;
+        popup.transform.GetChild(0).transform.GetChild(0).GetComponent<Button>().gameObject.SetActive(true);
+        popup.transform.GetChild(0).transform.GetChild(1).GetComponent<Button>().gameObject.SetActive(true);
+        if(tag != "EntranceDino")
+        {
+            panel.GetComponent<CanvasGroup>().interactable = true;
+        }
+
+    }   
 
     public void ClosePopup()
     {
+        isPanelOpen = false;
         popup.GetComponent<Canvas>().enabled = false;
-        panel.GetComponent<CanvasGroup>().interactable = true;
-    }   
+        
+        if(tag != "EntranceDino")
+        {
+            panel.GetComponent<CanvasGroup>().interactable = true;
+        }
+        if(tag == "EntranceDino")
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+        
+        //bu cursor şeyleri vr'da deneme yaparken olmamali
+            Cursor.visible = false;
+            GameObject.Find("Player").GetComponent<PlayerMovement>().enabled = true;
+            GameObject.Find("PlayerCam").GetComponent<PlayerCamera>().enabled = true;
+        }
+    }  
+}
 
+public class JsonTransaction
+{
+    public string userId;
+    public string amount;
+
+    public JsonTransaction(string userId, string amount)
+    {
+        this.userId = userId;
+        this.amount = amount;
+    }
 }
