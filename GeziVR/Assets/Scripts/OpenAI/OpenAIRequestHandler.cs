@@ -12,7 +12,7 @@ namespace OpenAI_handler
     {
         public void generate()
         {
-            StartCoroutine(generateImages("https://gezivr.onrender.com/generate_images"));
+            StartCoroutine(generateImages("http://127.0.0.1:5000/generate_images"));
         }
 
         IEnumerator generateImages(string uri)
