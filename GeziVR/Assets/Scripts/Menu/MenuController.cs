@@ -9,7 +9,6 @@ using UnityEngine.Networking;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
-using OpenAI_handler;
 public class MenuController : MonoBehaviour
 {
     public TMPro.TextMeshProUGUI infoText;
@@ -21,8 +20,6 @@ public class MenuController : MonoBehaviour
     void Start()
     {
         infoText.text = "Hos geldin " + playerScriptable.name + "!";
-        // Sunum sırasında alt satir yorumdan cikarilmali
-        // gameObject.AddComponent<OpenAIRequestHandler>().generate();
         
         StartCoroutine(setImage(playerScriptable.profileImageUrl));
         if(playerScriptable.accountAddress == "")
