@@ -142,22 +142,27 @@ public class RaycastGeziVR : MonoBehaviour
                         GameObject.Find("Player").GetComponent<PlayerMovement>().enabled = false;
                         GameObject.Find("PlayerCam").GetComponent<PlayerCamera>().enabled = false;
                         FirebaseDatabase.DefaultInstance.RootReference.Child("museums").Child("dino-museum").GetValueAsync().ContinueWithOnMainThread(t => {
+                            
                             if (t.IsFaulted)
                             {
                                 Debug.Log("Error");
                             }
                             else if (t.IsCompleted)
                             {
+                                snapshot = t.Result;
                                 if (snapshot.Exists)
                                 {
                                     StartCoroutine(CheckBalanceEnterMuseum("https://gezivr-web3.onrender.com/getBalance/" + playerScriptable.accountAddress, 
                                     float.Parse(snapshot.Child("price").Value.ToString())));
-
                                 }
                                 else
                                 {
                                     Debug.Log("Museum does not exist");
                                 }
+                            }
+                            else
+                            {
+                                Debug.Log("Museum does not exist2");
                             }
                         });
                         
@@ -401,7 +406,6 @@ public class RaycastGeziVR : MonoBehaviour
             {
                 playerScriptable.balance = float.Parse(www.downloadHandler.text.Replace(".", ","));
                 PlayerPrefs.SetFloat("balance", playerScriptable.balance);
-
                 if(playerScriptable.balance >= price)
                 {
                     piecePricePurchase = price;
@@ -512,7 +516,9 @@ public class RaycastGeziVR : MonoBehaviour
             Cursor.visible = false;
             GameObject.Find("Player").GetComponent<PlayerMovement>().enabled = true;
             GameObject.Find("PlayerCam").GetComponent<PlayerCamera>().enabled = true;
-            SceneManager.LoadScene("GeziVr");
+            message.text = "";
+            if(status == "Success")
+                SceneManager.LoadScene("GeziVr");
         }
         popup.GetComponent<Canvas>().enabled = false;
         popup.transform.GetChild(0).transform.GetChild(0).GetComponent<Button>().gameObject.SetActive(true);
@@ -542,6 +548,7 @@ public class RaycastGeziVR : MonoBehaviour
             Cursor.visible = false;
             GameObject.Find("Player").GetComponent<PlayerMovement>().enabled = true;
             GameObject.Find("PlayerCam").GetComponent<PlayerCamera>().enabled = true;
+            message.text = "";
         }
     }  
 }

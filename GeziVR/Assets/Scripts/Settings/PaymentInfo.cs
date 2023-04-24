@@ -45,7 +45,10 @@ public class PaymentInfo : MonoBehaviour
 
     public void UpdatePaymentInfo()
     {
-        string encrypted_key = EncryptAES(privateKey.text);
+        string encrypted_key = "";
+        
+        if(privateKey.text != "")
+            encrypted_key = EncryptAES(privateKey.text);
         int len = privateKey.text.Length;
         StartCoroutine(UpdatePaymentInfo("https://gezivr-web3.onrender.com/setPaymentInfo" ,encrypted_key , playerScriptable.token,accountAddress.text , len));
     
