@@ -26,9 +26,11 @@ public class MenuController : MonoBehaviour
         StartCoroutine(setImage(playerScriptable.profileImageUrl));
         if(playerScriptable.accountAddress == "")
             StartCoroutine(GetAccountAddress("https://gezivr.onrender.com/getAccountAddress/" + playerScriptable.token));
+        else if( playerScriptable.accountAddress != "No account address")
+            StartCoroutine(GetBalance("https://gezivr-web3.onrender.com/getBalance/" + playerScriptable.accountAddress));
         if(playerScriptable.privateKey == "")
             StartCoroutine(GetPrivateKey("https://gezivr.onrender.com/getPrivateKey/" + playerScriptable.token));
-        StartCoroutine(GetBalance("https://gezivr-web3.onrender.com/getBalance/" + playerScriptable.accountAddress));
+
     }
     
     void Update()
@@ -46,6 +48,12 @@ public class MenuController : MonoBehaviour
         {
             Debug.Log("WWW Ok!: " + www.text);
             playerScriptable.accountAddress = www.text;
+            Debug.Log("Account address: " + playerScriptable.accountAddress);
+            if(playerScriptable.accountAddress != "No account address")
+            {
+                StartCoroutine(GetBalance("https://gezivr-web3.onrender.com/getBalance/" + playerScriptable.accountAddress));
+            }
+            
             
         }
         else
