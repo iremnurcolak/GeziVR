@@ -102,7 +102,7 @@ public class WikipediaAPI : MonoBehaviour
                     }
                     else if(hit.transform.tag == "ExitDoor")
                     {
-                        SceneManager.LoadScene("GeziVr");
+                        SceneManager.LoadScene("MainArea");
                     }
                 }
             }

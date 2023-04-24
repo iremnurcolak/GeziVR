@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc29302f36f9def47bbf4a44e1f6b735, type: 3}
   m_Name: PlayerData
   m_EditorClassIdentifier: 
-  name: Iremnur Colak
-  email: iremnurcolak34@gmail.com
-  profileImageUrl: https://lh3.googleusercontent.com/a/AGNmyxZ6nuamVjzxaD3jWbz3YsVBoGHMe4GoylG6rW2M4XA=s96-c
-  token: Piz5P0JqgTXfrQYagGszgbzi5k02
+  name: 
+  email: 
+  profileImageUrl: 
+  token: 
   balance: 0
   privateKey: 
   accountAddress: 
