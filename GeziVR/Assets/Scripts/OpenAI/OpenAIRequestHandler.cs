@@ -1,10 +1,7 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
-using System.IO;
 using System.Net;
-using System.Text.Json;
 
 namespace OpenAI_handler
 {

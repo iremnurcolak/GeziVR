@@ -9,6 +9,8 @@ using UnityEngine.Networking;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
+using OpenAI_handler;
+
 public class MenuController : MonoBehaviour
 {
     public TMPro.TextMeshProUGUI infoText;
