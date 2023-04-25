@@ -516,13 +516,14 @@ public class RaycastGeziVR : MonoBehaviour
             Cursor.visible = false;
             GameObject.Find("Player").GetComponent<PlayerMovement>().enabled = true;
             GameObject.Find("PlayerCam").GetComponent<PlayerCamera>().enabled = true;
-            message.text = "";
+           
             if(status == "Success")
                 SceneManager.LoadScene("GeziVr");
         }
         popup.GetComponent<Canvas>().enabled = false;
         popup.transform.GetChild(0).transform.GetChild(0).GetComponent<Button>().gameObject.SetActive(true);
         popup.transform.GetChild(0).transform.GetChild(1).GetComponent<Button>().gameObject.SetActive(true);
+        message.text = "";
         if(tag != "EntranceDino")
         {
             panel.GetComponent<CanvasGroup>().interactable = true;
