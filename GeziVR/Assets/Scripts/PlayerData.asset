@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: 
   email: 
-  profileImageUrl: 
-  token: 
-  balance: 0
+  profileImageUrl: https://lh3.googleusercontent.com/a/AGNmyxZ6nuamVjzxaD3jWbz3YsVBoGHMe4GoylG6rW2M4XA=s96-c
+  token: Piz5P0JqgTXfrQYagGszgbzi5k02
+  balance: 4.217719
   privateKey: 
-  accountAddress: 
+  accountAddress: 0x6591C991210917184ec076A6D18D0f82B5e223bc

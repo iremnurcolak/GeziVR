@@ -54,9 +54,7 @@ public class MenuController : MonoBehaviour
             if(playerScriptable.accountAddress != "No account address")
             {
                 StartCoroutine(GetBalance("https://gezivr-web3.onrender.com/getBalance/" + playerScriptable.accountAddress));
-            }
-            
-            
+            }            
         }
         else
         {
@@ -125,11 +123,6 @@ public class MenuController : MonoBehaviour
     public void GoToGallery()
     {
         SceneManager.LoadScene("GalleryScreen");
-    }
-    
-    public void GoToWiki()
-    {
-        SceneManager.LoadScene("Wikipedia");
     }
 
     public void GoToPaymentSettings()
