@@ -47,6 +47,7 @@ public class WikipediaAPI : MonoBehaviour
     private float timeEnter = 0f;
     
     private bool isCanvasActive = false;
+
     private WikiArtArtist[] allArtists;
     private List<WikiArtArtist> recommendedArtists = new List<WikiArtArtist>();
 
@@ -95,8 +96,9 @@ public class WikipediaAPI : MonoBehaviour
                             artYear.text = window[index].yearAsString;
                             artSize.text = window[index].width + "x" + window[index].height;    
                             GameObject.Find("CanvasDescription").transform.GetChild(0).gameObject.SetActive(true);
-                            Cursor.lockState = CursorLockMode.None;
-                            Cursor.visible = true; 
+                            GameObject.Find("Player").GetComponent<PlayerMovement2>().enabled = false;
+                            GameObject.Find("PlayerCam").GetComponent<PlayerCamera2>().enabled = false;
+                            isCanvasActive = true;
                         }
                         
                     }
@@ -197,6 +199,8 @@ public class WikipediaAPI : MonoBehaviour
     {
         //Cursor.lockState = CursorLockMode.Locked;
         //Cursor.visible = false; 
+        GameObject.Find("Player").GetComponent<PlayerMovement2>().enabled = true;
+        GameObject.Find("PlayerCam").GetComponent<PlayerCamera2>().enabled = true;
         GameObject.Find("CanvasDescription").transform.GetChild(0).gameObject.SetActive(false);
         isCanvasActive = false;
     }
